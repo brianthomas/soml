@@ -1,0 +1,121 @@
+<?xml version="1.0"?><project>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.datamodel</groupId>
+  <artifactId>soml</artifactId>
+  <name>Java Semantic Object Modeling Language</name>
+  <version>0.01</version>
+  <description>SOML describes a means to model semantic objects in a generic manner.</description>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${basedir}/target/classes</outputDirectory>
+          <resources>
+            <resource>
+              <directory>${basedir}/src/main/resources</directory>
+            </resource>
+          </resources>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <overview>${basedir}/docs/Overview.html</overview>
+        </configuration>
+      </plugin>
+
+<!--
+      <plugin>
+        <groupId>net.sf.doodleproject</groupId>
+        <artifactId>doxygen-maven-plugin</artifactId>
+-
+	<groupId>maven-plugins</groupId>
+	<artifactId>maven-doxygen-plugin</artifactId>
+
+	<version>2.0</version>
+        <configuration>
+ <doxygen>
+          <input>${basedir}/src/main/java</input>
+          <outputDirectory>${basedir}/target/doc/doxygen</outputDirectory>
+          <generateHtml>true</generateHtml>
+          <filePatterns>*.java</filePatterns>
+          <recursive>true</recursive>
+ </doxygen>
+        </configuration>
+      </plugin>
+-->
+
+    </plugins>
+
+  </build>
+
+  <repositories>
+    <repository>
+      <id>umd-repository</id>
+      <name>UMD Local Repository</name>
+      <url>http://archive.astro.umd.edu/maven</url>
+    </repository>
+    <repository>
+      <id>ibiblio-repository</id>
+      <name>IBIBLIO Maven Repository</name>
+      <url>http://www.ibiblio.org/maven2</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+<!--
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.7.1</version>
+    </dependency>
+-->
+    <dependency>
+      <groupId>net.datamodel</groupId>
+      <artifactId>qml</artifactId>
+      <version>0.26</version>
+    </dependency>
+      <groupId>net.datamodel</groupId>
+      <artifactId>xmlsupport</artifactId>
+      <version>0.01</version>
+    <dependency>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.13</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.0</version>
+    </dependency>
+  </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>umd-deploy-repository</id>
+      <url>scp://archive.astro.umd.edu/var/www/html/maven</url>
+    </repository>
+  </distributionManagement>
+
+</project>
