@@ -39,7 +39,7 @@ import java.util.List;
  * these objects is represented by a separate URI.
  * 
  * @author thomas
- * @version $Version:$
+ * @version $VersionId:$
  */
 public interface SemanticObject 
 {
