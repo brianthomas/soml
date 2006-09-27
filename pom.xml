@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.datamodel</groupId>
-  <artifactId>som</artifactId>
+  <artifactId>soml</artifactId>
   <name>Semantic Object Model</name>
   <version>0.1</version>
   <description>SOML (Semantic Object Model Language) Java package provides
@@ -57,26 +57,9 @@ handy representations of (instances of) semantic objects.</description>
   </repositories>
 
   <dependencies>
-<!--
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.7.1</version>
-    </dependency>
--->
     <dependency>
       <groupId>net.datamodel</groupId>
-      <artifactId>qml</artifactId>
-      <version>0.26</version>
-    </dependency>
-    <dependency>
-      <groupId>net.datamodel</groupId>
-      <artifactId>xmlsupport</artifactId>
+      <artifactId>xssp</artifactId>
       <version>0.01</version>
     </dependency>
     <dependency>

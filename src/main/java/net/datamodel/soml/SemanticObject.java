@@ -102,7 +102,7 @@ public interface SemanticObject
      * 
      * @return
      */ 
-    public List<SemanticObject> getMemberList ( );
+    public List<SemanticObject> getObjectList ( );
 
     /**
      * Get the id of an instance of this class. It should be unique across all
