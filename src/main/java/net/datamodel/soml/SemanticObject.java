@@ -32,6 +32,8 @@ package net.datamodel.soml;
 
 import java.util.List;
 
+import net.datamodel.xssp.XMLSerializableObject;
+
 /**
  * The interface for all Objects which have Semantic meaning as represented
  * by an URI. Each of these objects may be in a relationship to other objects,
@@ -42,6 +44,7 @@ import java.util.List;
  * @version $VersionId:$
  */
 public interface SemanticObject 
+extends XMLSerializableObject
 {
 
     // Operations

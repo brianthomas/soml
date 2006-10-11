@@ -42,9 +42,8 @@ import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.URN;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.XMLSerializableField;
+import net.datamodel.xssp.core.AbstractXMLSerializableObject;
 import net.datamodel.xssp.core.XMLSerializableFieldImpl;
-import net.datamodel.xssp.core.XMLSerializableObjectImpl;
-import net.datamodel.xssp.support.Constants;
 import net.datamodel.xssp.support.Specification;
 import net.datamodel.xssp.support.XMLReferenceSerializationType;
 
@@ -54,7 +53,7 @@ import org.apache.log4j.Logger;
  * An object which holds quantities (as properties). It may be used 
  * as is or as stub code to create other objects which contain quantities.
  */
-public class SemanticObjectImpl extends XMLSerializableObjectImpl 
+public class SemanticObjectImpl extends AbstractXMLSerializableObject 
 implements SemanticObject {
 	
 	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
@@ -228,7 +227,7 @@ implements SemanticObject {
 	 * @see net.datamodel.soml.SemanticObject#getObjectList()
 	 */
     public List<SemanticObject> getObjectList (  ) {
-        return (List) ((MixedCollectionImpl) ((XMLSerializableField) 
+        return (List) ((XMLSerialializedObjectListImpl) ((XMLSerializableField) 
         		fieldHash.get(MEMBER_XML_FIELD_NAME)).getValue()).getObjectList();
     }
 
@@ -335,7 +334,7 @@ implements SemanticObject {
        fieldHash.put(URN_XML_FIELD_NAME, new XMLSerializableFieldImpl("obj:"+this.hashCode(), XMLFieldType.ATTRIBUTE));
        fieldHash.put(ID_XML_FIELD_NAME, new XMLSerializableFieldImpl("", XMLFieldType.ATTRIBUTE ));
 //       fieldHash.put(IMMUTABLE_XML_FIELD_NAME, new XMLSerializableFieldImpl(new Boolean(false), XMLFieldType.ATTRIBUTE));
-       fieldHash.put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new MixedCollectionImpl(null, false), XMLFieldType.CHILD_NODE));
+       fieldHash.put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new XMLSerialializedObjectListImpl(null, false), XMLFieldType.CHILD_NODE));
        
     }
 
