@@ -43,6 +43,7 @@ import net.datamodel.soml.URN;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.XMLSerializableField;
 import net.datamodel.xssp.core.AbstractXMLSerializableObject;
+import net.datamodel.xssp.core.XMLSerialializedObjectListImpl;
 import net.datamodel.xssp.core.XMLSerializableFieldImpl;
 import net.datamodel.xssp.support.Specification;
 import net.datamodel.xssp.support.XMLReferenceSerializationType;
@@ -97,7 +98,7 @@ implements SemanticObject {
      */
 /*
     public Boolean getImmutable (  ) {
-        return (Boolean) ((XMLSerializableField) fieldHash.get(IMMUTABLE_XML_FIELD_NAME)).getValue();
+        return (Boolean) ((XMLSerializableField) getFields().get(IMMUTABLE_XML_FIELD_NAME)).getValue();
     }
 */
 
@@ -107,7 +108,7 @@ implements SemanticObject {
      */
 /*
     public void setImmutable ( Boolean value  ) {
-        ((XMLSerializableField) fieldHash.get(IMMUTABLE_XML_FIELD_NAME)).setValue(value);
+        ((XMLSerializableField) getFields().get(IMMUTABLE_XML_FIELD_NAME)).setValue(value);
     }
 */
 
@@ -115,7 +116,8 @@ implements SemanticObject {
      * The id of an instance of this class. It should be unique across all components and quantities within a given document/object tree.
      */
     public String getId (  ) {
-        return (String) ((XMLSerializableField) fieldHash.get(ID_XML_FIELD_NAME)).getValue();
+        // return (String) ((XMLSerializableField) getFields().get(ID_XML_FIELD_NAME)).getValue();
+        return (String) ((XMLSerializableField) getFields().get(ID_XML_FIELD_NAME)).getValue();
     }
 
     /*
@@ -123,7 +125,7 @@ implements SemanticObject {
      * @see net.datamodel.qml.SemanticObject#setId(java.lang.String)
      */ 
     public void setId ( String value  ) {
-        ((XMLSerializableFieldImpl) fieldHash.get(ID_XML_FIELD_NAME)).setValue(value);
+        ((XMLSerializableFieldImpl) getFields().get(ID_XML_FIELD_NAME)).setValue(value);
     }
 
     /*
@@ -183,7 +185,7 @@ implements SemanticObject {
 	 */
 	public URN getURN() {
 		try {
-			return new URNImpl ((String) ((XMLSerializableField) fieldHash.get(URN_XML_FIELD_NAME)).getValue());
+			return new URNImpl ((String) ((XMLSerializableField) getFields().get(URN_XML_FIELD_NAME)).getValue());
 		} catch (Exception e) {
 			logger.error("Invalid URN for object returned.:"+e.getMessage());
 			return (URN) null; // shouldnt happen as we only let valid URNs in..
@@ -227,8 +229,9 @@ implements SemanticObject {
 	 * @see net.datamodel.soml.SemanticObject#getObjectList()
 	 */
     public List<SemanticObject> getObjectList (  ) {
-        return (List) ((XMLSerialializedObjectListImpl) ((XMLSerializableField) 
-        		fieldHash.get(MEMBER_XML_FIELD_NAME)).getValue()).getObjectList();
+// TODO!
+        return (List) null; //((XMLSerialializedObjectListImpl) ((XMLSerializableField) 
+        		//getFields().get(MEMBER_XML_FIELD_NAME)).getValue()).getObjectList();
     }
 
     // Operations
@@ -258,7 +261,7 @@ implements SemanticObject {
 	protected void setURN (URN value) {
 		// Take the URN and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    ((XMLSerializableFieldImpl) fieldHash.get(URN_XML_FIELD_NAME)).setValue(value.toString());
+	    ((XMLSerializableFieldImpl) getFields().get(URN_XML_FIELD_NAME)).setValue(value.toString());
 	}
 
 	/**
@@ -319,23 +322,38 @@ implements SemanticObject {
 
        resetFields();
 
-       xmlNodeName = "semanticObject";
+       setXMLNodeName("semanticObject");
 
        nrofMembers = 0;
        
        // now initialize XML fields
        // order matters! these are in *reverse* order of their
        // occurence in the schema/DTD
-       fieldOrder.add(0, MEMBER_XML_FIELD_NAME);
+       getFieldOrder().add(0, MEMBER_XML_FIELD_NAME);
 //       fieldOrder.add(0, IMMUTABLE_XML_FIELD_NAME);
-       fieldOrder.add(0, ID_XML_FIELD_NAME);
-       fieldOrder.add(0, URN_XML_FIELD_NAME);
+       getFieldOrder().add(0, ID_XML_FIELD_NAME);
+       getFieldOrder().add(0, URN_XML_FIELD_NAME);
 
-       fieldHash.put(URN_XML_FIELD_NAME, new XMLSerializableFieldImpl("obj:"+this.hashCode(), XMLFieldType.ATTRIBUTE));
-       fieldHash.put(ID_XML_FIELD_NAME, new XMLSerializableFieldImpl("", XMLFieldType.ATTRIBUTE ));
-//       fieldHash.put(IMMUTABLE_XML_FIELD_NAME, new XMLSerializableFieldImpl(new Boolean(false), XMLFieldType.ATTRIBUTE));
-       fieldHash.put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new XMLSerialializedObjectListImpl(null, false), XMLFieldType.CHILD_NODE));
+       getFields().put(URN_XML_FIELD_NAME, new XMLSerializableFieldImpl("obj:"+this.hashCode(), XMLFieldType.ATTRIBUTE));
+       getFields().put(ID_XML_FIELD_NAME, new XMLSerializableFieldImpl("", XMLFieldType.ATTRIBUTE ));
+//       getFields().put(IMMUTABLE_XML_FIELD_NAME, new XMLSerializableFieldImpl(new Boolean(false), XMLFieldType.ATTRIBUTE));
+       getFields().put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new XMLSerialializedObjectListImpl(null, false), XMLFieldType.CHILD_NODE));
        
+    }
+
+
+    // find unique id name within a idtable of objects
+    protected String findUniqueIdName( Hashtable idTable, String baseIdName)
+    {
+
+       StringBuffer testName = new StringBuffer(baseIdName);
+
+       while (idTable.containsKey(testName.toString())) {
+           testName.append("0"); // isnt there something better to append here??
+       }
+
+       return testName.toString();
+
     }
 
 }
