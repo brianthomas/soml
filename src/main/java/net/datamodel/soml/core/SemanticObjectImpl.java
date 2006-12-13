@@ -43,7 +43,7 @@ import net.datamodel.soml.URN;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.XMLSerializableField;
 import net.datamodel.xssp.core.AbstractXMLSerializableObject;
-import net.datamodel.xssp.core.XMLSerialializedObjectListImpl;
+import net.datamodel.xssp.core.AbstractXMLSerializableObjectList;
 import net.datamodel.xssp.core.XMLSerializableFieldImpl;
 import net.datamodel.xssp.support.Specification;
 import net.datamodel.xssp.support.XMLReferenceSerializationType;
@@ -337,7 +337,7 @@ implements SemanticObject {
        getFields().put(URN_XML_FIELD_NAME, new XMLSerializableFieldImpl("obj:"+this.hashCode(), XMLFieldType.ATTRIBUTE));
        getFields().put(ID_XML_FIELD_NAME, new XMLSerializableFieldImpl("", XMLFieldType.ATTRIBUTE ));
 //       getFields().put(IMMUTABLE_XML_FIELD_NAME, new XMLSerializableFieldImpl(new Boolean(false), XMLFieldType.ATTRIBUTE));
-       getFields().put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new XMLSerialializedObjectListImpl(null, false), XMLFieldType.CHILD_NODE));
+       getFields().put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new MemberList(), XMLFieldType.CHILD));
        
     }
 
@@ -355,6 +355,10 @@ implements SemanticObject {
        return testName.toString();
 
     }
+    
+    // our memberlist is simple strait XMLSerializableObjectList, so no mods
+    // (for now!)
+    class MemberList extends AbstractXMLSerializableObjectList { }
 
 }
 

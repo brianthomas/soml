@@ -60,12 +60,13 @@ handy representations of (instances of) semantic objects.</description>
     <dependency>
       <groupId>net.datamodel</groupId>
       <artifactId>xssp</artifactId>
-      <version>0.21</version>
+      <version>0.30</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.13</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
