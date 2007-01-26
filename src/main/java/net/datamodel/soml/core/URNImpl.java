@@ -41,7 +41,7 @@ public class URNImpl implements URN
 	public URNImpl (String stringRep) 
 	throws URISyntaxException
 	{
-		logger.debug(" try to construct URN from pattern:["+stringRep+"]"); 
+		logger.debug("trying to construct URN from pattern:["+stringRep+"]"); 
 		Matcher fullMatcher = fullPattern.matcher(stringRep);
 		Matcher noFragMatcher = noFragPattern.matcher(stringRep);
 		if(fullMatcher.matches()) {
@@ -134,8 +134,7 @@ public class URNImpl implements URN
 	public boolean equals (Object obj) {
 		if (obj instanceof URNImpl) {
 			URNImpl test = (URNImpl) obj;
-			if (obj.toString().equals(toString()))
-			{
+			if (obj.toString().equals(toString())) {
 				return true;
 			}
 		}

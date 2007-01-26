@@ -35,9 +35,10 @@ package net.datamodel.soml.core;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
+import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.URN;
 import net.datamodel.xssp.XMLFieldType;
@@ -50,9 +51,9 @@ import net.datamodel.xssp.support.XMLReferenceSerializationType;
 
 import org.apache.log4j.Logger;
 
-/**
- * An object which holds quantities (as properties). It may be used 
- * as is or as stub code to create other objects which contain quantities.
+/** A SemanticObject identifies its origin (and semantic nature) by its URN (Unique Resource Name).
+ * A SemanticObject also may be in a SemanticRelationship with other SemanticObjects. 
+ * SemanticRelationships include being properities of another SemanticObject.
  */
 public class SemanticObjectImpl extends AbstractXMLSerializableObject 
 implements SemanticObject {
@@ -60,20 +61,13 @@ implements SemanticObject {
 	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
 
     // Fields
-	private static final String MEMBER_XML_FIELD_NAME = "member";
-    private static final String ID_XML_FIELD_NAME = "qid";
+	private static final String RELATIONSHIP_XML_FIELD_NAME = "RELATIONSHIP";
+    private static final String ID_XML_FIELD_NAME = "soid";
     private static final String URN_XML_FIELD_NAME = "urn";
     
     protected static final String ReferenceNodeName = "refNode";
     protected static final String IDRefAttributeName = "oidRef";
     
-//    private static final String IMMUTABLE_XML_FIELD_NAME = new String("immutable");
-
-    /**
-     * @uml.property  name="nrofMembers"
-     */
-    private int nrofMembers;
-
     // Methods
     //
 
@@ -86,31 +80,9 @@ implements SemanticObject {
     }
     
     // The no-argument Constructor
-    public SemanticObjectImpl () {
-    	init();
-    }
+    protected SemanticObjectImpl () { init(); }
 
     // Accessor Methods
-
-    /*
-     * Whether or not this quantity or component is mutable. 
-     * (e.g. it may change meta-data/data within the instance).
-     */
-/*
-    public Boolean getImmutable (  ) {
-        return (Boolean) ((XMLSerializableField) getFields().get(IMMUTABLE_XML_FIELD_NAME)).getValue();
-    }
-*/
-
-    /*
-     * Whether or not this quantity or component is mutable.
-     * (e.g. it may change meta-data/data within the instance).
-     */
-/*
-    public void setImmutable ( Boolean value  ) {
-        ((XMLSerializableField) getFields().get(IMMUTABLE_XML_FIELD_NAME)).setValue(value);
-    }
-*/
 
     /**
      * The id of an instance of this class. It should be unique across all components and quantities within a given document/object tree.
@@ -130,53 +102,36 @@ implements SemanticObject {
 
     /*
      *  (non-Javadoc)
-     * @see net.datamodel.qml.SemanticObject#addMember(net.datamodel.qml.SemanticObject, java.net.URN)
+     * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URN)
      */ 
-	public boolean addRelationship(SemanticObject member, URN relationship) 
+	public boolean addRelationship(SemanticObject relatedObj, URN relationURN) 
 	throws IllegalArgumentException, NullPointerException 
     {
 
-       // cant add ourselves as member of ourselves (!)
-       if(member == this)
+       // check if the RELATIONSHIP already exists
+       if (null != getRelatedSemanticObject(relationURN))
        {
-           logger.warn("ignoring attempt to add self to member list");
-           return false;
-       }
-       
-       // check if the member already exists
-       if (null != getObject(relationship))
-       {
-    	   throw new IllegalArgumentException("addMember: a member already exists with relationship URN:"+relationship.toString());
+    	   throw new IllegalArgumentException("addRelationship: a relationship already exists with relationship URN:"+relationURN.toString());
        }
 
-       return getObjectList().add(member);
+       return getRelationships().add(new RelationshipImpl(relationURN, relatedObj));
     }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see net.datamodel.qml.SemanticObject#addMember(net.datamodel.qml.SemanticObject)
-	 */
-	public boolean addRelationship(SemanticObject member)
-	throws IllegalArgumentException, NullPointerException 
-	{
-		return addRelationship(member, member.getURN());
-	}
-	
     /*
 	 *  (non-Javadoc)
-	 * @see net.datamodel.qml.SemanticObject#removeMember(java.net.URN)
+	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URN)
 	 */
 	public boolean removeRelationship(URN relationship) {
-		SemanticObject member = getObject(relationship);
-		return removeRelationship(member);
+		SemanticObject RELATIONSHIP = getRelatedSemanticObject(relationship);
+		return removeRelationship(RELATIONSHIP);
 	}
 
 	/*
      *  (non-Javadoc)
-     * @see net.datamodel.qml.SemanticObject#removeMember(net.datamodel.qml.SemanticObject)
+     * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(net.datamodel.qml.SemanticObject)
      */ 
     public boolean removeRelationship ( SemanticObject value  ) {
-       return getObjectList().remove(value);
+       return getRelationships().remove(value);
     }
 
     /*
@@ -192,28 +147,32 @@ implements SemanticObject {
 		}
 	}
 
-	/** Retrieve a member by its unique id.
+	/** Retrieve a RELATIONSHIP by its unique id.
      * 
      * @param id
      * @deprecated
      * @return
      */
-	public SemanticObject getMember(String id) 
+	public SemanticObject getRelatedSemanticObject(String id) 
 	{
 		
-		Iterator<SemanticObject> iter = getObjectList().iterator();
-		while (iter.hasNext()) {
-			SemanticObject obj = iter.next();
-			if (obj.getId().equals( id)) {
-				return obj; // matched, so return it
+		for (Relationship relation : getRelationships()) {
+			SemanticObject target = relation.getTarget();
+			if (target.getId().equals(id)) {
+				return target; // matched, so return it
 			}
 		}
 		// nothing matched
 		return null;
 	}
-
-	public SemanticObject getObject(URN urn) {
-		Iterator<SemanticObject> iter = getObjectList().iterator();
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObject(net.datamodel.soml.URN)
+	 */
+	public SemanticObject getRelatedSemanticObject(URN urn) {
+		/*
+		Iterator<SemanticObject> iter = getRelationships().iterator();
 		while (iter.hasNext()) {
 			SemanticObject obj = iter.next();
 			if (obj.getURN().equals(urn)) {
@@ -221,6 +180,8 @@ implements SemanticObject {
 			}
 		}
 		// nothing matched
+		 
+		 */
 		return null;
 	}
 
@@ -228,31 +189,13 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getObjectList()
 	 */
-    public List<SemanticObject> getObjectList (  ) {
-// TODO!
-        return (List) null; //((XMLSerialializedObjectListImpl) ((XMLSerializableField) 
-        		//getFields().get(MEMBER_XML_FIELD_NAME)).getValue()).getObjectList();
+	public List<Relationship> getRelationships() {
+        return ((List<Relationship>) ((XMLSerializableField) 
+        		getFields().get(RELATIONSHIP_XML_FIELD_NAME)).getValue()); //.getObjectList();
     }
 
     // Operations
-
-    /** Determine equivalence between objects (quantities). Equivalence is the same
-	  * as 'equals' but without checking that the id fields between both
-	  * objects are the same.
-	  * @@Overrides
-	  */
-	public boolean equivalent ( Object obj )
-	{
-	
-	    if (obj instanceof SemanticObject )
-	    {
-	        if (
-	              this.getObjectList().equals(((SemanticObject)obj).getObjectList()) // FIXME : need to iterate over members 
-	           )
-	        return true;
-	    }
-	    return false;
-	}
+    //
 
 	/** Set the URN, representing the semantic meaning, of this object.
 	 * 
@@ -278,9 +221,9 @@ implements SemanticObject {
     throws IOException
     {
 
-         // we need to check to see if we are referencing some other Q.
+         // we need to check to see if we are referencing some other SO.
          // IF so, then we WONT print out normally, rather, we will print
-         // ourselves out as a referenceQuantity node.
+         // ourselves out as a reference node.
          String id = getId();
          if(id != null && !id.equals("") && idTable != null)
          {
@@ -301,10 +244,10 @@ implements SemanticObject {
 
                    return true;
 
-                } else { // reassign the id of this quantity
+                } else { // reassign the id of this semantic object
                    setId(findUniqueIdName(idTable,id));
                    idTable.put(getId(), this);
-                   logger.warn("Reassigning quantity qid from:"+id+" to "+getId()+" to avoid collision of ids");
+                   logger.warn("Reassigning semantic id soid from:"+id+" to "+getId()+" to avoid collision of ids");
                 }
 
              }
@@ -323,42 +266,39 @@ implements SemanticObject {
        resetFields();
 
        setXMLNodeName("semanticObject");
-
-       nrofMembers = 0;
        
        // now initialize XML fields
        // order matters! these are in *reverse* order of their
        // occurence in the schema/DTD
-       getFieldOrder().add(0, MEMBER_XML_FIELD_NAME);
-//       fieldOrder.add(0, IMMUTABLE_XML_FIELD_NAME);
-       getFieldOrder().add(0, ID_XML_FIELD_NAME);
-       getFieldOrder().add(0, URN_XML_FIELD_NAME);
-
-       getFields().put(URN_XML_FIELD_NAME, new XMLSerializableFieldImpl("obj:"+this.hashCode(), XMLFieldType.ATTRIBUTE));
-       getFields().put(ID_XML_FIELD_NAME, new XMLSerializableFieldImpl("", XMLFieldType.ATTRIBUTE ));
-//       getFields().put(IMMUTABLE_XML_FIELD_NAME, new XMLSerializableFieldImpl(new Boolean(false), XMLFieldType.ATTRIBUTE));
-       getFields().put(MEMBER_XML_FIELD_NAME, new XMLSerializableFieldImpl(new MemberList(), XMLFieldType.CHILD));
+       addField(URN_XML_FIELD_NAME, "urn:unknown", XMLFieldType.ATTRIBUTE);
+       addField(ID_XML_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
+       addField(RELATIONSHIP_XML_FIELD_NAME, new Vector<Relationship>(), XMLFieldType.CHILD);
        
     }
-
 
     // find unique id name within a idtable of objects
     protected String findUniqueIdName( Hashtable idTable, String baseIdName)
     {
-
-       StringBuffer testName = new StringBuffer(baseIdName);
-
+       StringBuilder testName = new StringBuilder (baseIdName);
        while (idTable.containsKey(testName.toString())) {
-           testName.append("0"); // isnt there something better to append here??
+           testName.append("0"); // isn't there something better to append here??
        }
-
        return testName.toString();
-
     }
     
-    // our memberlist is simple strait XMLSerializableObjectList, so no mods
-    // (for now!)
-    class MemberList extends AbstractXMLSerializableObjectList { }
+    /** This class will hold all relationships between our object and other SO's
+     */
+    class RelationList<RelationshipImpl> 
+    extends AbstractXMLSerializableObjectList
+    { 
+    	// simply change the node name to "relationship"
+    	RelationList() { 
+    		super("RelationList");
+    		this.setSerializeWhenEmpty(false);
+    	}
+    	
+    }
 
+    
 }
 

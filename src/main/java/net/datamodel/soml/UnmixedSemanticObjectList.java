@@ -11,7 +11,7 @@ import net.datamodel.xssp.XMLSerializableObjectList;
  * @author thomas
  *
  */
-public interface UnmixedList<T extends SemanticObject> 
+public interface UnmixedSemanticObjectList<T extends SemanticObject> 
 extends XMLSerializableObjectList<T> 
 {
 

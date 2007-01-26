@@ -1,9 +1,14 @@
 
 package net.datamodel.soml;
 
-/** A URN is a Uniform Resource Name. It is a sub-type of URI, which is 
- * both opaque and absolute in format, and which names resources but do
- * not specify how to locate them. 
+/** 
+  A URN is a Uniform Resource Name. It is a sub-type of URI, which is 
+  both opaque and absolute in format, and which names resources but do
+  not specify how to locate them. 
+ </p><p>
+  We use the URN in this package to identify semantic meaning. This is done by
+  using the URN as a short, unique identifier for a particular structure
+  (class or relationship) in an Ontology (identified elsewhere).
  </p><p>
    At the highest level a URN in string form has the syntax
   <pre>
@@ -22,17 +27,18 @@ package net.datamodel.soml;
   Note that it is not necessary for the scheme to be 'urn' for the URI to
   be a valid URN.
   </p>
-  
+ <p> 
   <b>Warning:</b> this simple class assumes that all Strings conform to the US-ASCII set of
   characters. It is encapable of handling decoding of octets and other 
   subtities.
+ </p> 
   
   @author thomas
  */
 public interface URN {
 	
 	/** Get the Scheme of this URN.
-     * The scheme component of a URI, if defined, only contains characters in the 
+     * The scheme component of a URN, if defined, only contains characters in the 
      * alphanum category and in the string "-.+". 
      * 
      * A scheme always starts with an alpha character. 
@@ -46,8 +52,8 @@ public interface URN {
       */
 	public String getSchemeSpecificPart();
 	
-	/** Returns the fragment component of this URI. 
-	 * @return: The fragment component of this URI, or null if the fragment is undefined
+	/** Returns the fragment component of this URN. 
+	 * @return: The fragment component of this URN, or null if the fragment is undefined
 	 */
 	public String getFragment();
 	
