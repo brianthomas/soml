@@ -108,13 +108,29 @@ implements SemanticObject {
 	throws IllegalArgumentException, NullPointerException 
     {
 
-       // check if the RELATIONSHIP already exists
-       if (null != getRelatedSemanticObject(relationURN))
-       {
-    	   throw new IllegalArgumentException("addRelationship: a relationship already exists with relationship URN:"+relationURN.toString());
-       }
-
-       return getRelationships().add(new RelationshipImpl(relationURN, relatedObj));
+		// check if the RELATIONSHIP already exists
+		// and that we are passed a non-null object to relate to.
+		if (null != getRelatedSemanticObject(relationURN) || null == relatedObj)
+		{
+			throw new IllegalArgumentException("addRelationship: a relationship already exists with relationship URN:"+relationURN.toString());
+		}
+  
+		// now we add this to both Semantic objects
+		boolean add_success =  getRelationships().add(new RelationshipImpl(relationURN, relatedObj));
+ 
+		if (add_success) {
+ 
+			try {
+		//		add_success = relatedObj.addRelationship(this, relationURN);
+				add_success = relatedObj.getRelationships().add(new RelationshipImpl(relationURN, this)); 
+			} catch (IllegalArgumentException e) {
+				// swallow the exception..we already checked if Kosher above using
+				// this object. We also need to prevent infinite recursion.
+				// dont change the 'add_success' status.
+			}
+			
+		}
+		return add_success;
     }
 
     /*
@@ -153,8 +169,11 @@ implements SemanticObject {
 	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObject(net.datamodel.soml.URN)
 	 */
 	public SemanticObject getRelatedSemanticObject (URN relationshipURN) {
+		
+		logger.debug("getRelatedSO called by "+this);
 		for (Relationship rel: getRelationships()) {
-			if (rel.getURN().equals(relationshipURN)) {
+			logger.debug("  got relationship ("+rel.getURN()+") "+rel);
+			if (null != rel && rel.getURN().equals(relationshipURN)) {
 				return rel.getTarget(); // matched, so return it
 			}
 		}

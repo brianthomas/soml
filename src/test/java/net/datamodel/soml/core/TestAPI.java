@@ -2,8 +2,8 @@
 package net.datamodel.soml.core;
 
 import net.datamodel.soml.BaseCase;
+import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.URN;
 import net.datamodel.soml.UnmixedSemanticObjectList;
 
 import org.apache.log4j.Logger;
@@ -44,13 +44,21 @@ public class TestAPI extends BaseCase
 		SemanticObject so2 = new SemanticObjectImpl(urn2);
 		so.addRelationship(so2, rel_urn);
 		
+		for (Relationship rel : so.getRelationships()) {
+			logger.debug(" SO1 has relationship:"+rel);
+		}
+		
+		// check we have 1 relationship in both objects now
+		assertTrue("SO1 has the correct number of relationships",so.getRelationships().size() == 1);
+		assertTrue("SO2 has the correct number of relationships",so2.getRelationships().size() == 1);
+		
 		logger.debug("SemanticObject1: "+so); 
 		logger.debug("RelationshipURN: "+rel_urn); 
 		logger.debug("SemanticObject2: "+so2); 
 		
 		
 		SemanticObject check = so.getRelatedSemanticObject(rel_urn);
-	//	logger.error ("Object:"+so2+" check obj:"+check);
+		logger.debug("Object:"+so2+" check obj:"+check);
 		
 		assertTrue("proper object returned from relationship",check == so2);
 	
