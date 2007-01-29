@@ -147,41 +147,18 @@ implements SemanticObject {
 		}
 	}
 
-	/** Retrieve a RELATIONSHIP by its unique id.
-     * 
-     * @param id
-     * @deprecated
-     * @return
-     */
-	public SemanticObject getRelatedSemanticObject(String id) 
-	{
-		
-		for (Relationship relation : getRelationships()) {
-			SemanticObject target = relation.getTarget();
-			if (target.getId().equals(id)) {
-				return target; // matched, so return it
-			}
-		}
-		// nothing matched
-		return null;
-	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObject(net.datamodel.soml.URN)
 	 */
-	public SemanticObject getRelatedSemanticObject(URN urn) {
-		/*
-		Iterator<SemanticObject> iter = getRelationships().iterator();
-		while (iter.hasNext()) {
-			SemanticObject obj = iter.next();
-			if (obj.getURN().equals(urn)) {
-				return obj; // matched, so return it
+	public SemanticObject getRelatedSemanticObject (URN relationshipURN) {
+		for (Relationship rel: getRelationships()) {
+			if (rel.getURN().equals(relationshipURN)) {
+				return rel.getTarget(); // matched, so return it
 			}
 		}
 		// nothing matched
-		 
-		 */
 		return null;
 	}
 
@@ -191,7 +168,7 @@ implements SemanticObject {
 	 */
 	public List<Relationship> getRelationships() {
         return ((List<Relationship>) ((XMLSerializableField) 
-        		getFields().get(RELATIONSHIP_XML_FIELD_NAME)).getValue()); //.getObjectList();
+        		getFields().get(RELATIONSHIP_XML_FIELD_NAME)).getValue());
     }
 
     // Operations

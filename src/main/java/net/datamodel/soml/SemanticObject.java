@@ -83,7 +83,7 @@ extends XMLSerializableObject
      */
     public boolean removeRelationship (URN relationship);
     
-    /** Retrieve a semantic object in relationship to the caller by
+    /** Retrieve the semantic object in relationship to the caller by
      * the value of the relationship URN.
      * 
      * @param URN which represents the relationship between the parent and the member 

@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package net.datamodel.soml.core;
 
 import net.datamodel.soml.BaseCase;
@@ -11,10 +9,13 @@ import net.datamodel.soml.UnmixedSemanticObjectList;
 import org.apache.log4j.Logger;
 
 /**
+ * Test suite for SemanticObject API. 
+ * 
  * @author thomas
  *
  */
-public class TestAPI extends BaseCase {
+public class TestAPI extends BaseCase 
+{
 
 	private static final Logger logger = Logger.getLogger(TestAPI.class);
 
@@ -35,15 +36,29 @@ public class TestAPI extends BaseCase {
 	// test SO methods.
 	//
 	public void test2() {
-		logger.info("Check inhertance of so methods working right.");
+		logger.info("Check so methods working right.");
 		
 		SemanticObject so = new SemanticObjectImpl(urn1);
 		
+		// test addRelationship
 		SemanticObject so2 = new SemanticObjectImpl(urn2);
 		so.addRelationship(so2, rel_urn);
 		
+		logger.debug("SemanticObject1: "+so); 
+		logger.debug("RelationshipURN: "+rel_urn); 
+		logger.debug("SemanticObject2: "+so2); 
+		
+		
 		SemanticObject check = so.getRelatedSemanticObject(rel_urn);
+	//	logger.error ("Object:"+so2+" check obj:"+check);
+		
 		assertTrue("proper object returned from relationship",check == so2);
+	
+		// getRelationships 
+		// removeRelationship
+		// ??
+		
+		// test a BAD addRelationship (catch error) 
 		
 	}
 	
