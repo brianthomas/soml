@@ -10,8 +10,9 @@ import net.datamodel.xssp.core.AbstractXMLSerializableObject;
 
 import org.apache.log4j.Logger;
 
-/** This class records a single (uni-directional) relationship between the SO and
- * another SO.
+/** This class records a single (uni-directional) relationship between the 
+ * owning SemanticObject (SO) and the "target" SO. The relationship has its
+ * own separate URN to semantically identify it.
  * 
  * @author thomas
  *
