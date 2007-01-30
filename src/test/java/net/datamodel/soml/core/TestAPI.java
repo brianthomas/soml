@@ -68,8 +68,8 @@ public class TestAPI extends BaseCase
 		// check that the 1 object is the one we expect
 		List<SemanticObject> check1 = so.getRelatedSemanticObjects(rel_urn);
 		List<SemanticObject> check2 = so2.getRelatedSemanticObjects(rel_urn2);
-		this.assertEquals("Object 1: number of objs in relationship:"+rel_urn+" is correct", 2, check1.size()); 
-		this.assertEquals("Object 2: number of objs in relationship:"+rel_urn2+" is correct", 1, check2.size()); 
+		this.assertEquals("Object 1: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 2, check1.size()); 
+		this.assertEquals("Object 2: number of objs in relationship:"+rel_urn2.toAsciiString()+" is correct", 1, check2.size()); 
 		
 		assertTrue("proper object returned from relationship (obj1->obj3, rel_urn)",check1.get(1) == so3);
 		assertTrue("proper object returned from relationship (obj2->obj3, rel_urn2)",check2.get(0) == so3);
@@ -78,17 +78,36 @@ public class TestAPI extends BaseCase
 		// which points to  the expected object
 		SemanticObject check3 = ((Relationship) so2.getRelationships().get(0)).getTarget();
 		SemanticObject check4 = ((Relationship) so.getRelationships().get(0)).getTarget();
-		assertTrue("getRelationships returns relationship pointing to right obj",
-				check4 == so2);
-		assertTrue("getRelationships returns relationship pointing to right obj",
-				check3 == so);
+		assertTrue("getRelationships returns relationship pointing to right obj", check4 == so2);
+		assertTrue("getRelationships returns relationship pointing to right obj", check3 == so);
 		
-		// removeRelationship. 
+		// RemoveRelationship(urn, target) tests
+		assertTrue("can remove specific relationships with given URN, target", so.removeRelationship(rel_urn, so2)); 
+		this.assertEquals("After removal Object 1: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 1, so.getRelationships(rel_urn).size()); 
+		// but the objects pointed to still have their relationships, even if
+		// the urn of the relationship is the same.
+		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 1, so2.getRelationships(rel_urn).size()); 
+		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 1, so3.getRelationships(rel_urn).size()); 
 		
+		// removeAllRelationships tests. 
+		assertTrue("can remove all relationships with given URN", so.removeAllRelationships(rel_urn)); 
+		this.assertEquals("After removal Object 1: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 0, so.getRelationships(rel_urn).size()); 
+		// but the objects pointed to still have their relationships, even if
+		// the urn of the relationship is the same.
+		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 1, so2.getRelationships(rel_urn).size()); 
+		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 1, so3.getRelationships(rel_urn).size()); 
 		
 		// test a BAD addRelationship (catch error) 
+		try {
+				so.addRelationship(so4, rel_urn3); 
+				fail ("Can't add already added rel-SO should throw error.");
+		} catch (IllegalArgumentException e) {
+			assertTrue("Throws error correctly for bad addRelationship", true);
+		}
 		
 		// test a BAD removeRelationship (catch error) 
+		assertTrue("Should fail to remove rel_urn2 from Obj1",!so.removeAllRelationships(rel_urn2));
+		assertTrue("Should fail to remove rel_urn from Obj1 for Obj2 (already removed)",!so.removeRelationship(rel_urn, so2));
 		
 	}
 	

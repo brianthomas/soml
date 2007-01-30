@@ -146,12 +146,35 @@ implements SemanticObject {
     }
 
     /*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#removeRelationship(net.datamodel.soml.URN, net.datamodel.soml.SemanticObject)
+	 */
+	public boolean removeRelationship(URN urn, SemanticObject target) {
+		List<Relationship> removeList = getRelationships();
+		for (Relationship test : removeList) {
+			if (test.getTarget() == target) {
+				return getRelationships().remove(test); // there should only be one, so return now  
+			}
+		}
+		return false;
+	}
+
+	/*
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URN)
 	 */
-	public boolean removeRelationship(URN urn) {
-		Relationship target = getRelationship(urn);
-		return getRelationships().remove(target);
+	public boolean removeAllRelationships (URN urn) {
+		boolean success = true;
+		List<Relationship> testList = getRelationships(urn);
+		if (testList.size() > 0) {
+			for (Relationship target : testList)
+			{
+				if (!getRelationships().remove(target))
+					success = false;
+			}
+		} else 
+			success = false; // there are no relationships!! 
+		return success;
 	}
 
     /*
@@ -187,14 +210,16 @@ implements SemanticObject {
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getRelationship(net.datamodel.soml.URN)
+	 * @see net.datamodel.soml.SemanticObject#getRelationships(net.datamodel.soml.URN)
 	 */
-	public Relationship getRelationship(URN urn) {
+	public List<Relationship> getRelationships (URN urn) 
+	{
+		List<Relationship> found = new Vector<Relationship>();
 		for (Relationship rel : getRelationships()) {
 			if (rel.getURN().equals(urn))
-				return rel;
+				found.add(rel);
 		}
-		return null; // nothing matched 
+		return found; 
 	}
 
 	/*
