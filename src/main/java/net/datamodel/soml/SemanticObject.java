@@ -52,7 +52,11 @@ extends XMLSerializableObject
     // Operations
 	
    /**
-     * Add another SemanticObject to the List of related objects related to the caller.
+     * Add a (bi-directional) relationship between 2 SemanticObjects (the caller 
+     * and the target). After this is successfully called, <i>each</i> SO will show 
+     * the other SO in its list of related objects (e.g. a call to 
+     * getRelatedSemanticObject(URN) will uncover the other SO in each SO). A 
+     * relationship may only exist between 2 SOs.
      * 
      * The only restriction on the relationship between the SemanticObjects is that
      * all <i>relationship</i> URN values must be unique. The relationship URN used 

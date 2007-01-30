@@ -87,7 +87,7 @@ implements SemanticObject {
     /**
      * The id of an instance of this class. It should be unique across all components and quantities within a given document/object tree.
      */
-    public String getId (  ) {
+    public String getId () {
         // return (String) ((XMLSerializableField) getFields().get(ID_XML_FIELD_NAME)).getValue();
         return (String) ((XMLSerializableField) getFields().get(ID_XML_FIELD_NAME)).getValue();
     }
@@ -108,28 +108,41 @@ implements SemanticObject {
 	throws IllegalArgumentException, NullPointerException 
     {
 
-		// check if the RELATIONSHIP already exists
-		// and that we are passed a non-null object to relate to.
-		if (null != getRelatedSemanticObject(relationURN) || null == relatedObj)
+		// check if we have a non-null object to relate to.
+		if (null == relatedObj)
 		{
-			throw new IllegalArgumentException("addRelationship: a relationship already exists with relationship URN:"+relationURN.toString());
+			throw new NullPointerException("addRelationship: passed null object.");
 		}
-  
-		// now we add this to both Semantic objects
+		
+		// check if the RELATIONSHIP already exists in this object
+		if (null != getRelatedSemanticObject(relationURN))
+		{
+			throw new IllegalArgumentException("addRelationship: a relationship already exists with relationship URN:"+relationURN.toAsciiString());
+		}
+		
+		// check if the RELATIONSHIP already exists in related object
+		if (null != relatedObj.getRelatedSemanticObject(relationURN))
+		{
+			throw new IllegalArgumentException("addRelationship: a the requested relationship: "+
+					relationURN.toAsciiString()+" already exists in the related object:"+relatedObj);
+		}
+		    
+		// now we add this to BOTH Semantic objects
+		// (each relationship object is uni-directional, so we need 2)
 		boolean add_success =  getRelationships().add(new RelationshipImpl(relationURN, relatedObj));
- 
-		if (add_success) {
- 
-			try {
-		//		add_success = relatedObj.addRelationship(this, relationURN);
-				add_success = relatedObj.getRelationships().add(new RelationshipImpl(relationURN, this)); 
-			} catch (IllegalArgumentException e) {
-				// swallow the exception..we already checked if Kosher above using
-				// this object. We also need to prevent infinite recursion.
-				// dont change the 'add_success' status.
-			}
-			
+		if (add_success) 
+		{
+			add_success = relatedObj.getRelationships().add(new RelationshipImpl(relationURN, this)); 
 		}
+		
+		// if we fail for any reason, try to remove the relationship
+		// from BOTH objects.
+		if (!add_success)
+		{
+			removeRelationship(relationURN); 
+			relatedObj.removeRelationship(relationURN); 
+		}
+			
 		return add_success;
     }
 
