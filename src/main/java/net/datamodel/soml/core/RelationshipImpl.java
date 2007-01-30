@@ -29,14 +29,14 @@ implements Relationship
    	 * (non-public) access only. 
    	 * 
    	 * @param relationURN
-   	 * @param so
+   	 * @param target the 'target SemanticObject'
    	 */
-   	RelationshipImpl (URN relationURN, SemanticObject so) { 
+   	RelationshipImpl (URN relationURN, SemanticObject target) { 
    		super("relationship");
    		this.setSerializeWhenEmpty(false);
    		addField(URN_XML_FIELD_NAME, relationURN, XMLFieldType.ATTRIBUTE);
-   		addField(TARGET_XML_FIELD_NAME, so, XMLFieldType.CHILD);
-   		logger.debug("Create new Relationship:"+relationURN+" : "+so);
+   		addField(TARGET_XML_FIELD_NAME, target, XMLFieldType.CHILD);
+   		logger.debug("Create new Relationship:"+relationURN+" : "+target);
    	}
    	
    	/*

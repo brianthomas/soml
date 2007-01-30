@@ -116,11 +116,15 @@ implements SemanticObject {
 		
 		// check if the relationship selected already exists in the calling object
 		// with the target
-		SemanticObject test = getRelatedSemanticObject(relationURN);
-		if (null != test && test == target)
+		List<SemanticObject> soList = getRelatedSemanticObjects(relationURN);
+		if (soList.size() > 0)
 		{
-			throw new IllegalArgumentException("addRelationship: a relationship already exists with passed SO:"+
-					target+" in relationship URN:"+relationURN.toAsciiString());
+			for (SemanticObject test : soList)
+			{
+				if (test == target)
+					throw new IllegalArgumentException("addRelationship: a relationship already exists with passed SO:"+
+							target+" in relationship URN:"+relationURN.toAsciiString());
+			}
 		}
 		
 		// now we add the relationship and return success 
@@ -132,18 +136,10 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URN)
 	 */
-	public boolean removeRelationship(URN relationship) {
-		SemanticObject RELATIONSHIP = getRelatedSemanticObject(relationship);
-		return removeRelationship(RELATIONSHIP);
+	public boolean removeRelationship(URN urn) {
+		Relationship target = getRelationship(urn);
+		return getRelationships().remove(target);
 	}
-
-	/*
-     *  (non-Javadoc)
-     * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(net.datamodel.qml.SemanticObject)
-     */ 
-    public boolean removeRelationship ( SemanticObject value  ) {
-       return getRelationships().remove(value);
-    }
 
     /*
 	 *  (non-Javadoc)
@@ -161,24 +157,22 @@ implements SemanticObject {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObject(net.datamodel.soml.URN)
+	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObjects(net.datamodel.soml.URN)
 	 */
-	public SemanticObject getRelatedSemanticObject (URN relationshipURN) {
+	public List<SemanticObject> getRelatedSemanticObjects (URN relationshipURN) {
 		
-		logger.debug("getRelatedSO called by "+this);
+		List<SemanticObject> found = new Vector<SemanticObject>();
 		for (Relationship rel: getRelationships()) {
-			logger.debug("  got relationship ("+rel.getURN()+") "+rel);
 			if (null != rel && rel.getURN().equals(relationshipURN)) {
-				return rel.getTarget(); // matched, so return it
+				found.add(rel.getTarget()); // matched, so add it to found list
 			}
 		}
-		// nothing matched
-		return null;
+		return found;
 	}
 
 	/*
 	 *  (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getObjectList()
+	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
 	public List<Relationship> getRelationships() {
         return ((List<Relationship>) ((XMLSerializableField) 
@@ -289,7 +283,18 @@ implements SemanticObject {
     	}
     	
     }
-
+    
+    /*
+     * (non-Javadoc)
+     * @see net.datamodel.soml.SemanticObject#getRelationship(net.datamodel.soml.URN)
+     */
+	public Relationship getRelationship(URN urn) {
+		for (Relationship rel : getRelationships()) {
+			if (rel.getURN().equals(urn))
+				return rel;
+		}
+		return null; // nothing matched 
+	}
     
 }
 

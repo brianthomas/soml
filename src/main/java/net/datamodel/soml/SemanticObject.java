@@ -76,14 +76,6 @@ extends XMLSerializableObject
      public boolean addRelationship (SemanticObject target, URN relationship) 
      throws IllegalArgumentException, NullPointerException;
      
-    /** Remove a relationship by reference to the object which 
-     * is in the relationship with the one the method is called on.
-     * 
-     * @param object
-     * @return true if the relationship was removed. 
-     */ 
-    public boolean removeRelationship (SemanticObject object);
-    
     /** Remove the given relationship as identified by the URN.
      * 
      * @param relationship
@@ -95,9 +87,9 @@ extends XMLSerializableObject
      * the value of the relationship URN.
      * 
      * @param URN which represents the relationship between the parent and the member 
-     * @return
+     * @return List of SemanticObjects which are in the given relationship to the caller.
      */
-    public SemanticObject getRelatedSemanticObject (URN relationship);
+    public List<SemanticObject> getRelatedSemanticObjects (URN relationship);
     
     /** Get the list of SemanticObjects which are in relationship to the calling
      * SemanticObject.
@@ -105,7 +97,7 @@ extends XMLSerializableObject
      * @return
      */ 
     public List<Relationship> getRelationships ( );
-
+    
     /**
      * Get the id of an instance of this class. It should be unique across all
      * objects within a given document/object tree.
