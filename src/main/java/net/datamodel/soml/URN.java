@@ -57,4 +57,9 @@ public interface URN {
 	 */
 	public String getFragment();
 	
+	/** Returns an ASCII string representation of the URN.
+	 * 
+	 */
+	public String toAsciiString();
+	
 }

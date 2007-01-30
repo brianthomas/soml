@@ -56,7 +56,7 @@ public class URNImpl implements URN
 			throw new URISyntaxException (stringRep, "Cant parse string");
 		}
 		
-		logger.debug ("Constructor Got URN of:"+this.toString());
+		logger.debug ("Constructor Got URN of:"+this.toAsciiString());
 	}
 	
 	/** Constructor with separate fields for each field in the URN.
@@ -87,11 +87,14 @@ public class URNImpl implements URN
 		this.scheme = scheme;
 		this.ssp = ssp;
 		this.fragment = fragment;
-		logger.debug ("Constructor Got URN of:"+toString());
+		logger.debug ("Constructor Got URN of:"+toAsciiString());
 	}
 	
-	@Override
-	public String toString () {
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toAsciiString()
+	 */
+	public String toAsciiString () {
 		
 		StringBuilder str = new StringBuilder();
 		if (null != scheme) {
@@ -134,7 +137,7 @@ public class URNImpl implements URN
 	public boolean equals (Object obj) {
 		if (obj instanceof URNImpl) {
 			URNImpl test = (URNImpl) obj;
-			if (obj.toString().equals(toString())) {
+			if (test.toAsciiString().equals(toAsciiString())) {
 				return true;
 			}
 		}
@@ -148,7 +151,7 @@ public class URNImpl implements URN
 		// this will produce some errors!!
 		if (hashCode == 0) {
 			int code = 5345;
-			hashCode = code + toString().hashCode();
+			hashCode = code + toAsciiString().hashCode();
 		}
 		return hashCode;
 	}
