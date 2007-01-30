@@ -52,24 +52,28 @@ extends XMLSerializableObject
     // Operations
 	
    /**
-     * Add a (bi-directional) relationship between 2 SemanticObjects (the caller 
-     * and the target). After this is successfully called, <i>each</i> SO will show 
-     * the other SO in its list of related objects (e.g. a call to 
-     * getRelatedSemanticObject(URN) will uncover the other SO in each SO). A 
-     * relationship may only exist between 2 SOs.
+     * Add a (uni-directional) relationship between 2 SemanticObjects (SO). 
+     * The caller is considered to 'own' the relationship which 'points to' 
+     * the target SO. After this is successfully called, <i>only the calling</i> 
+     * SO will show the other SO in its list of related objects. 
      * 
-     * The only restriction on the relationship between the SemanticObjects is that
-     * all <i>relationship</i> URN values must be unique. The relationship URN used 
-     * indicates the <i>relationship</i>  between the calling object and the target, 
-     * not the <i>semantic value</i> of the target object itself (which has its own,
-     * separate URN value).
+     * The following restrictions exist on relationships between SOs:
+     * <ul> 
+     *    Only <i>one</i> relationship may exist between 2 SOs for a given relationship URN. <br/> 
+     *    A SO may not be in relationship with itself.
+     * </ul>
+     *  Note that the relationship URN used identifies only the <i>relationship</i>
+     *  between the calling object and the target, not the <i>semantic identity</i> 
+     *  of the target object itself (which should have its own, separate URN value).
      * 
-     * @throws IllegalArgumentException if adding self, or an object already exists with 
+     * @throws IllegalArgumentException if adding self, or the same object already exists with 
      *         the same (relationship) URN.
      * @throws NullPointerException if attempting to adding an null (!!)
+     * @param target object to set up the relationship to.
+     * @param relationship the URN of the relationship to establish.
      * @return boolean value of whether addition was successfull or not.
      */
-     public boolean addRelationship (SemanticObject object, URN relationship) 
+     public boolean addRelationship (SemanticObject target, URN relationship) 
      throws IllegalArgumentException, NullPointerException;
      
     /** Remove a relationship by reference to the object which 

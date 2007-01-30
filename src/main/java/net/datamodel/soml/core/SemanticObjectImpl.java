@@ -104,46 +104,28 @@ implements SemanticObject {
      *  (non-Javadoc)
      * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URN)
      */ 
-	public boolean addRelationship(SemanticObject relatedObj, URN relationURN) 
+	public boolean addRelationship (SemanticObject target, URN relationURN) 
 	throws IllegalArgumentException, NullPointerException 
     {
 
 		// check if we have a non-null object to relate to.
-		if (null == relatedObj)
+		if (null == target)
 		{
 			throw new NullPointerException("addRelationship: passed null object.");
 		}
 		
-		// check if the RELATIONSHIP already exists in this object
-		if (null != getRelatedSemanticObject(relationURN))
+		// check if the relationship selected already exists in the calling object
+		// with the target
+		SemanticObject test = getRelatedSemanticObject(relationURN);
+		if (null != test && test == target)
 		{
-			throw new IllegalArgumentException("addRelationship: a relationship already exists with relationship URN:"+relationURN.toAsciiString());
+			throw new IllegalArgumentException("addRelationship: a relationship already exists with passed SO:"+
+					target+" in relationship URN:"+relationURN.toAsciiString());
 		}
 		
-		// check if the RELATIONSHIP already exists in related object
-		if (null != relatedObj.getRelatedSemanticObject(relationURN))
-		{
-			throw new IllegalArgumentException("addRelationship: a the requested relationship: "+
-					relationURN.toAsciiString()+" already exists in the related object:"+relatedObj);
-		}
-		    
-		// now we add this to BOTH Semantic objects
-		// (each relationship object is uni-directional, so we need 2)
-		boolean add_success =  getRelationships().add(new RelationshipImpl(relationURN, relatedObj));
-		if (add_success) 
-		{
-			add_success = relatedObj.getRelationships().add(new RelationshipImpl(relationURN, this)); 
-		}
+		// now we add the relationship and return success 
+		return getRelationships().add(new RelationshipImpl(relationURN, target));
 		
-		// if we fail for any reason, try to remove the relationship
-		// from BOTH objects.
-		if (!add_success)
-		{
-			removeRelationship(relationURN); 
-			relatedObj.removeRelationship(relationURN); 
-		}
-			
-		return add_success;
     }
 
     /*
