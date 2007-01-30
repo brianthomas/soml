@@ -150,7 +150,6 @@ public class TestAPI extends BaseCase
 		soList2.add(0, so4);
 		soList2.add(so4);
 		assertTrue("Can NOT append non-kosher object to list", !soList2.add(so5));
-//		assertTrue("Can NOT insert non-kosher object to list", !soList2.add(0, so2));
 		assertTrue("List2 has right number of objects", soList2.size() == 2); 
 		
 		soList3.add(so5); 
