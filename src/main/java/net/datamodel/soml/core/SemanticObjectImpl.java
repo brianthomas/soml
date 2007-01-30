@@ -61,7 +61,7 @@ implements SemanticObject {
 	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
 
     // Fields
-	private static final String RELATIONSHIP_XML_FIELD_NAME = "RELATIONSHIP";
+	private static final String RELATIONSHIP_XML_FIELD_NAME = "relationship";
     private static final String ID_XML_FIELD_NAME = "soid";
     private static final String URN_XML_FIELD_NAME = "urn";
     
