@@ -35,8 +35,8 @@ public class BaseCase  extends TestCase {
 			urn3 = new URNImpl("urn:SemanticObject3");
 			urn4 = new URNImpl("urn:SemanticObject4");
 			rel_urn = new URNImpl("urn:rel1");
-			rel_urn = new URNImpl("urn:rel2");
-			rel_urn = new URNImpl("urn:rel3");
+			rel_urn2 = new URNImpl("urn:rel2");
+			rel_urn3 = new URNImpl("urn:rel3");
 		} catch (Exception e) {
 			fail ("Test Setup Error:"+e.getMessage());
 			throw e;

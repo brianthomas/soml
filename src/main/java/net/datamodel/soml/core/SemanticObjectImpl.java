@@ -75,12 +75,25 @@ implements SemanticObject {
 
     // Construct with a given URN.
     public SemanticObjectImpl ( URN URN ) { 
-       init();
+       this();
        setURN(URN);
     }
     
     // The no-argument Constructor
-    protected SemanticObjectImpl () { init(); }
+    protected SemanticObjectImpl () { 
+    	
+        resetFields();
+
+        setXMLNodeName("semanticObject");
+        
+        // now initialize XML fields
+        // order matters! these are in *reverse* order of their
+        // occurence in the schema/DTD
+        addField(URN_XML_FIELD_NAME, "urn:unknown", XMLFieldType.ATTRIBUTE);
+        addField(ID_XML_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
+        addField(RELATIONSHIP_XML_FIELD_NAME, new Vector<Relationship>(), XMLFieldType.CHILD);
+        
+    }
 
     // Accessor Methods
 
@@ -163,6 +176,8 @@ implements SemanticObject {
 		
 		List<SemanticObject> found = new Vector<SemanticObject>();
 		for (Relationship rel: getRelationships()) {
+			logger.debug("rel:" + rel); 
+			logger.debug("  urn :" + rel.getURN()); 
 			if (null != rel && rel.getURN().equals(relationshipURN)) {
 				found.add(rel.getTarget()); // matched, so add it to found list
 			}
@@ -171,12 +186,24 @@ implements SemanticObject {
 	}
 
 	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#getRelationship(net.datamodel.soml.URN)
+	 */
+	public Relationship getRelationship(URN urn) {
+		for (Relationship rel : getRelationships()) {
+			if (rel.getURN().equals(urn))
+				return rel;
+		}
+		return null; // nothing matched 
+	}
+
+	/*
 	 *  (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
 	public List<Relationship> getRelationships() {
-        return ((List<Relationship>) ((XMLSerializableField) 
-        		getFields().get(RELATIONSHIP_XML_FIELD_NAME)).getValue());
+        return (List<Relationship>) ((XMLSerializableField) 
+        		getFields().get(RELATIONSHIP_XML_FIELD_NAME)).getValue();
     }
 
     // Operations
@@ -242,25 +269,6 @@ implements SemanticObject {
          return super.basicXMLWriter(idTable, prefixTable, outputWriter, indent, newNodeNameString, indentFirstNode);
     }
 
-    /** A special protected method used by constructor methods to
-     *  conviently build the XML attribute list for a given class.
-     */
-    protected void init( )
-    {
-
-       resetFields();
-
-       setXMLNodeName("semanticObject");
-       
-       // now initialize XML fields
-       // order matters! these are in *reverse* order of their
-       // occurence in the schema/DTD
-       addField(URN_XML_FIELD_NAME, "urn:unknown", XMLFieldType.ATTRIBUTE);
-       addField(ID_XML_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
-       addField(RELATIONSHIP_XML_FIELD_NAME, new Vector<Relationship>(), XMLFieldType.CHILD);
-       
-    }
-
     // find unique id name within a idtable of objects
     protected String findUniqueIdName( Hashtable idTable, String baseIdName)
     {
@@ -283,18 +291,6 @@ implements SemanticObject {
     	}
     	
     }
-    
-    /*
-     * (non-Javadoc)
-     * @see net.datamodel.soml.SemanticObject#getRelationship(net.datamodel.soml.URN)
-     */
-	public Relationship getRelationship(URN urn) {
-		for (Relationship rel : getRelationships()) {
-			if (rel.getURN().equals(urn))
-				return rel;
-		}
-		return null; // nothing matched 
-	}
     
 }
 

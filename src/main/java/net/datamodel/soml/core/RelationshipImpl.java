@@ -36,7 +36,7 @@ implements Relationship
    		this.setSerializeWhenEmpty(false);
    		addField(URN_XML_FIELD_NAME, relationURN, XMLFieldType.ATTRIBUTE);
    		addField(TARGET_XML_FIELD_NAME, target, XMLFieldType.CHILD);
-   		logger.debug("Create new Relationship:"+relationURN+" : "+target);
+   		logger.debug("Create new Relationship:"+relationURN.toAsciiString()+" to target: "+target);
    	}
    	
    	/*
@@ -44,9 +44,7 @@ implements Relationship
    	 * @see net.datamodel.soml.Relationship#getTarget()
    	 */
 	public SemanticObject getTarget() {
-		logger.debug(" relationship.getTarget called on "+this);
 		XMLSerializableField soField = getFields().get(TARGET_XML_FIELD_NAME);
-		logger.debug (" object in SO field:"+ soField.getValue());
 		return (SemanticObject) soField.getValue();
 	}
 	

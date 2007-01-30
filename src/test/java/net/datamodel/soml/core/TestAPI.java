@@ -1,6 +1,8 @@
 
 package net.datamodel.soml.core;
 
+import java.util.List;
+
 import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
@@ -64,17 +66,20 @@ public class TestAPI extends BaseCase
 		assertTrue("SO4 has the correct number of relationships",so4.getRelationships().size() == 0);
 		
 		// check that the 1 object is the one we expect
-		SemanticObject check = so.getRelatedSemanticObject(rel_urn);
-		assertTrue("proper object returned from relationship",check == so2);
-		SemanticObject check1 = so2.getRelatedSemanticObject(rel_urn);
-		assertTrue("proper object returned from relationship",check1 == so);
+		List<SemanticObject> check1 = so.getRelatedSemanticObjects(rel_urn);
+		List<SemanticObject> check2 = so2.getRelatedSemanticObjects(rel_urn2);
+		this.assertEquals("Object 1: number of objs in relationship:"+rel_urn+" is correct", 2, check1.size()); 
+		this.assertEquals("Object 2: number of objs in relationship:"+rel_urn2+" is correct", 1, check2.size()); 
+		
+		assertTrue("proper object returned from relationship (obj1->obj3, rel_urn)",check1.get(1) == so3);
+		assertTrue("proper object returned from relationship (obj2->obj3, rel_urn2)",check2.get(0) == so3);
 	
 		// check that getRelationships for both objs returns a relationship 
 		// which points to  the expected object
-		SemanticObject check2 = ((Relationship) so.getRelationships().get(0)).getTarget();
 		SemanticObject check3 = ((Relationship) so2.getRelationships().get(0)).getTarget();
+		SemanticObject check4 = ((Relationship) so.getRelationships().get(0)).getTarget();
 		assertTrue("getRelationships returns relationship pointing to right obj",
-				check2 == so2);
+				check4 == so2);
 		assertTrue("getRelationships returns relationship pointing to right obj",
 				check3 == so);
 		
