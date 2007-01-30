@@ -123,7 +123,62 @@ public class TestAPI extends BaseCase
 	//
 	public void test4() {
 		logger.info("Check unmixed list methods.");
-		// test methods
+		
+		// first create some test objects...
+		UnmixedSemanticObjectList soList1 = new UnmixedSemanticObjectListImpl(urn1);
+		UnmixedSemanticObjectList soList2 = new UnmixedSemanticObjectListImpl(urn1);
+		UnmixedSemanticObjectList soList3 = new UnmixedSemanticObjectListImpl(urn2);
+		SemanticObject so1 = new SemanticObjectImpl(urn1);
+		SemanticObject so2 = new SemanticObjectImpl(urn1);
+		SemanticObject so3 = new SemanticObjectImpl(urn1);
+		SemanticObject so4 = new SemanticObjectImpl(urn1);
+		SemanticObject so5 = new SemanticObjectImpl(urn2);
+		SemanticObject so6 = new SemanticObjectImpl(urn2);
+		
+		// test various methods
+		// Note: we should only test those we override/implement in this package.
+		//
+		
+		// adding objects, checking sizes
+		assertTrue("Can append kosher object to list", soList1.add(so1));
+		// try to insert kosher object to list
+		soList1.add(0, so2);
+		assertTrue("List1 has right number of objects", soList1.size() == 2); 
+		
+		assertTrue("Can append kosher object to list", soList2.add(so3));
+		// try to insert kosher object to list
+		soList2.add(0, so4);
+		soList2.add(so4);
+		assertTrue("Can NOT append non-kosher object to list", !soList2.add(so5));
+//		assertTrue("Can NOT insert non-kosher object to list", !soList2.add(0, so2));
+		assertTrue("List2 has right number of objects", soList2.size() == 2); 
+		
+		soList3.add(so5); 
+		soList3.add(so6);
+		assertTrue("List3 has right number of objects", soList3.size() == 2); 
+		
+		/*
+		soList1.add(obj); 
+		soList1.add(index, element); 
+		soList1.addAll(collection);
+		soList1.clear();
+		soList1.clone();
+		soList1.contains(object);
+		soList1.containsAll(collection); 
+		soList1.equals(object);
+		soList1.findChildObjs();
+		soList1.getNamespaceURI();
+		soList1.getURN();
+		soList1.indexOf(object); 
+		soList1.isEmpty();
+		soList1.remove(index);
+		soList1.remove(object);
+		soList1.removeAll(collection);
+		soList1.retainAll(collection);
+		soList1.size();
+		soList1.subList(fromIndex, toIndex);
+		*/
+		
 	}
 	
 	// test inheritance of so/ul
