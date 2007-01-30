@@ -110,40 +110,27 @@ public class TestAPI extends BaseCase
 		assertTrue("Should fail to remove rel_urn from Obj1 for Obj2 (already removed)",!so.removeRelationship(rel_urn, so2));
 		
 	}
-	
-	// test SO serialization
+
+	// test URN methods
 	//
 	public void test3() {
-		logger.info("Check inhertance of so serialization (minimal).");
-
+		logger.info("Check URN methods.");
+		// test setting a number of different good URN patterns here
+		// test setting a number of BAD patterns here
 	}
 	
-	// test UL methods
+	// test UnmixedList methods
 	//
 	public void test4() {
-		logger.info("Check ui methods.");
-		
-		// test setting a number of different good URN patterns here
-		
-		// test setting a number of BAD patterns here
-		
-	}
-	
-	// test UL serialization
-	//
-	public void test5() {
-		logger.info("Check ul serialization.");
-		
+		logger.info("Check unmixed list methods.");
+		// test methods
 	}
 	
 	// test inheritance of so/ul
 	//
-	public void test6() {
+	public void test5() {
 		logger.info("Check inhertance of so/ul classes.");
-		
 		// test methods
-		// test serialization
-		
 	}
 	
 }
