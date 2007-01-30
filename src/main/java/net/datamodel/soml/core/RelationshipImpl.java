@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 class RelationshipImpl extends AbstractXMLSerializableObject
 implements Relationship
 {
-   	private static final String URN_XML_FIELD_NAME = "target";
+   	private static final String URN_XML_FIELD_NAME = "urn";
    	private static final String TARGET_XML_FIELD_NAME = "target";
     	
 	private static final Logger logger = Logger.getLogger(RelationshipImpl.class);
@@ -29,13 +29,14 @@ implements Relationship
    	 * (non-public) access only. 
    	 * 
    	 * @param relationURN
-   	 * @param o
+   	 * @param so
    	 */
-   	RelationshipImpl (URN relationURN, SemanticObject o) { 
+   	RelationshipImpl (URN relationURN, SemanticObject so) { 
    		super("relationship");
    		this.setSerializeWhenEmpty(false);
    		addField(URN_XML_FIELD_NAME, relationURN, XMLFieldType.ATTRIBUTE);
-   		addField(TARGET_XML_FIELD_NAME, o, XMLFieldType.CHILD);
+   		addField(TARGET_XML_FIELD_NAME, so, XMLFieldType.CHILD);
+   		logger.debug("Create new Relationship:"+relationURN+" : "+so);
    	}
    	
    	/*
