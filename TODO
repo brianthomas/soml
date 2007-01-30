@@ -1,0 +1,4 @@
+
+= Extend Reader/WRITER from XSSP for IO
+  this includes writing the needed SAX element handlers for IO.
+  
