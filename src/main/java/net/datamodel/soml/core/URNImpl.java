@@ -111,6 +111,11 @@ public class URNImpl implements URN
 		
 		return str.toString();
 	}
+	
+	@Override
+	public String toString() {
+		return toAsciiString();
+	}
 
 	/* (non-Javadoc)
 	 * @see net.datamodel.qml.URN#getScheme()
