@@ -1,4 +1,7 @@
-
+= Tests for URN:
+	// TODO: test setting a number of different good URN patterns here
+	// TODO: test setting a number of BAD patterns here
+		
 = Extend Reader/WRITER from XSSP for IO
   this includes writing the needed SAX element handlers for IO.
   
