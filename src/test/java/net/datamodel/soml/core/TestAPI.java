@@ -131,14 +131,22 @@ public class TestAPI extends BaseCase
 		assertTrue("Should fail to remove rel_urn2 from Obj1",!so.removeAllRelationships(rel_urn2));
 		assertTrue("Should fail to remove rel_urn from Obj1 for Obj2 (already removed)",!so.removeRelationship(rel_urn, so2));
 		
+		// Method checks not yet implemented..
+		//
+		// so.clone();
+		// so.equals();
+		
 	}
 
 	// test URN methods
 	//
 	public void test3() {
 		logger.info("Check URN methods.");
-		// test setting a number of different good URN patterns here
-		// test setting a number of BAD patterns here
+		// TODO: test setting a number of different good URN patterns here
+		// TODO: test setting a number of BAD patterns here (incl. null)
+		
+		// methods..
+		// urn.clone(), urn.equals
 	}
 	
 	// test UnmixedList methods
@@ -188,29 +196,28 @@ public class TestAPI extends BaseCase
 		assertTrue("List1 return the correct URN", soList1.getURN().equals(urn1));
 		
 		/*
-		soList1.clear();
+		
 		soList1.clone();
+		
 		soList1.contains(object);
 		soList1.containsAll(collection); 
+		
 		soList1.equals(object);
-		soList1.findChildObjs();
-		soList1.getNamespaceURI();
 		soList1.indexOf(object); 
+		soList1.subList(fromIndex, toIndex);
 		soList1.isEmpty();
+		soList1.clear();
+		
+		soList1.getNamespaceURI();
+		soList1.findChildObjs();
+		
 		soList1.remove(index);
 		soList1.remove(object);
 		soList1.removeAll(collection);
 		soList1.retainAll(collection);
-		soList1.subList(fromIndex, toIndex);
+		
 		*/
 		
-	}
-	
-	// test inheritance of so/ul
-	//
-	public void test5() {
-		logger.info("Check inhertance of so/ul classes.");
-		// test methods
 	}
 	
 }
