@@ -73,17 +73,20 @@ implements SemanticObject {
 
     // Constructors
 
-    // Construct with a given URN.
-    public SemanticObjectImpl ( URN URN ) { 
+    /** Construct with a given URN.
+     * @throws NullPointerException if the passed URN value is null.
+     */
+    public SemanticObjectImpl ( URN urn) { 
        this();
-       setURN(URN);
+       setURN(urn);
     }
     
-    // The no-argument Constructor
+    /** Construct with a default URN of "urn:unknown".
+     * Not meant for public consumption..
+     */
     protected SemanticObjectImpl () { 
     	
-        resetFields();
-
+        // resetFields();
         setXMLNodeName("semanticObject");
         
         // now initialize XML fields
@@ -237,11 +240,16 @@ implements SemanticObject {
 	/** Set the URN, representing the semantic meaning, of this object.
 	 * 
 	 * @param value of the URN to set
+	 * @throws NullPointerException if a null value is passed.
 	 */
 	protected void setURN (URN value) {
+		/*// not needed..the toAsciiString method call below will cause NullPointerException if URN == null 
+		if (value == null)
+			throw new NullPointerException("SemanticObjectImpl cant set URN to null value."); 
+		*/
 		// Take the URN and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    ((XMLSerializableFieldImpl) getFields().get(URN_XML_FIELD_NAME)).setValue(value.toString());
+	    ((XMLSerializableFieldImpl) getFields().get(URN_XML_FIELD_NAME)).setValue(value.toAsciiString());
 	}
 
 	/**
