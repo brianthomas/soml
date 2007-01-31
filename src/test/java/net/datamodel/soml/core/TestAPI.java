@@ -33,6 +33,24 @@ public class TestAPI extends BaseCase
 		UnmixedSemanticObjectList unlist = new UnmixedSemanticObjectListImpl(urn1);
 		assertNotNull("Can build UnmixedSemanticObjectListImpl", unlist);
 		
+		// try to set null URN in SO 
+		boolean nullProhibited = false;
+		try {
+			SemanticObject so_null = new SemanticObjectImpl (null);
+		} catch (NullPointerException e ) {
+			nullProhibited = true;
+		}
+		assertTrue("Not allowed to pass null URN value in SO constructor!", nullProhibited); 
+		
+		// try to set null URN in UnmixedList
+		nullProhibited = false;
+		try {
+			UnmixedSemanticObjectList unlist_null = new UnmixedSemanticObjectListImpl(null);
+		} catch (NullPointerException e) {
+			nullProhibited = true;
+		}
+		assertTrue("Not allowed to pass null URN value in UnmixedSemanticObjectList constructor!", nullProhibited); 
+		
 	}
 	
 	// test SO methods.
@@ -46,6 +64,9 @@ public class TestAPI extends BaseCase
 		SemanticObject so2 = new SemanticObjectImpl(urn2);
 		SemanticObject so3 = new SemanticObjectImpl(urn3);
 		SemanticObject so4 = new SemanticObjectImpl(urn4);
+		
+		// check URN retrieval
+		assertTrue("SO returns the correct URN", so.getURN().equals(urn1));
 		
 		// bi-directional between obj1 and obj2
 		assertTrue("can addRelationship obj1 to obj2", so.addRelationship(so2, rel_urn));
@@ -98,12 +119,13 @@ public class TestAPI extends BaseCase
 		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_urn.toAsciiString()+" is correct", 1, so3.getRelationships(rel_urn).size()); 
 		
 		// test a BAD addRelationship (catch error) 
+		boolean badRelProhibited = false;
 		try {
-				so.addRelationship(so4, rel_urn3); 
-				fail ("Can't add already added rel-SO should throw error.");
+			so.addRelationship(so4, rel_urn3); 
 		} catch (IllegalArgumentException e) {
-			assertTrue("Throws error correctly for bad addRelationship", true);
+			badRelProhibited = true;
 		}
+		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
 		
 		// test a BAD removeRelationship (catch error) 
 		assertTrue("Should fail to remove rel_urn2 from Obj1",!so.removeAllRelationships(rel_urn2));
@@ -139,7 +161,8 @@ public class TestAPI extends BaseCase
 		// Note: we should only test those we override/implement in this package.
 		//
 		
-		// adding objects, checking sizes
+		// adding objects in various ways, checking sizes
+		//
 		assertTrue("Can append kosher object to list", soList1.add(so1));
 		// try to insert kosher object to list
 		soList1.add(0, so2);
@@ -148,7 +171,7 @@ public class TestAPI extends BaseCase
 		assertTrue("Can append kosher object to list", soList2.add(so3));
 		// try to insert kosher object to list
 		soList2.add(0, so4);
-		soList2.add(so4);
+		soList2.add(0, so5); // should be NOT added, wrong URN 
 		assertTrue("Can NOT append non-kosher object to list", !soList2.add(so5));
 		assertTrue("List2 has right number of objects", soList2.size() == 2); 
 		
@@ -156,10 +179,15 @@ public class TestAPI extends BaseCase
 		soList3.add(so6);
 		assertTrue("List3 has right number of objects", soList3.size() == 2); 
 		
+		// try addAll
+		soList1.addAll(soList2);
+		assertTrue("List1 has right number of objects", soList1.size() == 4); 
+		assertTrue("Can NOT addAll non-kosher objects to list", !soList1.addAll(soList3));
+		
+		// check getURN
+		assertTrue("List1 return the correct URN", soList1.getURN().equals(urn1));
+		
 		/*
-		soList1.add(obj); 
-		soList1.add(index, element); 
-		soList1.addAll(collection);
 		soList1.clear();
 		soList1.clone();
 		soList1.contains(object);
@@ -167,14 +195,12 @@ public class TestAPI extends BaseCase
 		soList1.equals(object);
 		soList1.findChildObjs();
 		soList1.getNamespaceURI();
-		soList1.getURN();
 		soList1.indexOf(object); 
 		soList1.isEmpty();
 		soList1.remove(index);
 		soList1.remove(object);
 		soList1.removeAll(collection);
 		soList1.retainAll(collection);
-		soList1.size();
 		soList1.subList(fromIndex, toIndex);
 		*/
 		
