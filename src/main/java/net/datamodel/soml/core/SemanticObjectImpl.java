@@ -312,18 +312,21 @@ implements SemanticObject {
        return testName.toString();
     }
     
-    /** This class will hold all relationships between our object and other SO's
+    /** Quick internal class to hold all relationships between our object 
+     * and other SO's. 
      */
-    class RelationList<RelationshipImpl> 
+    /*
+    class RelationList<Relationship> 
     extends AbstractXMLSerializableObjectList
     { 
     	// simply change the node name to "relationship"
+    	// and set no serialization when its empty 
     	RelationList() { 
-    		super("RelationList");
+    		super("relationshipList");
     		this.setSerializeWhenEmpty(false);
     	}
-    	
     }
+    */
     
 }
 

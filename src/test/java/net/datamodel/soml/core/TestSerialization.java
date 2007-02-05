@@ -22,7 +22,7 @@ public class TestSerialization extends BaseCase {
 	private static void checkXMLOutput (XMLSerializableObject obj, String expectedOut) {
 		logger.debug("XML output:["+obj.toXMLString()+"]");
 		logger.debug("  expected:["+expectedOut+"]");
-		assertEquals("XML output as expected", obj.toXMLString(), expectedOut);
+		assertEquals("XML output as expected", expectedOut, obj.toXMLString());
 	}
 	
 	// test SO serialization
@@ -39,7 +39,9 @@ public class TestSerialization extends BaseCase {
 		
 		// test non-pretty output 
 		checkXMLOutput(so,"<semanticObject urn=\"urn:SemanticObject1\"/>");
-		checkXMLOutput(so2,"<semanticObject urn=\"urn:SemanticObject2\"><relationship urn=\"urn:rel1\"><semanticObject urn=\"urn:SemanticObject1\"></semanticObject></relationship></semanticObject>");
+		checkXMLOutput(so2,"<semanticObject urn=\"urn:SemanticObject2\">"+
+				"<relationship urn=\"urn:rel1\"><semanticObject urn=\"urn:SemanticObject1\"></semanticObject></relationship>"+
+				"</semanticObject>");
 		
 		// test pretty output 
 		spec.setPrettyOutput(true);
