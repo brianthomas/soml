@@ -7,6 +7,8 @@ import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.UnmixedSemanticObjectList;
+import net.datamodel.soml.impl.SemanticObjectImpl;
+import net.datamodel.soml.impl.UnmixedSemanticObjectListImpl;
 
 import org.apache.log4j.Logger;
 

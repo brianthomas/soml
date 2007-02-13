@@ -4,7 +4,7 @@
 package net.datamodel.soml;
 
 import junit.framework.TestCase;
-import net.datamodel.soml.core.URNImpl;
+import net.datamodel.soml.impl.URNImpl;
 
 import org.apache.log4j.PropertyConfigurator;
 

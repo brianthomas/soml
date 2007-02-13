@@ -5,6 +5,7 @@ package net.datamodel.soml.core;
 
 import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.soml.impl.SemanticObjectImpl;
 import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.support.Constants;
 import net.datamodel.xssp.support.Specification;
@@ -40,8 +41,8 @@ public class TestSerialization extends BaseCase {
 		// test non-pretty output 
 		checkXMLOutput(so,"<semanticObject urn=\"urn:SemanticObject1\"/>");
 		checkXMLOutput(so2,"<semanticObject urn=\"urn:SemanticObject2\">"+
-				"<relationship urn=\"urn:rel1\"><semanticObject urn=\"urn:SemanticObject1\"></semanticObject></relationship>"+
-				"</semanticObject>");
+				"<relationship urn=\"urn:rel1\"><semanticObject urn=\"urn:SemanticObject1\"/>"+
+				"</relationship>"+"</semanticObject>");
 		
 		// test pretty output 
 		spec.setPrettyOutput(true);
