@@ -22,11 +22,11 @@ public class URNImpl implements URN
 	private volatile int hashCode = 0; 
 	private static final Logger logger = Logger.getLogger(URNImpl.class);
 	
-	private final static String allowedSSPChars = "[\\w\\d\\-\\_\\@]";
-    private final static Pattern fullPattern = Pattern.compile ("(\\w[\\w\\d]*):("+allowedSSPChars
+	private final static String allowedSSPChars = "[\\w\\d\\-\\_\\@\\.]";
+    private final static Pattern fullPattern = Pattern.compile ("(urn:)?(\\w[\\w\\d]*):("+allowedSSPChars
     		+"+)\\#([\\w\\d]+)",  Pattern.DOTALL | Pattern.COMMENTS);
     
-    private final static Pattern noFragPattern = Pattern.compile ("(\\w[\\w\\d]*):("+allowedSSPChars 
+    private final static Pattern noFragPattern = Pattern.compile ("(urn:)?(\\w[\\w\\d]*):("+allowedSSPChars 
     		+"+)", Pattern.DOTALL | Pattern.COMMENTS);
     		
 	private String scheme;
