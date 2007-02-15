@@ -50,7 +50,7 @@ public class TestSerialization extends BaseCase {
 		String newLine = Constants.NEW_LINE;
 		checkXMLOutput(so,"<semanticObject urn=\"urn:SemanticObject1\"/>");
 		checkXMLOutput(so2,"<semanticObject urn=\"urn:SemanticObject2\">"+newLine+indent+"<relationship urn=\"urn:rel1\">"+
-					newLine+indent+indent+"<semanticObject urn=\"urn:SemanticObject1\"></semanticObject>"+
+					newLine+indent+indent+"<semanticObject urn=\"urn:SemanticObject1\"/>"+
 					newLine+indent+"</relationship>"+newLine+"</semanticObject>");
 		
 	}
