@@ -324,6 +324,12 @@ implements SemanticObject {
     		super(""); // should *not* have a node name 
     		this.setSerializeWhenEmpty(false);
     	}
+
+		@Override
+		public String toString() {
+			return this.getClass()+"@"+this.hashCode();
+		}
+    	
     }
     
 }
