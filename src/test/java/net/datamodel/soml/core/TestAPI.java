@@ -1,6 +1,7 @@
 
 package net.datamodel.soml.core;
 
+import java.net.URI;
 import java.util.List;
 
 import net.datamodel.soml.BaseCase;
@@ -24,6 +25,9 @@ public class TestAPI extends BaseCase
 	private static final Logger logger = Logger.getLogger(TestAPI.class);
 
 	// test creation of SemnaticObject, UnmixedSemanticObjectList
+	//
+	// note we don't test relationship construction as that class has package accessability
+	// but we should test relationships via a SO in a later test..
 	//
 	public void test1() {
 		
@@ -135,31 +139,34 @@ public class TestAPI extends BaseCase
 		
 		// Method checks not yet implemented..
 		//
-		// so.clone();
-		// so.equals();
+		/*
+		so.clone();
+		so.equals();
+		so.findChildObjs();
+		so.getId();
+		so.getURI();
+		so.getNamespaceURI();
+		so.getRelatedSemanticObjects(relatinoshipURI);
+		so.getRelationships();
+		so.getXMLNodeName();
+		so.removeAllRelationships(uri);
+		so.removeRelationship(uri, target);
+		so.setId(value);
+		so.serializeWhenEmpty();
+		*/
 		
 	}
 
-	// test URI methods
-	//
-	public void test3() {
-		logger.info("Check URI methods.");
-		// TODO: test setting a number of different good URI patterns here
-		// TODO: test setting a number of BAD patterns here (incl. null)
-		
-		// methods..
-		// URI.clone(), URI.equals
-	}
-	
 	// test UnmixedList methods
 	//
-	public void test4() {
+	public void test3() {
 		logger.info("Check unmixed list methods.");
 		
 		// first create some test objects...
 		UnmixedSemanticObjectList soList1 = new UnmixedSemanticObjectListImpl(uri1);
 		UnmixedSemanticObjectList soList2 = new UnmixedSemanticObjectListImpl(uri1);
-		UnmixedSemanticObjectList soList3 = new UnmixedSemanticObjectListImpl(uri2);
+		NamespacedList soList3 = new NamespacedList(uri2);
+		UnmixedSemanticObjectList soList4 = new UnmixedSemanticObjectListImpl(uri3);
 		SemanticObject so1 = new SemanticObjectImpl(uri1);
 		SemanticObject so2 = new SemanticObjectImpl(uri1);
 		SemanticObject so3 = new SemanticObjectImpl(uri1);
@@ -197,29 +204,83 @@ public class TestAPI extends BaseCase
 		// check getURI
 		assertTrue("List1 retURI the correct URI", soList1.getURI().equals(uri1));
 		
+		// check contains
+		assertTrue("check contains method", soList1.contains(so2));
+		assertTrue("check containsAll method", soList1.containsAll(soList2)); 
+		
+		// try to clone
+		boolean can_clone = true;
+		UnmixedSemanticObjectList cloneList = null;
+		try {
+			cloneList = (UnmixedSemanticObjectList) soList1.clone();
+		} catch (CloneNotSupportedException e) {
+			can_clone = false;
+		}
+		assertTrue("Can clone unmixedList", can_clone);
+		
+		// check contents, and equals method
+		logger.debug("Clone uri is:"+cloneList.getURI().toASCIIString());
+		assertTrue("Clone is equals to parent", soList1.equals(cloneList));
+		
+		// indexing
+		assertEquals("item is at correct index", 0, soList1.indexOf(so2)); 
+		
+		// from the XSSP package?
+		assertEquals(" namespaced list has correct URI string value", 
+				soList3.nameURIString, soList3.getNamespaceURI());
+		
+		assertTrue("list is not empty", !soList1.isEmpty());
+		assertTrue("list is not empty", !soList2.isEmpty());
+		assertTrue("list is empty", soList4.isEmpty());
+		
+		List subList = soList1.subList(2, 4);
+		assertEquals("Sublist returns equivalent added list", soList2, subList);
+
+		soList1.remove(0);
+		assertEquals("List has 3 obj after index remove", 3, soList1.size());
+		assertEquals("List has coorect obj at 1st index after remove", so1, soList1.get(0));
+		
+		soList1.remove(so1);
+		assertEquals("List has 2 obj after object remove", 2, soList1.size());
+		assertEquals("List has coorect obj at 1st index after remove", so4, soList1.get(0));
+		
+		soList1.removeAll(soList2);
+		assertEquals("List has 0 obj after collection remove", 0, soList1.size());
+		
+		soList1.add(so1);
+		soList1.addAll(soList2);
+		soList1.retainAll(soList2);
+		assertEquals("List has so1 obj after retained remove", so4, soList1.get(0));
+		
+		soList2.clear();
+		assertTrue("list is empty after a clear", soList2.isEmpty());
+		
 		/*
-		
-		soList1.clone();
-		
-		soList1.contains(object);
-		soList1.containsAll(collection); 
-		
-		soList1.equals(object);
-		soList1.indexOf(object); 
-		soList1.subList(fromIndex, toIndex);
-		soList1.isEmpty();
-		soList1.clear();
-		
-		soList1.getNamespaceURI();
 		soList1.findChildObjs();
-		
-		soList1.remove(index);
-		soList1.remove(object);
-		soList1.removeAll(collection);
-		soList1.retainAll(collection);
-		
+		so.serializeWhenEmpty();
 		*/
 		
 	}
 	
+	// test Relationship methods
+	//
+	public void test4() {
+		logger.info("Check Relationship methods.");
+		// TODO: test setting a number of different good URI patterns here
+		// TODO: test setting a number of BAD patterns here (incl. null)
+		
+		// methods..
+		// URI.clone(), URI.equals
+	}
+	
+	class NamespacedList extends UnmixedSemanticObjectListImpl {
+		
+		public String nameURIString = "dude";
+		
+		NamespacedList (URI uri) {
+			super(uri);
+			setNamespaceURI(nameURIString);
+		}
+		
+	}
 }
