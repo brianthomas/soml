@@ -47,7 +47,6 @@ implements UnmixedSemanticObjectList<T>
 	@Override
 	public Object clone() throws CloneNotSupportedException 
 	{
-		// TODO
 		return super.clone();
 	}
 	
@@ -98,7 +97,8 @@ implements UnmixedSemanticObjectList<T>
 		logger.debug("Try to add object w/ class:"+o.getClass()+" uri:"+o.getURI());
 		if (uri.equals(o.getURI()))
 			return true;
-		logger.warn("Ignoring add of object:"+o+" has the wrong uri("+o.getURI().toASCIIString()+") for UnmixedCollection uri:("+uri.toASCIIString()+")");
+		logger.warn("Ignoring add of object:"+o+" has the wrong uri("+o.getURI().toASCIIString()
+				+") for UnmixedCollection uri:("+uri.toASCIIString()+")");
 		return false;
 	}
 			
