@@ -3,8 +3,9 @@
  */
 package net.datamodel.soml;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
-import net.datamodel.soml.impl.URNImpl;
 
 import org.apache.log4j.PropertyConfigurator;
 
@@ -14,13 +15,13 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class BaseCase  extends TestCase {
 	
-	protected URN urn1 = null;
-	protected URN urn2 = null;
-	protected URN urn3 = null;
-	protected URN urn4 = null;
-	protected URN rel_urn = null;
-	protected URN rel_urn2 = null;
-	protected URN rel_urn3 = null;
+	protected URI uri1 = null;
+	protected URI uri2 = null;
+	protected URI uri3 = null;
+	protected URI uri4 = null;
+	protected URI rel_URI = null;
+	protected URI rel_URI2 = null;
+	protected URI rel_URI3 = null;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -28,15 +29,15 @@ public class BaseCase  extends TestCase {
 //		 make sure log4j.props are loaded
 		PropertyConfigurator.configure("src/main/resources/log4j.properties");
 		
-		// initialize URNs for tests
+		// initialize URIs for tests
 		try {
-			urn1 = new URNImpl("urn:SemanticObject1");
-			urn2 = new URNImpl("urn:SemanticObject2");
-			urn3 = new URNImpl("urn:SemanticObject3");
-			urn4 = new URNImpl("urn:SemanticObject4");
-			rel_urn = new URNImpl("urn:rel1");
-			rel_urn2 = new URNImpl("urn:rel2");
-			rel_urn3 = new URNImpl("urn:rel3");
+			uri1 = new URI("urn:test:SemanticObject1");
+			uri2 = new URI("urn:test:SemanticObject2");
+			uri3 = new URI("urn:test:SemanticObject3");
+			uri4 = new URI("urn:test:SemanticObject4");
+			rel_URI = new URI("urn:test:rel1");
+			rel_URI2 = new URI("urn:test:rel2");
+			rel_URI3 = new URI("urn:test:rel3");
 		} catch (Exception e) {
 			fail ("Test Setup Error:"+e.getMessage());
 			throw e;

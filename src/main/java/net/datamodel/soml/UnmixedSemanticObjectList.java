@@ -3,6 +3,8 @@
  */
 package net.datamodel.soml;
 
+import java.net.URI;
+
 import net.datamodel.xssp.XMLSerializableObjectList;
 
 /** A list of objects which all share the same URN
@@ -15,10 +17,10 @@ public interface UnmixedSemanticObjectList<T extends SemanticObject>
 extends XMLSerializableObjectList<T> 
 {
 
-	/** Get the URI of the objects held by this container.
+	/** Get the URI of all objects held by this container.
 	 * 
 	 * @return uri
 	 */
-	public URN getURN ();
+	public URI getURI ();
 	
 }

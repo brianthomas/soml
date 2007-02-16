@@ -3,16 +3,16 @@
  */
 package net.datamodel.soml.impl;
 
+import java.net.URI;
 import java.util.Collection;
 
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.URN;
 import net.datamodel.soml.UnmixedSemanticObjectList;
 import net.datamodel.xssp.core.AbstractXMLSerializableObjectList;
 
 import org.apache.log4j.Logger;
 
-/** A restricted collection of objects. All objects must have the same URN. 
+/** A restricted collection of objects. All objects must have the same uri. 
  * 
  * @author thomas
  *
@@ -25,24 +25,24 @@ implements UnmixedSemanticObjectList<T>
 	// fields
 	private static Logger logger = Logger.getLogger(UnmixedSemanticObjectListImpl.class);
 
-	private URN urn;
+	private URI uri;
 	
-	/** Constructor : must supply the (non-null) URN for this container.
+	/** Constructor : must supply the (non-null) uri for this container.
 	 * 
-	 * @param URN
-	 * @throws NullPointerException if a null urn is passed.
+	 * @param uri
+	 * @throws NullPointerException if a null uri is passed.
 	 */
-	public UnmixedSemanticObjectListImpl (URN urn) { 
-		if(null == urn)
-			throw new NullPointerException("UnmixedSemanticObjectList cannot have a null value for URN.");
-		this.urn=urn; 
+	public UnmixedSemanticObjectListImpl (URI uri) { 
+		if(null == uri)
+			throw new NullPointerException("UnmixedSemanticObjectList cannot have a null value for uri.");
+		this.uri=uri;
 	}
 	
 	/*
 	 *  (non-Javadoc)
-	 * @see edu.umd.astro.transform.UnmixedCollection#getURN(java.net.URN)
+	 * @see edu.umd.astro.transform.UnmixedCollection#getURI(java.net.URI)
 	 */
-	public URN getURN () { return urn; } 
+	public URI getURI () { return uri; } 
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException 
@@ -51,7 +51,7 @@ implements UnmixedSemanticObjectList<T>
 		return super.clone();
 	}
 	
-	/** May only add objects which have same URN as the collection.
+	/** May only add objects which have same uri as the collection.
 	 * 
 	 */
 	@Override
@@ -60,7 +60,7 @@ implements UnmixedSemanticObjectList<T>
 			super.add(arg0, o);
 	}
 
-	/** May only add objects which have same URN as the collection.
+	/** May only add objects which have same uri as the collection.
 	 * 
 	 */
 	@Override
@@ -77,7 +77,7 @@ implements UnmixedSemanticObjectList<T>
 		return super.addAll(arg0, col);
 	}
 	
-	/** May only set objects which have the same URN as the collection.
+	/** May only set objects which have the same uri as the collection.
 	 */
 	@Override
 	public T set(int arg0, T o) {
@@ -93,12 +93,12 @@ implements UnmixedSemanticObjectList<T>
 		return false;
 	}
 	
-	// make sure object has the same URN as the collection
+	// make sure object has the same uri as the collection
 	private boolean can_add (T o) {
-		logger.debug("Try to add object w/ class:"+o.getClass()+" URN:"+o.getURN());
-		if (urn.equals(o.getURN()))
+		logger.debug("Try to add object w/ class:"+o.getClass()+" uri:"+o.getURI());
+		if (uri.equals(o.getURI()))
 			return true;
-		logger.warn("Ignoring add of object:"+o+" has the wrong URN("+o.getURN().toAsciiString()+") for UnmixedCollection URN:("+urn.toAsciiString()+")");
+		logger.warn("Ignoring add of object:"+o+" has the wrong uri("+o.getURI().toASCIIString()+") for UnmixedCollection uri:("+uri.toASCIIString()+")");
 		return false;
 	}
 			

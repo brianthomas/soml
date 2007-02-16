@@ -3,13 +3,12 @@
  */
 package net.datamodel.soml.core;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.URN;
 import net.datamodel.soml.impl.SemanticObjectImpl;
-import net.datamodel.soml.impl.URNImpl;
 import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.support.Constants;
 import net.datamodel.xssp.support.Specification;
@@ -32,14 +31,14 @@ public class TestSerialization extends BaseCase {
 	
 	public void test1a() {
 		
-		logger.info("Check URN serialization.");
+		logger.info("Check URI serialization.");
 		
-		checkBuildURN("urn:test1"); 
-		checkBuildURN("urn:test2"); 
-		checkBuildURN("urn:dude"); 
-		checkBuildURN("news:comp.lang.java");
-		checkBuildURN("mailto:java-net@java.sun.com"); 
-	    checkBuildURN("urn:isbn:096139210x"); 
+		checkBuildURI("urn:test1"); 
+		checkBuildURI("urn:test2"); 
+		checkBuildURI("urn:dude"); 
+		checkBuildURI("news:comp.lang.java");
+		checkBuildURI("mailto:java-net@java.sun.com"); 
+	    checkBuildURI("urn:isbn:096139210x"); 
 		
 	}
 	
@@ -49,14 +48,14 @@ public class TestSerialization extends BaseCase {
 		Specification spec = Specification.getInstance();
 		spec.setPrettyOutput(false);
 		
-		SemanticObject so = new SemanticObjectImpl (urn1);
-		SemanticObject so2 = new SemanticObjectImpl (urn2);
-		so2.addRelationship(so, rel_urn); 
+		SemanticObject so = new SemanticObjectImpl (uri1);
+		SemanticObject so2 = new SemanticObjectImpl (uri2);
+		so2.addRelationship(so, rel_URI); 
 		
 		// test non-pretty output 
-		checkXMLOutput(so,"<semanticObject urn=\"urn:SemanticObject1\"/>");
-		checkXMLOutput(so2,"<semanticObject urn=\"urn:SemanticObject2\">"+
-				"<relationship urn=\"urn:rel1\"><semanticObject urn=\"urn:SemanticObject1\"/>"+
+		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\"/>");
+		checkXMLOutput(so2,"<semanticObject URI=\"urn:test:SemanticObject2\">"+
+				"<relationship URI=\"urn:test:rel1\"><semanticObject URI=\"urn:test:SemanticObject1\"/>"+
 				"</relationship></semanticObject>");
 		
 		// test pretty output 
@@ -64,11 +63,11 @@ public class TestSerialization extends BaseCase {
 		
 		String indent = spec.getPrettyOutputIndentation();
 		String newLine = Constants.NEW_LINE;
-		checkXMLOutput(so,"<semanticObject urn=\"urn:SemanticObject1\"/>");
+		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\"/>");
 		checkXMLOutput(so2,
-				"<semanticObject urn=\"urn:SemanticObject2\">"+newLine
-				+indent+"<relationship urn=\"urn:rel1\">"+newLine
-				+indent+indent+"<semanticObject urn=\"urn:SemanticObject1\"/>"+newLine
+				"<semanticObject URI=\"urn:test:SemanticObject2\">"+newLine
+				+indent+"<relationship URI=\"urn:test:rel1\">"+newLine
+				+indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\"/>"+newLine
 				+indent+"</relationship>"+newLine
 				+"</semanticObject>");
 		
@@ -83,15 +82,15 @@ public class TestSerialization extends BaseCase {
 	}
 	
 	
-	private void checkBuildURN (String content) {
-		logger.debug("check build URN:["+content+"]");
-		URN test = null;
+	private void checkBuildURI (String content) {
+		logger.debug("check build URI:["+content+"]");
+		URI test = null;
 		try {
-			test = new URNImpl(content);
+			test = new URI(content);
 		} catch (URISyntaxException e) {
-			logger.debug(" Cant build URN given value:["+content+"]!!");
+			logger.debug(" Cant build URI given value:["+content+"]!!");
 		}
-		assertNotNull("urn is ok:["+content+"]", test);
+		assertNotNull("URI is ok:["+content+"]", test);
 	}
 
 }

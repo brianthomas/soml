@@ -34,13 +34,13 @@ package net.datamodel.soml.impl;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.URN;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.XMLSerializableField;
 import net.datamodel.xssp.core.AbstractXMLSerializableObject;
@@ -51,7 +51,7 @@ import net.datamodel.xssp.support.XMLReferenceSerializationType;
 
 import org.apache.log4j.Logger;
 
-/** A SemanticObject identifies its origin (and semantic nature) by its URN (Unique Resource Name).
+/** A SemanticObject identifies its origin (and semantic nature) by its URI (Unique Resource Name).
  * A SemanticObject also may be in a SemanticRelationship with other SemanticObjects. 
  * SemanticRelationships include being properities of another SemanticObject.
  */
@@ -63,7 +63,7 @@ implements SemanticObject {
     // Fields
 	private static final String RELATIONSHIP_XML_FIELD_NAME = "relationship";
     private static final String ID_XML_FIELD_NAME = "soid";
-    private static final String URN_XML_FIELD_NAME = "urn";
+    private static final String URI_XML_FIELD_NAME = "URI";
     
     protected static final String ReferenceNodeName = "refNode";
     protected static final String IDRefAttributeName = "oidRef";
@@ -73,15 +73,15 @@ implements SemanticObject {
 
     // Constructors
 
-    /** Construct with a given URN.
-     * @throws NullPointerException if the passed URN value is null.
+    /** Construct with a given URI.
+     * @throws NullPointerException if the passed URI value is null.
      */
-    public SemanticObjectImpl ( URN urn) { 
+    public SemanticObjectImpl ( URI URI) { 
        this();
-       setURN(urn);
+       setURI(URI);
     }
     
-    /** Construct with a default URN of "urn:unknown".
+    /** Construct with a default URI of "URI:unknown".
      * Not meant for public consumption..
      */
     protected SemanticObjectImpl () { 
@@ -92,7 +92,7 @@ implements SemanticObject {
         // now initialize XML fields
         // order matters! these are in *reverse* order of their
         // occurence in the schema/DTD
-        addField(URN_XML_FIELD_NAME, "urn:unknown", XMLFieldType.ATTRIBUTE);
+        addField(URI_XML_FIELD_NAME, "URI:unknown", XMLFieldType.ATTRIBUTE);
         addField(ID_XML_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
         addField(RELATIONSHIP_XML_FIELD_NAME, new RelationshipList(), XMLFieldType.CHILD);
         
@@ -118,9 +118,9 @@ implements SemanticObject {
 
     /*
      *  (non-Javadoc)
-     * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URN)
+     * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
      */ 
-	public boolean addRelationship (SemanticObject target, URN relationURN) 
+	public boolean addRelationship (SemanticObject target, URI relationURI) 
 	throws IllegalArgumentException, NullPointerException 
     {
 
@@ -132,27 +132,27 @@ implements SemanticObject {
 		
 		// check if the relationship selected already exists in the calling object
 		// with the target
-		List<SemanticObject> soList = getRelatedSemanticObjects(relationURN);
+		List<SemanticObject> soList = getRelatedSemanticObjects(relationURI);
 		if (soList.size() > 0)
 		{
 			for (SemanticObject test : soList)
 			{
 				if (test == target)
 					throw new IllegalArgumentException("addRelationship: a relationship already exists with passed SO:"+
-							target+" in relationship URN:"+relationURN.toAsciiString());
+							target+" in relationship URI:"+relationURI.toASCIIString());
 			}
 		}
 		
 		// now we add the relationship and return success 
-		return getRelationships().add(new RelationshipImpl(relationURN, target));
+		return getRelationships().add(new RelationshipImpl(relationURI, target));
 		
     }
 
     /*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#removeRelationship(net.datamodel.soml.URN, net.datamodel.soml.SemanticObject)
+	 * @see net.datamodel.soml.SemanticObject#removeRelationship(net.datamodel.soml.URI, net.datamodel.soml.SemanticObject)
 	 */
-	public boolean removeRelationship(URN urn, SemanticObject target) {
+	public boolean removeRelationship(URI URI, SemanticObject target) {
 		List<Relationship> removeList = getRelationships();
 		for (Relationship test : removeList) {
 			if (test.getTarget() == target) {
@@ -164,11 +164,11 @@ implements SemanticObject {
 
 	/*
 	 *  (non-Javadoc)
-	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URN)
+	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URI)
 	 */
-	public boolean removeAllRelationships (URN urn) {
+	public boolean removeAllRelationships (URI URI) {
 		boolean success = true;
-		List<Relationship> testList = getRelationships(urn);
+		List<Relationship> testList = getRelationships(URI);
 		if (testList.size() > 0) {
 			for (Relationship target : testList)
 			{
@@ -182,29 +182,29 @@ implements SemanticObject {
 
     /*
 	 *  (non-Javadoc)
-	 * @see net.datamodel.qml.SemanticObject#getURN()
+	 * @see net.datamodel.qml.SemanticObject#getURI()
 	 */
-	public URN getURN() {
+	public URI getURI() {
 		try {
-			return new URNImpl ((String) ((XMLSerializableField) getFields().get(URN_XML_FIELD_NAME)).getValue());
+			return new URI ((String) ((XMLSerializableField) getFields().get(URI_XML_FIELD_NAME)).getValue());
 		} catch (Exception e) {
-			logger.error("Invalid URN for object returned.:"+e.getMessage());
-			return (URN) null; // shouldnt happen as we only let valid URNs in..
+			logger.error("Invalid URI for object returned.:"+e.getMessage());
+			return (URI) null; // shouldnt happen as we only let valid URIs in..
 		}
 	}
 
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObjects(net.datamodel.soml.URN)
+	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObjects(net.datamodel.soml.URI)
 	 */
-	public List<SemanticObject> getRelatedSemanticObjects (URN relationshipURN) {
+	public List<SemanticObject> getRelatedSemanticObjects (URI relationshipURI) {
 		
 		List<SemanticObject> found = new Vector<SemanticObject>();
 		for (Relationship rel: getRelationships()) {
 			logger.debug("rel:" + rel); 
-			logger.debug("  urn :" + rel.getURN()); 
-			if (null != rel && rel.getURN().equals(relationshipURN)) {
+			logger.debug("  URI :" + rel.getURI()); 
+			if (null != rel && rel.getURI().equals(relationshipURI)) {
 				found.add(rel.getTarget()); // matched, so add it to found list
 			}
 		}
@@ -213,13 +213,13 @@ implements SemanticObject {
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getRelationships(net.datamodel.soml.URN)
+	 * @see net.datamodel.soml.SemanticObject#getRelationships(net.datamodel.soml.URI)
 	 */
-	public List<Relationship> getRelationships (URN urn) 
+	public List<Relationship> getRelationships (URI URI) 
 	{
 		List<Relationship> found = new Vector<Relationship>();
 		for (Relationship rel : getRelationships()) {
-			if (rel.getURN().equals(urn))
+			if (rel.getURI().equals(URI))
 				found.add(rel);
 		}
 		return found; 
@@ -237,19 +237,19 @@ implements SemanticObject {
     // Operations
     //
 
-	/** Set the URN, representing the semantic meaning, of this object.
+	/** Set the URI, representing the semantic meaning, of this object.
 	 * 
-	 * @param value of the URN to set
+	 * @param value of the URI to set
 	 * @throws NullPointerException if a null value is passed.
 	 */
-	protected void setURN (URN value) {
-		/*// not needed..the toAsciiString method call below will cause NullPointerException if URN == null 
+	protected void setURI (URI value) {
+		/*// not needed..the toAsciiString method call below will cause NullPointerException if URI == null 
 		if (value == null)
-			throw new NullPointerException("SemanticObjectImpl cant set URN to null value."); 
+			throw new NullPointerException("SemanticObjectImpl cant set URI to null value."); 
 		*/
-		// Take the URN and convert it to a string for storage in object/serialization.
+		// Take the URI and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    ((XMLSerializableFieldImpl) getFields().get(URN_XML_FIELD_NAME)).setValue(value.toAsciiString());
+	    ((XMLSerializableFieldImpl) getFields().get(URI_XML_FIELD_NAME)).setValue(value.toASCIIString());
 	}
 
 	/**

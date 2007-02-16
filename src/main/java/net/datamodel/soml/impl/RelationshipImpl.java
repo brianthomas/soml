@@ -1,9 +1,10 @@
 
 package net.datamodel.soml.impl;
 
+import java.net.URI;
+
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.URN;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.XMLSerializableField;
 import net.datamodel.xssp.core.AbstractXMLSerializableObject;
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
 
 /** This class records a single (uni-directional) relationship between the 
  * owning SemanticObject (SO) and the "target" SO. The relationship has its
- * own separate URN to semantically identify it.
+ * own separate URI to semantically identify it.
  * 
  * @author thomas
  *
@@ -20,7 +21,7 @@ import org.apache.log4j.Logger;
 class RelationshipImpl extends AbstractXMLSerializableObject
 implements Relationship
 {
-   	private static final String URN_XML_FIELD_NAME = "urn";
+   	private static final String URI_XML_FIELD_NAME = "URI";
    	private static final String TARGET_XML_FIELD_NAME = "target";
     	
 	private static final Logger logger = Logger.getLogger(RelationshipImpl.class);
@@ -28,15 +29,15 @@ implements Relationship
    	/** A constructor for relationships. Intentionally package
    	 * (non-public) access only. 
    	 * 
-   	 * @param relationURN
+   	 * @param relationURI
    	 * @param target the 'target SemanticObject'
    	 */
-   	RelationshipImpl (URN relationURN, SemanticObject target) { 
+   	RelationshipImpl (URI relationURI, SemanticObject target) { 
    		super("relationship");
    		this.setSerializeWhenEmpty(false);
-   		addField(URN_XML_FIELD_NAME, relationURN, XMLFieldType.ATTRIBUTE);
+   		addField(URI_XML_FIELD_NAME, relationURI, XMLFieldType.ATTRIBUTE);
    		addField(TARGET_XML_FIELD_NAME, target, XMLFieldType.CHILD);
-   		logger.debug("Create new Relationship:"+relationURN.toAsciiString()+" to target: "+target);
+   		logger.debug("Create new Relationship:"+relationURI.toASCIIString()+" to target: "+target);
    	}
    	
    	/*
@@ -50,10 +51,10 @@ implements Relationship
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.Relationship#getURN()
+	 * @see net.datamodel.soml.Relationship#getURI()
 	 */
-	public URN getURN() {
-		return (URN) ((XMLSerializableField) getFields().get(URN_XML_FIELD_NAME)).getValue();
+	public URI getURI() {
+		return (URI) ((XMLSerializableField) getFields().get(URI_XML_FIELD_NAME)).getValue();
 	}
 	
 }

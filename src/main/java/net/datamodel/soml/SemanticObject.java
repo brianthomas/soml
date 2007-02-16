@@ -30,16 +30,17 @@
 
 package net.datamodel.soml;
 
+import java.net.URI;
 import java.util.List;
 
 import net.datamodel.xssp.XMLSerializableObject;
 
 /**
  * The interface for all objects which have Semantic meaning as represented
- * by a Unique Resource Name (URN). Each of these objects may be in a relationship 
- * to other objects, and that relationship is identified by its own URN which is
+ * by a Unique Resource Name (URI). Each of these objects may be in a relationship 
+ * to other objects, and that relationship is identified by its own URI which is
  * separate from the objects in the relationship. Ultimately, it is intended for
- * the URNs to be used to identify how these various instance structures map 
+ * the URIs to be used to identify how these various instance structures map 
  * to an Ontology.
  * 
  * @author thomas
@@ -59,59 +60,59 @@ extends XMLSerializableObject
      * 
      * The following restrictions exist on relationships between SOs:
      * <ul> 
-     *    Only <i>one</i> relationship may exist between 2 SOs for a given relationship URN. <br/> 
+     *    Only <i>one</i> relationship may exist between 2 SOs for a given relationship /:RI. <br/> 
      *    A SO may not be in relationship with itself.
      * </ul>
-     *  Note that the relationship URN used identifies only the <i>relationship</i>
+     *  Note that the relationship URI used identifies only the <i>relationship</i>
      *  between the calling object and the target, not the <i>semantic identity</i> 
-     *  of the target object itself (which should have its own, separate URN value).
+     *  of the target object itself (which should have its own, separate URI value).
      * 
      * @throws IllegalArgumentException if adding self, or the same object already exists with 
-     *         the same (relationship) URN.
+     *         the same (relationship) URI.
      * @throws NullPointerException if attempting to adding an null (!!)
      * @param target object to set up the relationship to.
-     * @param relationship the URN of the relationship to establish.
-     * @return boolean value of whether addition was successfull or not.
+     * @param relationship the URI of the relationship to establish.
+     * @retURI boolean value of whether addition was successfull or not.
      */
-     public boolean addRelationship (SemanticObject target, URN relationship) 
+     public boolean addRelationship (SemanticObject target, URI relationship) 
      throws IllegalArgumentException, NullPointerException;
      
-    /** Remove all relationships which match the passed URN.
+    /** Remove all relationships which match the passed URI.
      * 
-     * @param urn of the relationships to remove 
-     * @return true if the relationship was removed. 
+     * @param URI of the relationships to remove 
+     * @retURI true if the relationship was removed. 
      */
-    public boolean removeAllRelationships (URN urn);
+    public boolean removeAllRelationships (URI uri);
     
-    /** Remove the relationship which has the passed URN <i>and</i> the
+    /** Remove the relationship which has the passed URI <i>and</i> the
      * identified target SemanticObject.
      * 
-     * @param urn
+     * @param uri
      * @param target
-     * @return
+     * @retURI
      */
-    public boolean removeRelationship (URN urn, SemanticObject target);
+    public boolean removeRelationship (URI uri, SemanticObject target);
     
     /** Retrieve the semantic object in relationship to the caller by
-     * the value of the relationship URN.
+     * the value of the relationship URI.
      * 
-     * @param URN which represents the relationship between the parent and the member 
-     * @return List of SemanticObjects which are in the given relationship to the caller.
+     * @param URI which represents the relationship between the parent and the member 
+     * @retURI List of SemanticObjects which are in the given relationship to the caller.
      */
-    public List<SemanticObject> getRelatedSemanticObjects (URN relationship);
+    public List<SemanticObject> getRelatedSemanticObjects (URI relationship);
     
     /** Get the list of relationships which the calling SemanticObject 'owns'.
      * 
-     * @return List of all relationships which the calling SO owns.
+     * @retURI List of all relationships which the calling SO owns.
      */ 
     public List<Relationship> getRelationships ( );
     
     /** Get the list of relationships which the calling SemanticObject 'owns'
-     * that match the passed URN value.
-     * @param relationshipURN the URN of the relationship(s) to match. 
-     * @return List of relationships which have the named URN.
+     * that match the passed URI value.
+     * @param relationshipURI the URI of the relationship(s) to match. 
+     * @retURI List of relationships which have the named URI.
      */
-    public List<Relationship> getRelationships(URN relationshipURN);
+    public List<Relationship> getRelationships(URI relationshipURI);
     
     /**
      * Get the id of an instance of this class. It should be unique across all
@@ -126,13 +127,13 @@ extends XMLSerializableObject
      */ 
     public void setId ( String value );
 
-    /** Get the URN which represents the semantic meaning (ontological class) 
-     * of this object.  The URN maybe the same for different instances of a 
+    /** Get the URI which represents the semantic meaning (ontological class) 
+     * of this object.  The URI maybe the same for different instances of a 
      * SemanticObject. (e.g. it is not guarrenteed to be unique)
      *  
-     * @return URN of the object 
+     * @retURI URI of the object 
      */
-	public URN getURN();
+	public URI getURI();
 	
 }
 

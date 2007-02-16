@@ -1,6 +1,8 @@
 
 package net.datamodel.soml;
 
+import java.net.URI;
+
 import net.datamodel.xssp.XMLSerializableObject;
 
 /** Models a uni-directional relationship between 2 SemanticObjects.
@@ -18,10 +20,10 @@ public interface Relationship extends XMLSerializableObject {
 	 */
 	public SemanticObject getTarget ();
 	
-	/** Find the relationship URN.
+	/** Find the relationship URI.
 	 * 
 	 * @return
 	 */
-	public URN getURN();
+	public URI getURI();
 	
 }
