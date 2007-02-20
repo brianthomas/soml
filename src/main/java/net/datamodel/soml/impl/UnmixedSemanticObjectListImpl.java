@@ -44,12 +44,6 @@ implements UnmixedSemanticObjectList<T>
 	 */
 	public URI getURI () { return uri; } 
 	
-	@Override
-	public Object clone() throws CloneNotSupportedException 
-	{
-		return super.clone();
-	}
-	
 	/** May only add objects which have same uri as the collection.
 	 * 
 	 */
