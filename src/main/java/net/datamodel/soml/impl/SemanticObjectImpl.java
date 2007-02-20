@@ -161,7 +161,15 @@ implements SemanticObject {
 		}
 		return false;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#clearAllRelationships()
+	 */
+	public void clearAllRelationships() {
+		getRelationships().clear();
+	}
+	
 	/*
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URI)
@@ -331,6 +339,8 @@ implements SemanticObject {
 		}
     	
     }
+
+
     
 }
 

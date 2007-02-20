@@ -85,6 +85,12 @@ extends XMLSerializableObject
      */
     public boolean removeAllRelationships (URI uri);
     
+    /** Remove (clear) all relationships in the calling object 
+     * regardless of relationship URI. Does not affect target object
+     * relationships. 
+     */
+    public void clearAllRelationships();
+    
     /** Remove the relationship which has the passed URI <i>and</i> the
      * identified target SemanticObject.
      * 

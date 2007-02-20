@@ -59,7 +59,7 @@ public class TestAPI extends BaseCase
 		
 	}
 	
-	// test SO methods.
+	// test SO, relationship methods.
 	//
 	public void test2() {
 		logger.info("Check so/relationship methods working right.");
@@ -92,6 +92,11 @@ public class TestAPI extends BaseCase
 		assertTrue("SO3 has the correct number of relationships",so3.getRelationships().size() == 2);
 		assertTrue("SO4 has the correct number of relationships",so4.getRelationships().size() == 0);
 		
+		List<Relationship> relList = so.getRelationships(rel_URI); 
+		Relationship rel1 = relList.get(0);
+		assertEquals("Relationship URI is expected one", rel_URI, rel1.getURI());
+		assertEquals("Relationship target is expected one", so2, rel1.getTarget());
+		
 		// check that the 1 object is the one we expect
 		List<SemanticObject> check1 = so.getRelatedSemanticObjects(rel_URI);
 		List<SemanticObject> check2 = so2.getRelatedSemanticObjects(rel_URI2);
@@ -105,7 +110,7 @@ public class TestAPI extends BaseCase
 		// which points to  the expected object
 		SemanticObject check3 = ((Relationship) so2.getRelationships().get(0)).getTarget();
 		SemanticObject check4 = ((Relationship) so.getRelationships().get(0)).getTarget();
-		assertTrue("getRelationships retURIs relationship pointing to right obj", check4 == so2);
+		assertTrue("getRelationships retURIs relationship pointing to right obj (and equals method)", check4.equals(so2));
 		assertTrue("getRelationships retURIs relationship pointing to right obj", check3 == so);
 		
 		// RemoveRelationship(URI, target) tests
@@ -124,7 +129,7 @@ public class TestAPI extends BaseCase
 		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so2.getRelationships(rel_URI).size()); 
 		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getRelationships(rel_URI).size()); 
 		
-		// test a BAD addRelationship (catch error) 
+		// test a BAD addRelationship (catch error for re-adding duplicate) 
 		boolean badRelProhibited = false;
 		try {
 			so.addRelationship(so4, rel_URI3); 
@@ -134,23 +139,26 @@ public class TestAPI extends BaseCase
 		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
 		
 		// test a BAD removeRelationship (catch error) 
-		assertTrue("Should fail to remove rel_URI2 from Obj1",!so.removeAllRelationships(rel_URI2));
+		assertTrue("Should fail to remove rel_URI2 from Obj1", !so.removeAllRelationships(rel_URI2));
 		assertTrue("Should fail to remove rel_URI from Obj1 for Obj2 (already removed)",!so.removeRelationship(rel_URI, so2));
+		
+		so.removeAllRelationships(rel_URI);
+		// no objects left now
+		for (Relationship r : so.getRelationships()) {
+			logger.debug(" **** SO Relationship uri:"+r.getURI().toASCIIString()+" target:"+r.getTarget().getURI().toASCIIString());
+		}
+		assertEquals("Correct number of remaining relationships", 1, so.getRelationships().size());
+		
+		so.clearAllRelationships();
+		assertEquals("Correct number of remaining relationships", 0, so.getRelationships().size());
 		
 		// Method checks not yet implemented..
 		//
 		/*
-		so.clone();
-		so.equals();
 		so.findChildObjs();
-		so.getId();
-		so.getURI();
-		so.getNamespaceURI();
-		so.getRelatedSemanticObjects(relatinoshipURI);
-		so.getRelationships();
 		so.getXMLNodeName();
-		so.removeAllRelationships(uri);
-		so.removeRelationship(uri, target);
+		so.getNamespaceURI();
+		so.getId();
 		so.setId(value);
 		so.serializeWhenEmpty();
 		*/
@@ -209,18 +217,14 @@ public class TestAPI extends BaseCase
 		assertTrue("check containsAll method", soList1.containsAll(soList2)); 
 		
 		// try to clone
-		boolean can_clone = true;
-		UnmixedSemanticObjectList cloneList = null;
-		try {
-			cloneList = (UnmixedSemanticObjectList) soList1.clone();
-		} catch (CloneNotSupportedException e) {
-			can_clone = false;
-		}
-		assertTrue("Can clone unmixedList", can_clone);
+		/*
+		UnmixedSemanticObjectList cloneList = (UnmixedSemanticObjectList) soList1.clone();
+		assertEquals("Clone equivalent to original unmixedList", soList1, cloneList);
 		
 		// check contents, and equals method
 		logger.debug("Clone uri is:"+cloneList.getURI().toASCIIString());
 		assertTrue("Clone is equals to parent", soList1.equals(cloneList));
+		*/
 		
 		// indexing
 		assertEquals("item is at correct index", 0, soList1.indexOf(so2)); 
@@ -256,22 +260,13 @@ public class TestAPI extends BaseCase
 		assertTrue("list is empty after a clear", soList2.isEmpty());
 		
 		/*
+		soList1.serializeWhenEmpty();
 		soList1.findChildObjs();
-		so.serializeWhenEmpty();
+		soList1.getId();
 		*/
 		
 	}
 	
-	// test Relationship methods
-	//
-	public void test4() {
-		logger.info("Check Relationship methods.");
-		// TODO: test setting a number of different good URI patterns here
-		// TODO: test setting a number of BAD patterns here (incl. null)
-		
-		// methods..
-		// URI.clone(), URI.equals
-	}
 	
 	class NamespacedList extends UnmixedSemanticObjectListImpl {
 		
