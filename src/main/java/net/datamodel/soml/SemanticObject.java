@@ -37,11 +37,12 @@ import net.datamodel.xssp.XMLSerializableObject;
 
 /**
  * The interface for all objects which have Semantic meaning as represented
- * by a Unique Resource Name (URI). Each of these objects may be in a relationship 
+ * by a Unique Resource Identifier (URI). Each of these objects may be in a relationship 
  * to other objects, and that relationship is identified by its own URI which is
  * separate from the objects in the relationship. Ultimately, it is intended for
  * the URIs to be used to identify how these various instance structures map 
- * to an Ontology.
+ * to an Ontology (OWL, Web Ontology Language, W3C specification: 
+ * @link{http://www.w3.org/2004/OWL/} is the basis for this implementation).
  * 
  * @author thomas
  * @version $VersionId:$
