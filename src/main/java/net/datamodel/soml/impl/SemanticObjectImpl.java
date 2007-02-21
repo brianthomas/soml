@@ -51,9 +51,10 @@ import net.datamodel.xssp.support.XMLReferenceSerializationType;
 
 import org.apache.log4j.Logger;
 
-/** A SemanticObject identifies its origin (and semantic nature) by its URI (Unique Resource Name).
- * A SemanticObject also may be in a SemanticRelationship with other SemanticObjects. 
- * SemanticRelationships include being properities of another SemanticObject.
+/** A SemanticObject identifies its origin (and semantic nature) by its 
+ * URI (Unique Resource Id).
+ * A SemanticObject also may be in a (semantically-typed) relationship 
+ * with other SemanticObjects. 
  */
 public class SemanticObjectImpl extends AbstractXMLSerializableObject 
 implements SemanticObject {
