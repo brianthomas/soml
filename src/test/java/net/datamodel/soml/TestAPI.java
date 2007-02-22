@@ -1,10 +1,9 @@
 
-package net.datamodel.soml.core;
+package net.datamodel.soml;
 
 import java.net.URI;
 import java.util.List;
 
-import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.UnmixedSemanticObjectList;

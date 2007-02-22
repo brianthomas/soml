@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.datamodel.soml.core;
+package net.datamodel.soml.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
