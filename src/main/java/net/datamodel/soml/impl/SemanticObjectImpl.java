@@ -104,18 +104,13 @@ implements SemanticObject {
     /**
      * The id of an instance of this class. It should be unique across all components and quantities within a given document/object tree.
      */
-    public String getId () {
-        // return (String) ((XMLSerializableField) getFields().get(ID_XML_FIELD_NAME)).getValue();
-        return (String) ((XMLSerializableField) getFields().get(ID_XML_FIELD_NAME)).getValue();
-    }
+    public String getId () { return (String) getFieldValue(ID_XML_FIELD_NAME); }
 
     /*
      *  (non-Javadoc)
      * @see net.datamodel.qml.SemanticObject#setId(java.lang.String)
      */ 
-    public void setId ( String value  ) {
-        ((XMLSerializableFieldImpl) getFields().get(ID_XML_FIELD_NAME)).setValue(value);
-    }
+    public void setId ( String value  ) { setFieldValue(ID_XML_FIELD_NAME, value); }
 
     /*
      *  (non-Javadoc)
@@ -195,7 +190,7 @@ implements SemanticObject {
 	 */
 	public URI getURI() {
 		try {
-			return new URI ((String) ((XMLSerializableField) getFields().get(URI_XML_FIELD_NAME)).getValue());
+			return new URI ((String) getFieldValue(URI_XML_FIELD_NAME));
 		} catch (Exception e) {
 			logger.error("Invalid URI for object returned.:"+e.getMessage());
 			return (URI) null; // shouldnt happen as we only let valid URIs in..
@@ -239,8 +234,7 @@ implements SemanticObject {
 	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
 	public List<Relationship> getRelationships() {
-        return (List<Relationship>) ((XMLSerializableField) 
-        		getFields().get(RELATIONSHIP_XML_FIELD_NAME)).getValue();
+        return (List<Relationship>) getFieldValue(RELATIONSHIP_XML_FIELD_NAME);
     }
 
     // Operations
@@ -258,7 +252,7 @@ implements SemanticObject {
 		*/
 		// Take the URI and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    ((XMLSerializableFieldImpl) getFields().get(URI_XML_FIELD_NAME)).setValue(value.toASCIIString());
+	    setFieldValue(URI_XML_FIELD_NAME, value.toASCIIString());
 	}
 
 	/**

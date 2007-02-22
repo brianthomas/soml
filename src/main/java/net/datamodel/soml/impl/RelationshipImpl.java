@@ -45,16 +45,13 @@ implements Relationship
    	 * @see net.datamodel.soml.Relationship#getTarget()
    	 */
 	public SemanticObject getTarget() {
-		XMLSerializableField soField = getFields().get(TARGET_XML_FIELD_NAME);
-		return (SemanticObject) soField.getValue();
+		return (SemanticObject) getFieldValue(TARGET_XML_FIELD_NAME);
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.Relationship#getURI()
 	 */
-	public URI getURI() {
-		return (URI) ((XMLSerializableField) getFields().get(URI_XML_FIELD_NAME)).getValue();
-	}
+	public URI getURI() { return (URI) getFieldValue(URI_XML_FIELD_NAME); }
 	
 }
