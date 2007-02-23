@@ -62,9 +62,9 @@ implements SemanticObject {
 	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
 
     // Fields
-	private static final String RELATIONSHIP_XML_FIELD_NAME = "relationship";
-    private static final String ID_XML_FIELD_NAME = "soid";
-    private static final String URI_XML_FIELD_NAME = "URI";
+	private static final String RELATIONSHIP_FIELD_NAME = "relationship";
+    private static final String ID_FIELD_NAME = "soid";
+    private static final String URI_FIELD_NAME = "URI";
     
     protected static final String ReferenceNodeName = "refNode";
     protected static final String IDRefAttributeName = "oidRef";
@@ -93,9 +93,9 @@ implements SemanticObject {
         // now initialize XML fields
         // order matters! these are in *reverse* order of their
         // occurence in the schema/DTD
-        addField(URI_XML_FIELD_NAME, "URI:unknown", XMLFieldType.ATTRIBUTE);
-        addField(ID_XML_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
-        addField(RELATIONSHIP_XML_FIELD_NAME, new RelationshipList(), XMLFieldType.CHILD);
+        addField(URI_FIELD_NAME, "URI:unknown", XMLFieldType.ATTRIBUTE);
+        addField(ID_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
+        addField(RELATIONSHIP_FIELD_NAME, new RelationshipList(), XMLFieldType.CHILD);
         
     }
 
@@ -104,13 +104,13 @@ implements SemanticObject {
     /**
      * The id of an instance of this class. It should be unique across all components and quantities within a given document/object tree.
      */
-    public String getId () { return (String) getFieldValue(ID_XML_FIELD_NAME); }
+    public String getId () { return (String) getFieldValue(ID_FIELD_NAME); }
 
     /*
      *  (non-Javadoc)
      * @see net.datamodel.qml.SemanticObject#setId(java.lang.String)
      */ 
-    public void setId ( String value  ) { setFieldValue(ID_XML_FIELD_NAME, value); }
+    public void setId ( String value  ) { setFieldValue(ID_FIELD_NAME, value); }
 
     /*
      *  (non-Javadoc)
@@ -190,7 +190,7 @@ implements SemanticObject {
 	 */
 	public URI getURI() {
 		try {
-			return new URI ((String) getFieldValue(URI_XML_FIELD_NAME));
+			return new URI ((String) getFieldValue(URI_FIELD_NAME));
 		} catch (Exception e) {
 			logger.error("Invalid URI for object returned.:"+e.getMessage());
 			return (URI) null; // shouldnt happen as we only let valid URIs in..
@@ -234,7 +234,7 @@ implements SemanticObject {
 	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
 	public List<Relationship> getRelationships() {
-        return (List<Relationship>) getFieldValue(RELATIONSHIP_XML_FIELD_NAME);
+        return (List<Relationship>) getFieldValue(RELATIONSHIP_FIELD_NAME);
     }
 
     // Operations
@@ -252,7 +252,7 @@ implements SemanticObject {
 		*/
 		// Take the URI and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    setFieldValue(URI_XML_FIELD_NAME, value.toASCIIString());
+	    setFieldValue(URI_FIELD_NAME, value.toASCIIString());
 	}
 
 	/**

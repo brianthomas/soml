@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
 class RelationshipImpl extends AbstractXMLSerializableObject
 implements Relationship
 {
-   	private static final String URI_XML_FIELD_NAME = "URI";
-   	private static final String TARGET_XML_FIELD_NAME = "target";
+   	private static final String URI_FIELD_NAME = "URI";
+   	private static final String TARGET_FIELD_NAME = "target";
     	
 	private static final Logger logger = Logger.getLogger(RelationshipImpl.class);
 	
@@ -35,8 +35,8 @@ implements Relationship
    	RelationshipImpl (URI relationURI, SemanticObject target) { 
    		super("relationship");
    		this.setSerializeWhenEmpty(false);
-   		addField(URI_XML_FIELD_NAME, relationURI, XMLFieldType.ATTRIBUTE);
-   		addField(TARGET_XML_FIELD_NAME, target, XMLFieldType.CHILD);
+   		addField(URI_FIELD_NAME, relationURI, XMLFieldType.ATTRIBUTE);
+   		addField(TARGET_FIELD_NAME, target, XMLFieldType.CHILD);
    		logger.debug("Create new Relationship:"+relationURI.toASCIIString()+" to target: "+target);
    	}
    	
@@ -45,13 +45,13 @@ implements Relationship
    	 * @see net.datamodel.soml.Relationship#getTarget()
    	 */
 	public SemanticObject getTarget() {
-		return (SemanticObject) getFieldValue(TARGET_XML_FIELD_NAME);
+		return (SemanticObject) getFieldValue(TARGET_FIELD_NAME);
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.Relationship#getURI()
 	 */
-	public URI getURI() { return (URI) getFieldValue(URI_XML_FIELD_NAME); }
+	public URI getURI() { return (URI) getFieldValue(URI_FIELD_NAME); }
 	
 }
