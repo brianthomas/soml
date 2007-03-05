@@ -100,7 +100,7 @@ public class SOMLReader
         It is possible to override default SOML startElement handlers with 
         this method. 
      */
-    public void addStartElementHandlers (Map m, String namespace) 
+    public void addStartElementHandlers (Map<String,HandlerAction> m, String namespace) 
     throws NullPointerException
     {
        myDocumentHandler.addStartElementHandlers(m,namespace);
@@ -113,7 +113,7 @@ public class SOMLReader
         the CharDataAction interface. It is possible to override default
         SOML cdata handlers with this method. 
      */
-    public void addCharDataHandlers (Map m, String namespace) {
+    public void addCharDataHandlers (Map<String,HandlerAction> m, String namespace) {
        myDocumentHandler.addCharDataHandlers(m,namespace);
     }
 
@@ -124,7 +124,7 @@ public class SOMLReader
         It is possible to override default SOML startElement handlers with 
         this method. 
     */
-    public void addEndElementHandlers (Map m, String namespace) {
+    public void addEndElementHandlers (Map<String,HandlerAction> m, String namespace) {
        myDocumentHandler.addEndElementHandlers(m,namespace);
     }
 

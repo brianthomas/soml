@@ -30,7 +30,6 @@ package net.datamodel.soml.support;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +94,7 @@ public interface SOMLDocument extends Document
    public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so) throws DOMException;
    
    // TODO: WHat is this, is this needed??
-   public Map getSoIdTable();
+   public Map<String,String> getSoIdTable();
    
    /** Return references to all semantic objects held within this document.
     * 
@@ -118,13 +117,13 @@ public interface SOMLDocument extends Document
     * 
     * @param prefixNamespaceMappings  the prefix to namespace mappings to set
     */
-   public void setPrefixNamespaceMappings(Map prefixMappings);
+   public void setPrefixNamespaceMappings(Map<String,String> prefixMappings);
 
    /** Get the prefix mappings for this document.
     * 
     * @return
     */
-   public Map getPrefixNamespaceMappings();
+   public Map<String,String> getPrefixNamespaceMappings();
 
 }
 
