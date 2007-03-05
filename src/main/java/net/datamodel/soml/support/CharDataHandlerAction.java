@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 /** Interface for all start element actions in the Reader start
     element dispatch table. 
 */
-public interface CharDataHandlerAction {
+public interface CharDataHandlerAction extends HandlerAction {
   public void action (SOMLDocumentHandler handler, char buf [], int offset, int len) throws SAXException;
 }
 

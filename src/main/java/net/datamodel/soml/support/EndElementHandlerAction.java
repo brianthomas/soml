@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
     element dispatch table. 
     @version $Revision$
 */
-public interface EndElementHandlerAction {
+public interface EndElementHandlerAction extends HandlerAction {
   public void action (SOMLDocumentHandler handler) throws SAXException; 
 }
 
