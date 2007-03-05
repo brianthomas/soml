@@ -42,10 +42,8 @@ import java.util.Vector;
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
-import net.datamodel.xssp.XMLSerializableField;
 import net.datamodel.xssp.core.AbstractXMLSerializableObject;
 import net.datamodel.xssp.core.AbstractXMLSerializableObjectList;
-import net.datamodel.xssp.core.XMLSerializableFieldImpl;
 import net.datamodel.xssp.support.Specification;
 import net.datamodel.xssp.support.XMLReferenceSerializationType;
 
