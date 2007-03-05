@@ -29,7 +29,6 @@
 package net.datamodel.soml.support;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
