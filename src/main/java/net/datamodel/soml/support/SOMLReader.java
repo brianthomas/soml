@@ -260,11 +260,11 @@ public class SOMLReader
             } catch (org.xml.sax.SAXNotSupportedException e) {
                logger.info("This parser does not support LexicalHandlers and does not allow inspection of DTD events by the SOMLreader.");
                logger.info("This means that the SOMLDocument returned by this parser may not have their XMLDeclaration and DocumentType objects set appropriately.");
-               myDocumentHandler.setForceSetXMLHeaderStuffOnSemanticObject(true);
+               myDocumentHandler.setForceSetXMLHeaderStuff(true);
             } catch (org.xml.sax.SAXNotRecognizedException e) {
                logger.info("This parser does not support LexicalHandlers and does not allow inspection of DTD events by the SOMLReader.");
                logger.info("This means that the SOMLDocument returned by this parser may not have their XMLDeclaration and DocumentType objects set appropriately.");
-               myDocumentHandler.setForceSetXMLHeaderStuffOnSemanticObject(true);
+               myDocumentHandler.setForceSetXMLHeaderStuff(true);
             } catch (Exception e) {
                e.printStackTrace();
             }
