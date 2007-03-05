@@ -94,7 +94,7 @@ public interface SOMLDocument extends Document
    public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so) throws DOMException;
    
    // TODO: WHat is this, is this needed??
-   public Map<String,String> getSoIdTable();
+   public Map<String,SemanticObject> getSemanticObjectIdTable();
    
    /** Return references to all semantic objects held within this document.
     * 

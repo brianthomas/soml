@@ -62,10 +62,10 @@ public interface SOMLElement extends Element
 
 	/** Set the target SO which the element will represent.
 	 * 
-	 * @param q
+	 * @param so
 	 */
 	// TODO: needed? Cant we get away with putting this in the constructor?
-	public void setso(SemanticObject q);
+	public void setSemanticObject(SemanticObject so);
 
 }
 
