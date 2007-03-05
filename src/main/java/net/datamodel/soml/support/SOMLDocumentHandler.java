@@ -65,10 +65,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-/** 
-     Contains the core SAX document handler for the Reader. It also contains
-     the basic SOML element/charData handlers (as internal classes).
-     @version $Revision$
+/** Contains the core SAX document handler for the Reader. It also contains
+ * the basic SOML element/charData handlers (as internal classes).
+ * @version $Revision$
  */
 public class SOMLDocumentHandler extends DefaultHandler 
 implements LexicalHandler
