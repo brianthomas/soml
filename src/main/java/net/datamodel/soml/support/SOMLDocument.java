@@ -102,9 +102,14 @@ public interface SOMLDocument extends Document
     * @return
     */
    public List getSemanticObjects(boolean deep);
+   
+   /** Get the target namespaceURI for the document.
+    */
+   public String getNamespaceURI();
 
-
-   public String getNamespace(String prefix);
+   /** Get a the namespaceURI for a particular prefix.
+    */
+   public String getNamespaceURI(String prefix);
    
    /** Set a particular prefix to namespace mapping in the document.
     * 

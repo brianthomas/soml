@@ -37,11 +37,13 @@ import java.io.Writer;
 import java.net.URI;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
+import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.core.AbstractXMLSerializableObject;
 import net.datamodel.xssp.core.AbstractXMLSerializableObjectList;
 import net.datamodel.xssp.support.Specification;
@@ -257,8 +259,8 @@ implements SemanticObject {
      * @return boolean value of whether or not some content was written.
      */
     protected boolean basicXMLWriter (
-                                      Hashtable idTable,
-                                      Hashtable prefixTable,
+                                      Map<String,XMLSerializableObject> idTable,
+                                      Map<String,String> prefixTable,
                                       Writer outputWriter,
                                       String indent,
                                       String newNodeNameString,
@@ -304,7 +306,7 @@ implements SemanticObject {
     }
 
     // find unique id name within a idtable of objects
-    protected String findUniqueIdName( Hashtable idTable, String baseIdName)
+    protected String findUniqueIdName( Map<String,XMLSerializableObject> idTable, String baseIdName)
     {
        StringBuilder testName = new StringBuilder (baseIdName);
        while (idTable.containsKey(testName.toString())) {

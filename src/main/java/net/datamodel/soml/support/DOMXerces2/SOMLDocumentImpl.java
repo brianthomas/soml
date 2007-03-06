@@ -43,11 +43,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.support.SOMLDocument;
 import net.datamodel.soml.support.SOMLElement;
 import net.datamodel.xssp.XMLSerializableObject;
-import net.datamodel.xssp.support.Constants;
+import net.datamodel.xssp.core.Utility;
 import net.datamodel.xssp.support.Specification;
 import net.datamodel.xssp.support.XMLWriter;
 
@@ -364,8 +365,8 @@ implements SOMLDocument
              logger.warn("No prefix namespace table in document...(rootNode:"+root.getTagName()+")...doing slow auto-generation technique.");
 
              // first add in the necessaries
-             PrefixNamespaceMappingHashtable.put("xsi",Constants.XML_SCHEMA_INSTANCE_NAMESPACE_URI);
-             // PrefixNamespaceMappingHashtable.put("",Constants.SOML_NAMESPACE_URI);
+             PrefixNamespaceMappingHashtable.put("xsi",Constant.XML_SCHEMA_INSTANCE_NAMESPACE_URI);
+             // PrefixNamespaceMappingHashtable.put("",Constant.SOML_NAMESPACE_URI);
 
              // pre-add in the root element namespace as the default
              // this overrides, and is simpler/faster than the following chunk of 

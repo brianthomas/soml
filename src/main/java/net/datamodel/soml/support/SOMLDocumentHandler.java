@@ -1,6 +1,6 @@
 
 
-// SOMLDocumentHandler.java Copyright (c) 2004 Brian Thomas. All rights reserved.
+// XSSPDocumentHandler.java Copyright (c) 2004 Brian Thomas. All rights reserved.
 
 /* LICENSE
 
@@ -26,7 +26,7 @@
 */
 
 
-package net.datamodel.soml.support;
+package net.datamodel.XSSP.support;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -43,12 +43,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.datamodel.soml.Constant;
-import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.support.handlers.DefaultCharDataHandlerFunc;
-import net.datamodel.soml.support.handlers.DefaultElementWithCharDataHandlerFunc;
-import net.datamodel.soml.support.handlers.DefaultEndElementHandlerFunc;
-import net.datamodel.soml.support.handlers.DefaultStartElementHandlerFunc;
+import net.datamodel.XSSP.Constant;
+import net.datamodel.XSSP.SemanticObject;
+import net.datamodel.XSSP.support.handlers.DefaultCharDataHandlerFunc;
+import net.datamodel.XSSP.support.handlers.DefaultElementWithCharDataHandlerFunc;
+import net.datamodel.XSSP.support.handlers.DefaultEndElementHandlerFunc;
+import net.datamodel.XSSP.support.handlers.DefaultStartElementHandlerFunc;
 import net.datamodel.xssp.XMLSerializableObject;
 
 import org.apache.log4j.Logger;
@@ -66,24 +66,24 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 /** Contains the core SAX document handler for the Reader. It also contains
- * the basic SOML element/charData handlers (as internal classes).
+ * the basic XSSP element/charData handlers (as internal classes).
  * @version $Revision$
  */
-public class SOMLDocumentHandler extends DefaultHandler 
+public class XSSPDocumentHandler extends DefaultHandler 
 implements LexicalHandler
 {
 
     // Fields
     //
 	
-	private static final Logger logger = Logger.getLogger(SOMLDocumentHandler.class);
+	private static final Logger logger = Logger.getLogger(XSSPDocumentHandler.class);
 	
 	private static enum HandlerType { START, END, CHAR }
 
 	/** The document into which we will parse.
 	 * 
 	 */
-    private SOMLDocument myDocument;
+    private XSSPDocument myDocument;
     
     // Options for the document handler
     protected Map<String,String> Options = new Hashtable<String,String>();
@@ -154,8 +154,8 @@ implements LexicalHandler
     private Pattern PrefixPattern = Pattern.compile ("(.*?):(.*?)", Pattern.DOTALL | Pattern.COMMENTS);
     private Pattern SchemaLocationPattern = Pattern.compile ("(.*?)\\s+(.*?)", Pattern.DOTALL | Pattern.COMMENTS);
     
-    // TODO : put schema pattern in SOMLDocument, not the doc handler.
-    private Pattern SOMLSchemaPattern = Pattern.compile (".*"+Constant.SOML_SCHEMA_NAME, Pattern.COMMENTS);
+    // TODO : put schema pattern in XSSPDocument, not the doc handler.
+    private Pattern XSSPSchemaPattern = Pattern.compile (".*"+Constant.XSSP_SCHEMA_NAME, Pattern.COMMENTS);
 
     // Constuctors
     //
@@ -164,7 +164,7 @@ implements LexicalHandler
      * 
      * @param doc
      */
-    public SOMLDocumentHandler (SOMLDocument doc)
+    public XSSPDocumentHandler (XSSPDocument doc)
     {
        init();
        setDocument(doc);
@@ -175,7 +175,7 @@ implements LexicalHandler
      * @param doc
      * @param options
      */ 
-    public SOMLDocumentHandler (SOMLDocument doc, Map<String,String> options)
+    public XSSPDocumentHandler (XSSPDocument doc, Map<String,String> options)
     {
        init();
        Options = options;
@@ -188,7 +188,7 @@ implements LexicalHandler
 
     /** Get the document the Document that the SAX handler will parse into. 
     */
-    public SOMLDocument getDocument() { return myDocument; }
+    public XSSPDocument getDocument() { return myDocument; }
 
     /**
      * Record the relative path for the inputSource that the content handler is working on.
@@ -198,7 +198,7 @@ implements LexicalHandler
    /** Set the document the Document that the handler will parse into. 
     * @throws NullPointerException
     */
-    public void setDocument (SOMLDocument doc)
+    public void setDocument (XSSPDocument doc)
     {
 
        if(doc == null)
@@ -211,8 +211,8 @@ implements LexicalHandler
         Keys in the Hashtable are strings describing the node name in
         and the value is a code reference to the class that will handle 
         the event. The class must implement the StartElementAction interface. 
-        It is possible to override default SOML startElement handlers with 
-        this method by specifying the SOML namespace URI. 
+        It is possible to override default XSSP startElement handlers with 
+        this method by specifying the XSSP namespace URI. 
      */
     public void addStartElementHandlers (Map<String, HandlerAction> m,
     		String namespace) 
@@ -237,7 +237,7 @@ implements LexicalHandler
         the XML document that has CDATA/PCDATA and the value is a code reference
         to the class that will handle the event. The class must implement 
         the CharDataAction interface. It is possible to override default
-        SOML cdata handlers with this method by specifying the SOML namespace URI. 
+        XSSP cdata handlers with this method by specifying the XSSP namespace URI. 
         @return true if merge succeeds, false otherwise (null map was passed).
      */
     public void addCharDataHandlers (Map<String,HandlerAction> m, String namespace) 
@@ -261,8 +261,8 @@ implements LexicalHandler
         Keys in the Hashtable are strings describing the node name in
         and the value is a code reference to the class that will handle 
         the event. The class must implement the EndElementAction interface. 
-        It is possible to override default SOML endElement handlers with 
-        this method by specifying the SOML namespace URI. 
+        It is possible to override default XSSP endElement handlers with 
+        this method by specifying the XSSP namespace URI. 
     */
     public void addEndElementHandlers (Map<String,HandlerAction> m, String namespace) 
     throws NullPointerException
@@ -330,14 +330,14 @@ implements LexicalHandler
     }
 
     /** Allow setting a heavy-handled mode. 
-     * If true it tells this SOMLDocumentHandler that it should 
+     * If true it tells this XSSPDocumentHandler that it should 
      * go ahead and insert XMLHeader stuff even if the  
      * parser doesnt support DTD events using reasonable values.
      */
     public void setForceSetXMLHeaderStuff (boolean value) { ForceSetXMLHeaderStuff = value; }
     
     /** Get the value of 'forceSetXMLHeaderStuff'. 
-     * If true it tells this SOMLDocumentHandler that it should 
+     * If true it tells this XSSPDocumentHandler that it should 
      * go ahead and insert XMLHeader stuff even if the  
      * parser doesnt support DTD events using reasonable values.
      * 
@@ -728,7 +728,7 @@ implements LexicalHandler
 
         logger.info("H_EndDocument:[]");
 
-        // need to setprefix mappings in SOMLDocument
+        // need to setprefix mappings in XSSPDocument
         getDocument().setPrefixNamespaceMappings(PrefixNamespaceMapping);
 /*
         if (DoctypeObjectAttributes != null || ForceSetXMLHeaderStuff ) {
@@ -918,7 +918,7 @@ implements LexicalHandler
     protected boolean checkDocVersion (String version)
     {
 // FIX
-      // if(version != SOMLVersion) { return false; } else { return true; }
+      // if(version != XSSPVersion) { return false; } else { return true; }
       return false;
     }
 
@@ -927,7 +927,7 @@ implements LexicalHandler
      *  Semantic Objects in a global fashion rather than repeating code
      *  in each of the SemanticObject handlers.
      *  At any rate the logic is that if no parent SO exists, then it defaults to 
-     *  adding the Semantic Objects as SOMLElements in the SOMLDocument.
+     *  adding the Semantic Objects as XSSPElements in the XSSPDocument.
      */
     // TODO : this actually should be in a handler (for relationship) I think
     protected void startHandlerAddSemanticObjectToParent(String namespaceURI, 
@@ -944,7 +944,7 @@ implements LexicalHandler
 
                  // Add as a QElement to our document, as appropriate (e.g.
                  // either to  node or as document root).
-                Element elem = getDocument().createSOMLElementNS(namespaceURI, so);
+                Element elem = getDocument().createXSSPElementNS(namespaceURI, so);
                 Node node = getCurrentNode();
                 if( node != null) {
                    node.appendChild(elem);
@@ -1285,57 +1285,57 @@ implements LexicalHandler
     }
 
 
-    // set up SOML handler associtions w/ schema complexTypes
+    // set up XSSP handler associtions w/ schema complexTypes
     protected void initStartElementHandlers ()
     {
 
-        Map<String,HandlerAction> SOMLAssoc = new Hashtable<String,HandlerAction>();
+        Map<String,HandlerAction> XSSPAssoc = new Hashtable<String,HandlerAction>();
         Map<String,HandlerAction> xmlAssoc = new Hashtable<String,HandlerAction>();
         
         /*
-        SOMLAssoc.put(Constants.NodeTypeName.semantic object, new IllegalStartElementHandlerFunc()); // its abstract..never invoked as a node! 
-        SOMLAssoc.put(Constants.NodeTypeName.semantic object_CONTAINER, new semantic objectContainerStartElementHandlerFunc());
+        XSSPAssoc.put(Constants.NodeTypeName.semantic object, new IllegalStartElementHandlerFunc()); // its abstract..never invoked as a node! 
+        XSSPAssoc.put(Constants.NodeTypeName.semantic object_CONTAINER, new semantic objectContainerStartElementHandlerFunc());
         */
 
         // generic XML handlers. we can certainly treat simple string and anyURI -based elements 
         xmlAssoc.put("string", new DefaultStartElementHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultStartElementHandlerFunc());
 
-        StartElementHandlers.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc); 
+        StartElementHandlers.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc); 
         StartElementHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
 
     }
 
-    // set up SOML handler associtions w/ schema complexTypes
+    // set up XSSP handler associtions w/ schema complexTypes
     protected void initCharDataHandlers()
     {
-        Map<String,HandlerAction> SOMLAssoc = new Hashtable<String,HandlerAction>();
+        Map<String,HandlerAction> XSSPAssoc = new Hashtable<String,HandlerAction>();
         Map<String,HandlerAction> xmlAssoc = new Hashtable<String,HandlerAction>();
         
-        // SOMLAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new NullCharDataHandlerFunc());
+        // XSSPAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new NullCharDataHandlerFunc());
 
         // generic XML handlers. we can certainly treat simple string and anyURI-based elements 
         xmlAssoc.put("string", new DefaultElementWithCharDataHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultElementWithCharDataHandlerFunc());
 
-        CharDataHandlers.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc);
+        CharDataHandlers.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc);
         CharDataHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
 
     }
 
-   // set up SOML handler associtions w/ schema complexTypes
+   // set up XSSP handler associtions w/ schema complexTypes
     protected void initEndElementHandlers ()
     {
-        Map<String,HandlerAction> SOMLAssoc = new Hashtable<String,HandlerAction>();
+        Map<String,HandlerAction> XSSPAssoc = new Hashtable<String,HandlerAction>();
         Map<String,HandlerAction> xmlAssoc = new Hashtable<String,HandlerAction>();
         
-//        SOMLAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new semantic objectEndElementHandlerFunc());
+//        XSSPAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new semantic objectEndElementHandlerFunc());
 
         // generic XML handlers. we can certainly treat simple string and anyURI-based elements 
         xmlAssoc.put("string", new DefaultEndElementHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultEndElementHandlerFunc());
 
-        EndElementHandlers.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc); 
+        EndElementHandlers.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc); 
         EndElementHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
 
     }
@@ -1521,10 +1521,10 @@ implements LexicalHandler
 
           // init handlers for this schema..
           // lets cheat a little..we have already "by hand" set the element handlers
-          // for the SOML schema, so no need to go thru this to do it
-          Matcher myMatcher = SOMLSchemaPattern.matcher(url);
-          if(uri.equals(Constant.SOML_NAMESPACE_URI) && myMatcher.matches()) {
-              logger.debug("   skipping loading element handlers for SOML schema.");
+          // for the XSSP schema, so no need to go thru this to do it
+          Matcher myMatcher = XSSPSchemaPattern.matcher(url);
+          if(uri.equals(Constant.XSSP_NAMESPACE_URI) && myMatcher.matches()) {
+              logger.debug("   skipping loading element handlers for XSSP schema.");
               return handlers;
           }
           
@@ -1542,15 +1542,15 @@ implements LexicalHandler
       } catch (IOException e) {
     	  // TODO: this this really a warning??
           logger.warn("Can't create input source for schema parser : "+e.getMessage());
-          logger.warn("Using the default SOML handlers (there may be further problems related to this...)");
+          logger.warn("Using the default XSSP handlers (there may be further problems related to this...)");
       } catch (SAXException e) {
     	  // TODO: this this really a warning??
           logger.warn("Can't parse schema input source : "+e.getMessage());
-          logger.warn("Using the default SOML handlers (there may be further problems related to this...)");
+          logger.warn("Using the default XSSP handlers (there may be further problems related to this...)");
       } catch (ParserConfigurationException e) {
     	  // TODO: this this really a warning??
           logger.warn("Can't create schema DOM parser : "+e.getMessage());
-          logger.warn("Using the default SOML handlers (there may be further problems related to this...)");
+          logger.warn("Using the default XSSP handlers (there may be further problems related to this...)");
       }
 
       return handlers;
@@ -1571,7 +1571,7 @@ implements LexicalHandler
 
       // assign/init 'globals' (e.g. object fields)
       Options = new Hashtable<String,String>();  
-      myDocument = (SOMLDocument) null;
+      myDocument = (XSSPDocument) null;
 
       Notation = new HashSet<Map<String,String>>();
       UnParsedEntity = new Hashtable<String,Map<String,String>>();
@@ -1626,26 +1626,26 @@ implements LexicalHandler
     // initialize the associations between element names and complextypes (aka. keys for 
     // the dispatch table for start handler events) 
     // You may ask: why "hardwire" this table?
-    // We *could* do this by analysis of the SOML.xsd everytime we load the document handler, 
+    // We *could* do this by analysis of the XSSP.xsd everytime we load the document handler, 
     // but thats probably overkill, and a performance hit that we dont need to take.
     //
     // Optionally, it might be nice to have this table declared in the "Constant" class..that
     // seems better..
     private void initElementTypeAssoc() {
 
-       Map<String,HandlerInfo> SOMLAssoc = new Hashtable<String,HandlerInfo>();
+       Map<String,HandlerInfo> XSSPAssoc = new Hashtable<String,HandlerInfo>();
        Map<String,HandlerInfo> xmlAssoc = new Hashtable<String,HandlerInfo>();
 
-       // SOML namespace associations
-//       SOMLAssoc.put(Constants.NodeName.COMPOSITE_semantic object, new HandlerInfo(Constants.NodeTypeName.COMPOSITE_semantic object));
-//       SOMLAssoc.put(Constants.NodeName.REFERENCE_semantic object, new HandlerInfo(Constants.NodeTypeName.REFERENCE_semantic object));
+       // XSSP namespace associations
+//       XSSPAssoc.put(Constants.NodeName.COMPOSITE_semantic object, new HandlerInfo(Constants.NodeTypeName.COMPOSITE_semantic object));
+//       XSSPAssoc.put(Constants.NodeName.REFERENCE_semantic object, new HandlerInfo(Constants.NodeTypeName.REFERENCE_semantic object));
 
        // Simple string-based elements get the default handler
        xmlAssoc.put("string", new HandlerInfo("string"));
        xmlAssoc.put("anyURI", new HandlerInfo("anyURI"));
  
        // set up the associated namespace stuff
-       ElementTypeAssoc.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc);
+       ElementTypeAssoc.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc);
        ElementTypeAssoc.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
 
     }
@@ -1675,7 +1675,7 @@ implements LexicalHandler
      */
     protected class HandlerInfo {
        public String name = "";
-       public String uri = Constant.SOML_NAMESPACE_URI;
+       public String uri = Constant.XSSP_NAMESPACE_URI;
 
        public HandlerInfo (String n ) {
          name = n; 
@@ -1691,9 +1691,9 @@ implements LexicalHandler
      */
    protected class HandlerMapInfo {
        public String name1 = "";
-       public String uri1 = Constant.SOML_NAMESPACE_URI;
+       public String uri1 = Constant.XSSP_NAMESPACE_URI;
        public String name2 = "";
-       public String uri2 = Constant.SOML_NAMESPACE_URI;
+       public String uri2 = Constant.XSSP_NAMESPACE_URI;
        public String mixed = "";
        public HandlerType type = HandlerType.START;
 
@@ -1717,5 +1717,5 @@ implements LexicalHandler
 
     }
 
-} // End of SOMLDocumentHandler class 
+} // End of XSSPDocumentHandler class 
 
