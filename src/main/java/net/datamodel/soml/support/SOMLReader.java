@@ -32,8 +32,6 @@ package net.datamodel.soml.support;
 import java.io.StringReader;
 import java.util.Map;
 
-import net.datamodel.xssp.support.Constants;
-
 import org.apache.log4j.Logger;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
@@ -230,13 +228,15 @@ public class SOMLReader
         logger.debug("SOMLReader is using the XML parser:"+ parsername);
         logger.debug("          is using inputsource sysId:"+ inputsource.getSystemId());
         logger.debug("          is using inputsource pubId:"+ inputsource.getPublicId());
+        
+        String fileSepStr = System.getProperty("file.separator");
 
-        String[] sysIdPath = inputsource.getSystemId().split(Constants.FILE_SEP);
+        String[] sysIdPath = inputsource.getSystemId().split(fileSepStr);
         if(sysIdPath.length > 1)
         {
             String path = "";
             for(int i=sysIdPath.length-2; i>=0; i--)
-              path = sysIdPath[i] + Constants.FILE_SEP + path;
+              path = sysIdPath[i] + fileSepStr + path;
             logger.debug(" setting relative path in contentHandler:"+path);
             myDocumentHandler.setRelativePath(path);
         }

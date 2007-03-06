@@ -43,13 +43,13 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.support.handlers.DefaultCharDataHandlerFunc;
 import net.datamodel.soml.support.handlers.DefaultElementWithCharDataHandlerFunc;
 import net.datamodel.soml.support.handlers.DefaultEndElementHandlerFunc;
 import net.datamodel.soml.support.handlers.DefaultStartElementHandlerFunc;
 import net.datamodel.xssp.XMLSerializableObject;
-import net.datamodel.xssp.support.Constants;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
@@ -79,23 +79,7 @@ implements LexicalHandler
 	private static final Logger logger = Logger.getLogger(SOMLDocumentHandler.class);
 	
 	private static enum HandlerType { START, END, CHAR }
-	
-	/** The namespace URI of this package.
-	 */ 
-	public static final String SOML_NAMESPACE_URI = "http://www.data-model.net/SOML";
 
-	/** The XML schema version used by this package.
-	 */ 
-	public static final String XML_SCHEMA_NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema";
-	
-	/** The XML schema-instance version used by this package.
-	 */ 
-	public static final String XML_SCHEMA_INSTANCE_NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema-instance"; 
-	
-	/** The name of the relevant version of the schema file for this package.
-	 */ 
-	public static final String SOML_SCHEMA_NAME = "SOML_01.xsd";
-	  
 	/** The document into which we will parse.
 	 * 
 	 */
@@ -171,7 +155,7 @@ implements LexicalHandler
     private Pattern SchemaLocationPattern = Pattern.compile ("(.*?)\\s+(.*?)", Pattern.DOTALL | Pattern.COMMENTS);
     
     // TODO : put schema pattern in SOMLDocument, not the doc handler.
-    private Pattern SOMLSchemaPattern = Pattern.compile (".*"+SOML_SCHEMA_NAME, Pattern.COMMENTS);
+    private Pattern SOMLSchemaPattern = Pattern.compile (".*"+Constant.SOML_SCHEMA_NAME, Pattern.COMMENTS);
 
     // Constuctors
     //
@@ -1128,7 +1112,7 @@ implements LexicalHandler
        // first: find the schema prefix mapping for our instance
        for (String prefix : PrefixNamespaceMapping.keySet()) {
           String namespace = (String) PrefixNamespaceMapping.get(prefix);
-          if (namespace.equals(XML_SCHEMA_INSTANCE_NAMESPACE_URI)) {
+          if (namespace.equals(Constant.XML_SCHEMA_INSTANCE_NAMESPACE_URI)) {
               schema_xmlns = prefix;
               break;
            }
@@ -1220,7 +1204,7 @@ implements LexicalHandler
                     StartElementHandlerAction shandler = findStartHandler(base,uri);
                     if(shandler != null) {
                        StartElementHandlers.get(myURI).put(name,shandler);
-                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+Constants.NEW_LINE+"       start Handler:"+base+"["+uri+"]");
+                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+System.getProperty("line.separator")+"       start Handler:"+base+"["+uri+"]");
                     } 
                     else
                          missingHandlers.add(new HandlerMapInfo(name,myURI,base,uri,HandlerType.START));
@@ -1234,7 +1218,7 @@ implements LexicalHandler
                     EndElementHandlerAction ehandler = findEndHandler(base,uri);
                     if(ehandler != null) {
                        EndElementHandlers.get(myURI).put(name,ehandler);
-                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+Constants.NEW_LINE+"       end Handler:"+base+"["+uri+"]");
+                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+System.getProperty("line.separator")+"       end Handler:"+base+"["+uri+"]");
                     } else
                        missingHandlers.add(new HandlerMapInfo(name,myURI,base,uri,HandlerType.END));
                  }
@@ -1246,7 +1230,7 @@ implements LexicalHandler
                     CharDataHandlerAction cdhandler = findCharDataHandler(base,uri,mixed);
                     if(cdhandler != null) {
                        CharDataHandlers.get(myURI).put(name,cdhandler);
-                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+Constants.NEW_LINE+"       charData Handler:"+base+"["+uri+"] mixed:["+mixed+"]");
+                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+System.getProperty("line.separator") +"       charData Handler:"+base+"["+uri+"] mixed:["+mixed+"]");
                     } else
                        missingHandlers.add(new HandlerMapInfo(name,myURI,base,uri,HandlerType.CHAR,mixed));
                  }
@@ -1290,7 +1274,7 @@ implements LexicalHandler
                  if(!ElementTypeAssoc.containsKey(myURI))
                     ElementTypeAssoc.put(myURI,new Hashtable<String,HandlerInfo>());
 
-                 logger.debug(" --> Mapping element:"+name+"["+myURI+"]"+Constants.NEW_LINE+"       to handlerKey:"+type+"["+uri+"]");
+                 logger.debug(" --> Mapping element:"+name+"["+myURI+"]"+System.getProperty("line.separator")+"       to handlerKey:"+type+"["+uri+"]");
                  HandlerInfo info = new HandlerInfo(type,uri);
                  ElementTypeAssoc.get(myURI).put(name,info);
 
@@ -1317,8 +1301,8 @@ implements LexicalHandler
         xmlAssoc.put("string", new DefaultStartElementHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultStartElementHandlerFunc());
 
-        StartElementHandlers.put(SOML_NAMESPACE_URI, SOMLAssoc); 
-        StartElementHandlers.put(XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
+        StartElementHandlers.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc); 
+        StartElementHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
 
     }
 
@@ -1334,8 +1318,8 @@ implements LexicalHandler
         xmlAssoc.put("string", new DefaultElementWithCharDataHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultElementWithCharDataHandlerFunc());
 
-        CharDataHandlers.put(SOML_NAMESPACE_URI, SOMLAssoc);
-        CharDataHandlers.put(XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
+        CharDataHandlers.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc);
+        CharDataHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
 
     }
 
@@ -1351,8 +1335,8 @@ implements LexicalHandler
         xmlAssoc.put("string", new DefaultEndElementHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultEndElementHandlerFunc());
 
-        EndElementHandlers.put(SOML_NAMESPACE_URI, SOMLAssoc); 
-        EndElementHandlers.put(XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
+        EndElementHandlers.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc); 
+        EndElementHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
 
     }
 
@@ -1399,16 +1383,16 @@ implements LexicalHandler
 
                   // reporting..probably a better way to do this..
                   if(gotHandler) { 
-                      logger.debug(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+Constants.NEW_LINE+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
+                      logger.debug(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+System.getProperty("line.separator")+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
                   } else {
                       String handlerTypeName = "start element";
                       if(info.type == HandlerType.END) 
                     	  handlerTypeName = "end element";
                       if(info.type == HandlerType.CHAR) 
                     	  handlerTypeName = "char data";
-                      logger.error(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+Constants.NEW_LINE+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
+                      logger.error(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+System.getProperty("line.separator")+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
                       logger.error(" ** Can't find "+handlerTypeName+" Handler for complexType:"+info.name1
-                                  +"["+info.uri1+"] "+Constants.NEW_LINE
+                                  +"["+info.uri1+"] "+ System.getProperty("line.separator")
                                   +"       (Missing handler:"+info.name2+"["+info.uri2+"])");
                   }
 
@@ -1539,7 +1523,7 @@ implements LexicalHandler
           // lets cheat a little..we have already "by hand" set the element handlers
           // for the SOML schema, so no need to go thru this to do it
           Matcher myMatcher = SOMLSchemaPattern.matcher(url);
-          if(uri.equals(SOML_NAMESPACE_URI) && myMatcher.matches()) {
+          if(uri.equals(Constant.SOML_NAMESPACE_URI) && myMatcher.matches()) {
               logger.debug("   skipping loading element handlers for SOML schema.");
               return handlers;
           }
@@ -1645,7 +1629,7 @@ implements LexicalHandler
     // We *could* do this by analysis of the SOML.xsd everytime we load the document handler, 
     // but thats probably overkill, and a performance hit that we dont need to take.
     //
-    // Optionally, it might be nice to have this table declared in the "Constants" class..that
+    // Optionally, it might be nice to have this table declared in the "Constant" class..that
     // seems better..
     private void initElementTypeAssoc() {
 
@@ -1661,8 +1645,8 @@ implements LexicalHandler
        xmlAssoc.put("anyURI", new HandlerInfo("anyURI"));
  
        // set up the associated namespace stuff
-       ElementTypeAssoc.put(SOML_NAMESPACE_URI, SOMLAssoc);
-       ElementTypeAssoc.put(XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
+       ElementTypeAssoc.put(Constant.SOML_NAMESPACE_URI, SOMLAssoc);
+       ElementTypeAssoc.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
 
     }
     
@@ -1691,7 +1675,7 @@ implements LexicalHandler
      */
     protected class HandlerInfo {
        public String name = "";
-       public String uri = SOML_NAMESPACE_URI;
+       public String uri = Constant.SOML_NAMESPACE_URI;
 
        public HandlerInfo (String n ) {
          name = n; 
@@ -1707,9 +1691,9 @@ implements LexicalHandler
      */
    protected class HandlerMapInfo {
        public String name1 = "";
-       public String uri1 = SOML_NAMESPACE_URI;
+       public String uri1 = Constant.SOML_NAMESPACE_URI;
        public String name2 = "";
-       public String uri2 = SOML_NAMESPACE_URI;
+       public String uri2 = Constant.SOML_NAMESPACE_URI;
        public String mixed = "";
        public HandlerType type = HandlerType.START;
 
