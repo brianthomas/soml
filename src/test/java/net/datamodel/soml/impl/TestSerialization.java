@@ -8,10 +8,8 @@ import java.net.URISyntaxException;
 
 import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.impl.SemanticObjectImpl;
 import net.datamodel.xssp.XMLSerializableObject;
-import net.datamodel.xssp.support.Constants;
-import net.datamodel.xssp.support.Specification;
+import net.datamodel.xssp.parse.Specification;
 
 import org.apache.log4j.Logger;
 
@@ -62,7 +60,8 @@ public class TestSerialization extends BaseCase {
 		spec.setPrettyOutput(true);
 		
 		String indent = spec.getPrettyOutputIndentation();
-		String newLine = Constants.NEW_LINE;
+		String newLine = System.getProperty("line.separator");
+		
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\"/>");
 		checkXMLOutput(so2,
 				"<semanticObject URI=\"urn:test:SemanticObject2\">"+newLine

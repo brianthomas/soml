@@ -8,7 +8,7 @@ import java.util.Collection;
 
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.UnmixedSemanticObjectList;
-import net.datamodel.xssp.core.AbstractXMLSerializableObjectList;
+import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
 
 import org.apache.log4j.Logger;
 

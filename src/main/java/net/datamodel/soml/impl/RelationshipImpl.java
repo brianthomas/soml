@@ -6,8 +6,7 @@ import java.net.URI;
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
-import net.datamodel.xssp.XMLSerializableField;
-import net.datamodel.xssp.core.AbstractXMLSerializableObject;
+import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
 
 import org.apache.log4j.Logger;
 

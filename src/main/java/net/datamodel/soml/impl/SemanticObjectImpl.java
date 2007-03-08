@@ -35,7 +35,6 @@ package net.datamodel.soml.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -44,10 +43,10 @@ import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.XMLSerializableObject;
-import net.datamodel.xssp.core.AbstractXMLSerializableObject;
-import net.datamodel.xssp.core.AbstractXMLSerializableObjectList;
-import net.datamodel.xssp.support.Specification;
-import net.datamodel.xssp.support.XMLReferenceSerializationType;
+import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
+import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
+import net.datamodel.xssp.parse.Specification;
+import net.datamodel.xssp.parse.XMLReferenceSerializationType;
 
 import org.apache.log4j.Logger;
 
