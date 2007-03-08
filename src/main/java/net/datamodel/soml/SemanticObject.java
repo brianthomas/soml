@@ -33,7 +33,7 @@ package net.datamodel.soml;
 import java.net.URI;
 import java.util.List;
 
-import net.datamodel.xssp.XMLSerializableObject;
+import net.datamodel.xssp.ReferenceableXMLSerializableObject;
 
 /**
  * The interface for all objects which have Semantic meaning as represented
@@ -48,7 +48,7 @@ import net.datamodel.xssp.XMLSerializableObject;
  * @version $VersionId:$
  */
 public interface SemanticObject 
-extends XMLSerializableObject
+extends ReferenceableXMLSerializableObject
 {
 
     // Operations
@@ -120,19 +120,6 @@ extends XMLSerializableObject
      * @retURI List of relationships which have the named URI.
      */
     public List<Relationship> getRelationships(URI relationshipURI);
-    
-    /**
-     * Get the id of an instance of this class. It should be unique across all
-     * objects within a given document/object tree.
-     */
-    public String getId ( );
-    
-    // TODO: remove the setId method
-    /** The id of an instance of this class. It should be unique across all 
-     * SemanticObjects within a given document/object tree.
-     * 
-     */ 
-    public void setId ( String value );
 
     /** Get the URI which represents the semantic meaning (ontological class) 
      * of this object.  The URI maybe the same for different instances of a 
