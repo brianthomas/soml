@@ -29,31 +29,16 @@
 
 package net.datamodel.soml.support;
 
-import java.io.Writer;
-
 import net.datamodel.soml.SemanticObject;
-
-import org.w3c.dom.Element;
+import net.datamodel.xssp.parse.XSSPElement;
 
 /**
  * SOMLElement is a DOM element interface for elements which hold Quantities within.
  */
 
-public interface SOMLElement extends Element
+public interface SOMLElement extends XSSPElement
 {
-	/** Write this element out in XML as a String.
-	 * 
-	 * @return
-	 */
-	public String toXMLString ();
 	
-	/** Write this element out in XML to the target writer.
-	 * 
-	 * @param outputWriter
-	 * @throws java.io.IOException
-	 */
-	public void toXMLWriter (Writer outputWriter) throws java.io.IOException;
-
 	/** Return the target SO of which this element represents.
 	 * 
 	 * @return

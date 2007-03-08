@@ -28,16 +28,13 @@
 
 package net.datamodel.soml.support;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.xssp.parse.XSSPDocument;
 
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * SOMLDocument is a DOM-based document interface. 
@@ -45,34 +42,8 @@ import org.w3c.dom.Element;
  * Documents regardless of underlying DOM implementation 
  */
 
-public interface SOMLDocument extends Document 
+public interface SOMLDocument extends XSSPDocument 
 {
-	/** Write this document out in XML as a string.
-	 * 
-	 * @return
-	 */
-	public String toXMLString ();
-   
-	/** Write this document out in XML to the target writer.
-     * 
-     * @param outputWriter
-     * @throws IOException
-     */
-	public void toXMLWriter (Writer outputWriter) throws IOException;
-   
-	/** Write this document out in XML to the target file.
-     * 
-     * @param fileName
-     * @throws IOException
-     */ 
-    public void toXMLFile (String fileName) throws IOException;
-   
-    /** Set the document element of this document.
-     * 
-     * @param elem
-     */
-   // TODO: do we need this? Can we get away with putting in the constructor??
-    public void setDocumentElement (Element elem);
 
    /** Create an element node which is linked to the given target
     * semantic object. The namespace of the element node created 
@@ -102,33 +73,6 @@ public interface SOMLDocument extends Document
     * @return
     */
    public List getSemanticObjects(boolean deep);
-   
-   /** Get the target namespaceURI for the document.
-    */
-   public String getNamespaceURI();
-
-   /** Get a the namespaceURI for a particular prefix.
-    */
-   public String getNamespaceURI(String prefix);
-   
-   /** Set a particular prefix to namespace mapping in the document.
-    * 
-    * @param prefix
-    * @param namespaceURI
-    */
-   public void setPrefixNamespaceMapping(String prefix, String namespaceURI);
-   
-   /** Set a group of prefix mappings for this document. 
-    * 
-    * @param prefixNamespaceMappings  the prefix to namespace mappings to set
-    */
-   public void setPrefixNamespaceMappings(Map<String,String> prefixMappings);
-
-   /** Get the prefix mappings for this document.
-    * 
-    * @return
-    */
-   public Map<String,String> getPrefixNamespaceMappings();
-
+  
 }
 
