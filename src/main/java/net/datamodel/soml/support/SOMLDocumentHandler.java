@@ -1,6 +1,6 @@
 
 
-// XSSPDocumentHandler.java Copyright (c) 2004 Brian Thomas. All rights reserved.
+// SOMLDocumentHandler.java Copyright (c) 2004 Brian Thomas. All rights reserved.
 
 /* LICENSE
 
@@ -26,9 +26,11 @@
 */
 
 
-package net.datamodel.XSSP.support;
+package net.datamodel.soml.support;
 
+import java.awt.Component;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -43,13 +45,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.datamodel.XSSP.Constant;
-import net.datamodel.XSSP.SemanticObject;
-import net.datamodel.XSSP.support.handlers.DefaultCharDataHandlerFunc;
-import net.datamodel.XSSP.support.handlers.DefaultElementWithCharDataHandlerFunc;
-import net.datamodel.XSSP.support.handlers.DefaultEndElementHandlerFunc;
-import net.datamodel.XSSP.support.handlers.DefaultStartElementHandlerFunc;
+import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLSerializableObject;
+import net.datamodel.xssp.support.Constants;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Attr;
@@ -58,32 +56,35 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Nodes;
+import org.w3c.dom.Notation;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-/** Contains the core SAX document handler for the Reader. It also contains
- * the basic XSSP element/charData handlers (as internal classes).
- * @version $Revision$
+/** 
+     Contains the core SAX document handler for the Reader. It also contains
+     the basic SOML element/charData handlers (as internal classes).
+     @version $Revision$
  */
-public class XSSPDocumentHandler extends DefaultHandler 
+public class SOMLDocumentHandler extends DefaultHandler 
 implements LexicalHandler
 {
 
     // Fields
     //
 	
-	private static final Logger logger = Logger.getLogger(XSSPDocumentHandler.class);
+	private static final Logger logger = Logger.getLogger(SOMLDocumentHandler.class);
 	
-	private static enum HandlerType { START, END, CHAR }
-
+	static enum HandlerType { START, END, CHAR }
+	
 	/** The document into which we will parse.
 	 * 
 	 */
-    private XSSPDocument myDocument;
+    private SOMLDocument myDocument;
     
     // Options for the document handler
     protected Map<String,String> Options = new Hashtable<String,String>();
@@ -91,19 +92,17 @@ implements LexicalHandler
     /** The association between complexType name 
      *  (used has a key to lookup handlers) and elem name
      */
-    private Map<String,Map<String,HandlerInfo>> ElementTypeAssoc = new Hashtable<String,Map<String,HandlerInfo>>(); 
+    private Map<String,String> ElementTypeAssoc = new Hashtable<String,String>(); 
 
     // dispatch table action handler Maps
-    private Map<String,Map<String,HandlerAction>> StartElementHandlers = new Hashtable<String,Map<String,HandlerAction>>(); // start element handlers
-    private Map<String,Map<String,HandlerAction>> EndElementHandlers = new Hashtable<String,Map<String,HandlerAction>>();   // end element handlers 
-    private Map<String,Map<String,HandlerAction>> CharDataHandlers = new Hashtable<String,Map<String,HandlerAction>>();     // charData handlers
-    private Map<String,HandlerAction> DefaultHandlers = new Hashtable<String,HandlerAction>();      // default handlers 
+    private Map<String,Map> StartElementHandlers = new Hashtable<String,Map>(); // start element handlers
+    private Map<String,Map> EndElementHandlers = new Hashtable<String,Map>();   // end element handlers 
+    private Map<String,Map> CharDataHandlers = new Hashtable<String,Map>();     // charData handlers
+    private Map<String,Map> DefaultHandlers = new Hashtable<String,Map>();      // default handlers 
 
     // FIX: hurm.. needed? Lack of LexicalHandler in parser seems to require it.. 
     private boolean ForceSetXMLHeaderStuff = false;
-    
-    // TODO: needed?
-    private List<Object> ObjectList = new Vector<Object>();
+
 
     // References to the  working objects
     private List<String> NodeName = new Vector<String>();
@@ -114,13 +113,13 @@ implements LexicalHandler
      * we have parsed/created. Earlier items in the list are the
      * 'parent' of later listed items.
      */ 
-    private Map<String,SemanticObject> SemanticObjects = new Hashtable<String,SemanticObject>(); 
+    private List<SemanticObject> SemanticObjects = new Vector<SemanticObject>(); 
 
     // needed to capture internal entities.
-    private Set<Map<String,String>> Notation = new HashSet<Map<String,String>>();
-    private Map<String,Map<String,String>> UnParsedEntity = new Hashtable<String,Map<String,String>>();
-    private Map<String,String> PrefixNamespaceMapping = new Hashtable<String,String>();
-    private Map<String,String> DoctypeObjectAttributes = new Hashtable<String,String>(); 
+    private Set<String> Notation = new HashSet<String>();
+    private Map<String,Map> UnParsedEntity = new Hashtable<String,Map>();
+    private Map<String,Map> PrefixNamespaceMapping = new Hashtable<String,Map>();
+    private Map<String,Map> DoctypeObjectAttributes = new Hashtable<String,Map>(); 
 
     /** The relative path to the inputsource this content handler is working on.
      */ 
@@ -153,9 +152,7 @@ implements LexicalHandler
     private Pattern XMLNamespacePrefixPattern = Pattern.compile ("(xmlns):?(.*?)", Pattern.DOTALL | Pattern.COMMENTS);
     private Pattern PrefixPattern = Pattern.compile ("(.*?):(.*?)", Pattern.DOTALL | Pattern.COMMENTS);
     private Pattern SchemaLocationPattern = Pattern.compile ("(.*?)\\s+(.*?)", Pattern.DOTALL | Pattern.COMMENTS);
-    
-    // TODO : put schema pattern in XSSPDocument, not the doc handler.
-    private Pattern XSSPSchemaPattern = Pattern.compile (".*"+Constant.XSSP_SCHEMA_NAME, Pattern.COMMENTS);
+    private Pattern SOMLSchemaPattern = Pattern.compile (".*"+Constants.SOML_SCHEMA_NAME, Pattern.COMMENTS);
 
     // Constuctors
     //
@@ -164,7 +161,7 @@ implements LexicalHandler
      * 
      * @param doc
      */
-    public XSSPDocumentHandler (XSSPDocument doc)
+    public SOMLDocumentHandler (SOMLDocument doc)
     {
        init();
        setDocument(doc);
@@ -175,7 +172,7 @@ implements LexicalHandler
      * @param doc
      * @param options
      */ 
-    public XSSPDocumentHandler (XSSPDocument doc, Map<String,String> options)
+    public SOMLDocumentHandler (SOMLDocument doc, Map options)
     {
        init();
        Options = options;
@@ -188,7 +185,7 @@ implements LexicalHandler
 
     /** Get the document the Document that the SAX handler will parse into. 
     */
-    public XSSPDocument getDocument() { return myDocument; }
+    public SOMLDocument getDocument() { return myDocument; }
 
     /**
      * Record the relative path for the inputSource that the content handler is working on.
@@ -198,7 +195,7 @@ implements LexicalHandler
    /** Set the document the Document that the handler will parse into. 
     * @throws NullPointerException
     */
-    public void setDocument (XSSPDocument doc)
+    public void setDocument (SOMLDocument doc)
     {
 
        if(doc == null)
@@ -211,11 +208,10 @@ implements LexicalHandler
         Keys in the Hashtable are strings describing the node name in
         and the value is a code reference to the class that will handle 
         the event. The class must implement the StartElementAction interface. 
-        It is possible to override default XSSP startElement handlers with 
-        this method by specifying the XSSP namespace URI. 
+        It is possible to override default SOML startElement handlers with 
+        this method by specifying the SOML namespace URI. 
      */
-    public void addStartElementHandlers (Map<String, HandlerAction> m,
-    		String namespace) 
+    public void addStartElementHandlers (Map m, String namespace) 
     throws NullPointerException
     {
        if (m == null || namespace == null )
@@ -223,10 +219,10 @@ implements LexicalHandler
 
        if (StartElementHandlers.containsKey(namespace)) {
           //  merge to existing table 
-          StartElementHandlers.get(namespace).putAll(m);
+          ((Hashtable) StartElementHandlers.get(namespace)).putAll(m);
        } else {
           // create whole new table added with given namespace 
-          Map<String, HandlerAction> newHandlers = new Hashtable<String,HandlerAction>();
+          Hashtable newHandlers = new Hashtable();
           newHandlers.putAll(m);
           StartElementHandlers.put(namespace, newHandlers);
        }
@@ -237,10 +233,10 @@ implements LexicalHandler
         the XML document that has CDATA/PCDATA and the value is a code reference
         to the class that will handle the event. The class must implement 
         the CharDataAction interface. It is possible to override default
-        XSSP cdata handlers with this method by specifying the XSSP namespace URI. 
+        SOML cdata handlers with this method by specifying the SOML namespace URI. 
         @return true if merge succeeds, false otherwise (null map was passed).
      */
-    public void addCharDataHandlers (Map<String,HandlerAction> m, String namespace) 
+    public void addCharDataHandlers (Map m, String namespace) 
     throws NullPointerException
     {
 
@@ -248,9 +244,9 @@ implements LexicalHandler
            throw new NullPointerException();
 
        if (CharDataHandlers.containsKey(namespace)) {
-          CharDataHandlers.get(namespace).putAll(m);
+          ((Hashtable) CharDataHandlers.get(namespace)).putAll(m);
        } else {
-          Map<String,HandlerAction> newHandlers = new Hashtable<String,HandlerAction>();
+          Hashtable newHandlers = new Hashtable();
           newHandlers.putAll(m);
           CharDataHandlers.put(namespace, newHandlers);
        }
@@ -261,19 +257,19 @@ implements LexicalHandler
         Keys in the Hashtable are strings describing the node name in
         and the value is a code reference to the class that will handle 
         the event. The class must implement the EndElementAction interface. 
-        It is possible to override default XSSP endElement handlers with 
-        this method by specifying the XSSP namespace URI. 
+        It is possible to override default SOML endElement handlers with 
+        this method by specifying the SOML namespace URI. 
     */
-    public void addEndElementHandlers (Map<String,HandlerAction> m, String namespace) 
+    public void addEndElementHandlers (Map m, String namespace) 
     throws NullPointerException
     {
        if (m == null || namespace == null )
            throw new NullPointerException();
 
        if (EndElementHandlers.containsKey(namespace)) {
-          EndElementHandlers.get(namespace).putAll(m);
+          ((Hashtable) EndElementHandlers.get(namespace)).putAll(m);
        } else {
-          Map<String,HandlerAction> newHandlers = new Hashtable<String,HandlerAction>();
+          Hashtable newHandlers = new Hashtable();
           newHandlers.putAll(m);
           EndElementHandlers.put(namespace, newHandlers);
        }
@@ -288,11 +284,11 @@ implements LexicalHandler
     public void addElementToComplexTypeAssociation ( String elementName, String elementURI,
                                          String complexTypeName, String complexTypeURI) {
 
-        Map<String,HandlerInfo> table = null;
+        Hashtable table = null;
         if(!ElementTypeAssoc.containsKey(elementURI))
-             table = new Hashtable<String,HandlerInfo> ();
+             table = new Hashtable ();
         else
-             table = ElementTypeAssoc.get(elementURI);
+             table = (Hashtable) ElementTypeAssoc.get(elementURI);
 
         logger.info(" Associating Element: "+elementName+"["+elementURI+"] --> complexType:"+complexTypeName+"["+complexTypeURI+"]");
         table.put(elementName, new HandlerInfo(complexTypeName, complexTypeURI));
@@ -330,14 +326,14 @@ implements LexicalHandler
     }
 
     /** Allow setting a heavy-handled mode. 
-     * If true it tells this XSSPDocumentHandler that it should 
+     * If true it tells this SOMLDocumentHandler that it should 
      * go ahead and insert XMLHeader stuff even if the  
      * parser doesnt support DTD events using reasonable values.
      */
     public void setForceSetXMLHeaderStuff (boolean value) { ForceSetXMLHeaderStuff = value; }
     
     /** Get the value of 'forceSetXMLHeaderStuff'. 
-     * If true it tells this XSSPDocumentHandler that it should 
+     * If true it tells this SOMLDocumentHandler that it should 
      * go ahead and insert XMLHeader stuff even if the  
      * parser doesnt support DTD events using reasonable values.
      * 
@@ -347,7 +343,6 @@ implements LexicalHandler
 
     /** In order to look for referenced Semantic Objects, we "record" each that we parse.
      */
-    // TODO : needed??
     public void recordSemanticObject (SemanticObject so) {
        String Id = so.getId();
        if (!Id.equals("")) {
@@ -378,9 +373,9 @@ implements LexicalHandler
        return SemanticObjects.remove(SemanticObjects.size()-1);
     }
 
-    /** Get the current object we are working on.
+    /** Get the last object we worked on. 
      */
-    public Object getCurrentObject() {
+    public Object getLastObject() {
        Object lastObject = (Object) null;
        if (ObjectList.size() > 0) {
           lastObject = ObjectList.get(ObjectList.size()-1);
@@ -397,17 +392,11 @@ implements LexicalHandler
        }
        return lastURI;
     }
-    
-    /** Determine whether or not we are reading a CDATASection.
-     * 
-     * @return
-     */
-    public boolean isReadingCDATASection () { return ReadingCDATASection; }
 
     /** Get the 'current' node in the list of nodes we have parsed.
      * @return Node
      */
-    public Node getCurrentNode () {
+    public Node getNode () {
        int size = Nodes.size();
        Node node = null;
 
@@ -433,13 +422,13 @@ implements LexicalHandler
      * 
      * @return Node that was removed.
      */
-    public Node removeCurrentNode () { return Nodes.remove(Nodes.size()-1); }
+    public Node removeNode () { return Nodes.remove(Nodes.size()-1); }
 
     /** Get the name of the present node in the parse.
      * 
      * @return
      */
-    public String getCurrentNodeName () {
+    public String getNodeName () {
        int pathSize = NodeName.size();
        return (String) NodeName.get((pathSize-1));
     }
@@ -471,8 +460,9 @@ implements LexicalHandler
     public void startElement (String namespaceURI, String localName, String qName, Attributes attrs)
     throws SAXException
     {
-           
-        String elementName = localName;
+    	/*
+
+        String element = localName;
         Object thisObject = (Object) null;
 
         // if we haven't done this already, load schema in order to get
@@ -486,7 +476,7 @@ implements LexicalHandler
         logger.info("H_START:["+localName+","+qName+","+namespaceURI+"]");
 
         // find complexType (key) for handler
-        HandlerInfo handlerInfo = findHandlerInfoFromElementName(namespaceURI,elementName);
+        HandlerInfo handlerInfo = findHandlerInfoFromElementName(namespaceURI,element);
         logger.debug(" * got handler Info:"+handlerInfo);
         String handlerName = handlerInfo.name;
         logger.debug(" * got handler Name:"+handlerName);
@@ -497,12 +487,10 @@ implements LexicalHandler
         // if a handler exists, run it, else give a warning
         if (uriStartHandlers != null && uriStartHandlers.containsKey(handlerName)) {
 
-        	// run the appropriate start handler
-        	StartElementHandlerAction event = (StartElementHandlerAction) uriStartHandlers.get(handlerName);
-        	thisObject = event.action(this, namespaceURI, localName, qName, attrs);
+           // run the appropriate start handler
+           StartElementHandlerAction event = (StartElementHandlerAction) uriStartHandlers.get(handlerName);
+           thisObject = event.action(this, namespaceURI, localName, qName, attrs);
 
-        		// TODO: need to determine if we need this stuff below..
-    	/*
            // Treat any special handling here
            if (thisObject != null && thisObject instanceof SemanticObject)
            {
@@ -526,18 +514,13 @@ implements LexicalHandler
                   LocatorList.add(((semantic object) q).createLocator());
 
            } 
-       */
 
-       
-        	// take care of issues related to being XMLSerializableObject
-        	if( thisObject != null && thisObject instanceof XMLSerializableObject)
-        	{
-        
-        		logger.debug(" *** THIS ELEMENT is an XMLSerializableObject qName:"+qName+" localName:"+localName);
-        		// don't set local name or prefix for reference Semantic Objects! 
-         
-        		// TODO: need to determine if we need this stuff below..
-        		/*
+           // take care of issues related to being XMLSerializableObject
+           if( thisObject != null && thisObject instanceof XMLSerializableObject)
+           {
+               logger.debug(" *** THIS ELEMENT is an XMLSerializableObject qName:"+qName+" localName:"+localName);
+
+               // don't set local name or prefix for reference Semantic Objects! 
                if(!localName.equals(Constants.NodeName.REFERENCE_semantic object))
                {
                   ((XMLSerializableObject) thisObject).setXMLNodeName(localName);
@@ -561,34 +544,30 @@ implements LexicalHandler
    
                      }
                   } else { // go with declared default document namespace IF differs from  one
-                  */
- 
-        		// TODO: is this really needed?
-        		/*
-        		String doc_default_namespace = (String) PrefixNamespaceMapping.get("");
-        		String orig_namespace = ((XMLSerializableObject) thisObject).getNamespaceURI();
-         
-        		// is the original namespace the document namespace? if not we have to fix this
-        		// to match...
-        		if (!doc_default_namespace.equals(orig_namespace)) {
-        			((XMLSerializableObject) thisObject).setNamespaceURI(doc_default_namespace);
-        		}
-        		*/
-        		
-//        		}
+                     String doc_default_namespace = (String) PrefixNamespaceMapping.get("");
+                     String _namespace = ((XMLSerializableObject) thisObject).getNamespaceURI();
+                     if (!doc_default_namespace.equals(_namespace))
+                         ((XMLSerializableObject) thisObject).setNamespaceURI(doc_default_namespace);
+                  }
 
-        	}
+               }
 
-        
-        	// Bookeeping. Add "element" to path, object we created to object list
-        	NodeName.add(elementName);
-        	ObjectList.add(thisObject);
-        	ElementNamespaceURIList.add(namespaceURI);
-        
+           }
+  
+           // add "element" to  path (??)
+           NodeName.add(element);
+
+           ObjectList.add(thisObject);
+
+           ElementNamespaceURIList.add(namespaceURI);
+
         } else {
-           logger.error("ERROR: No start element handler for:"+elementName+". Doing nothing. This may cause later errors.");
+
+           logger.error("ERROR: No start element handler for:"+element+". Doing nothing. This may cause later errors.");
+
         }
-        
+        */
+
     }
 
     public void endElement (String namespaceURI, String localName, String qName )
@@ -611,10 +590,13 @@ implements LexicalHandler
            // run the appropriate end handler
            EndElementHandlerAction event = (EndElementHandlerAction) uriEndHandlers.get(handlerName);
            event.action(this);
-           
-           // Bookeeping
-           NodeName.remove(NodeName.size()-1); // peel off the last element in the  path
-           ObjectList.remove(ObjectList.size()-1); // peel off last object in object list
+
+           // peel off the last element in the  path
+           NodeName.remove(NodeName.size()-1);
+
+           // peel off last object in object list
+           ObjectList.remove(ObjectList.size()-1);
+
            ElementNamespaceURIList.remove(ElementNamespaceURIList.size()-1);
 
         } else {
@@ -679,13 +661,13 @@ implements LexicalHandler
            character data until we open the root node.
          */
 
-        String name = (String) NodeName.get(NodeName.size()-1); 
+        String NodeName = (String) NodeName.get(NodeName.size()-1); 
         String namespaceURI = getElementNamespaceURI();
  
-        logger.info("H_CharData:["+name+",value:["+new String(buf,offset,len)+"],"+namespaceURI+"]");
+        logger.info("H_CharData:["+NodeName+",value:["+new String(buf,offset,len)+"],"+namespaceURI+"]");
 
         // find complexType (key) for handler
-        HandlerInfo handlerInfo = findHandlerInfoFromElementName(namespaceURI,name);
+        HandlerInfo handlerInfo = findHandlerInfoFromElementName(namespaceURI,NodeName);
         String handlerName = handlerInfo.name;
         String handlerURI = handlerInfo.uri;
         Hashtable uriCDHandlers = (Hashtable) CharDataHandlers.get(handlerURI);
@@ -700,7 +682,7 @@ implements LexicalHandler
 
         } else {
 
-           logger.error("ERROR: No char data handler for:"+name+". Doing nothing. This may cause later errors.");
+           logger.error("ERROR: No char data handler for:"+NodeName+". Doing nothing. This may cause later errors.");
 
         }
 
@@ -728,7 +710,7 @@ implements LexicalHandler
 
         logger.info("H_EndDocument:[]");
 
-        // need to setprefix mappings in XSSPDocument
+        // need to setprefix mappings in SOMLDocument
         getDocument().setPrefixNamespaceMappings(PrefixNamespaceMapping);
 /*
         if (DoctypeObjectAttributes != null || ForceSetXMLHeaderStuff ) {
@@ -812,7 +794,7 @@ implements LexicalHandler
         logger.info("H_UNPARSED_ENTITY: "+name+" "+publicId+" "+systemId+" "+notationName);
 
         // create hashtable to hold information about Unparsed entity
-        Map<String,String> information = new Hashtable<String,String> ();
+        Hashtable information = new Hashtable ();
         information.put("name", name);
         // if (base != null) information.put("base", base);
         if (publicId != null) information.put("publicId", publicId);
@@ -829,7 +811,7 @@ implements LexicalHandler
     {
         logger.info("H_DTD_Start:["+name+","+publicId+","+systemId+"]");
 
-        DoctypeObjectAttributes = new Hashtable<String,String>();
+        DoctypeObjectAttributes = new Hashtable();
         DoctypeObjectAttributes.put("name", name);
         if (publicId != null) 
             DoctypeObjectAttributes.put("pubId", publicId);
@@ -844,7 +826,7 @@ implements LexicalHandler
         logger.info("H_NOTATION: "+name+" "+publicId+" "+systemId);
 
         // create hash to hold information about notation.
-        Map<String,String> information = new Hashtable<String,String> ();
+        Hashtable information = new Hashtable ();
         information.put("name", name);
         if (publicId != null) information.put("publicId", publicId);
         if (systemId != null) information.put("systemId", systemId);
@@ -901,14 +883,72 @@ implements LexicalHandler
 
         Comment comment = getDocument().createComment(value);
 
-        Node n = getCurrentNode();
-        if (n != null) {
-            n.appendChild(comment);
-        } else { 
+        Node  = getNode();
+        if( != null)
+            .appendChild(comment);
+        else
             getDocument().appendChild(comment);
-        }
 
     }
+
+    /** A little utility program to find the expected size from a list of attributes.
+     */
+    static public int findExpectedSize(Attributes attrs, String uri) {
+        int expected = -1; // means "dont check, its undetermined"
+        // Find the index of the "size" attribute..
+        // hrm.. this *might* get us into trouble if ppl start using
+        // a qualified attribute "somenamspaceuri:size" which doesn't
+        // belong to the www.datamodel.net/SemanticObject namespace. Its not
+        // likely, and, I cant get the namespaced "getIndex" function to
+        // work, so this will have to do for now.
+        int index = attrs.getIndex(Constants.SIZE_ATTRIBUTE_NAME);
+
+        if(index > 0) {
+           String value = attrs.getValue(index);
+           expected = Integer.parseInt(value);
+        }
+
+        return expected;
+    }
+
+    /** A utility function to allow proper setting of value in semantic object.
+     * [Would not be needed if we had q.setValue(Object, Locator)];
+     */
+    static public void setValue(semantic object qV, DataType dataType, String value, Locator loc)
+    throws SAXException
+    {
+
+       // set our value appropriate to data type.
+       try {
+
+          if(dataType instanceof StringDataType)
+          {
+             qV.setValue(value,loc);
+          }
+          else if(dataType instanceof FloatDataType)
+          {
+             Double dvalue = new Double(value);
+             qV.setValue(dvalue,loc);
+          }
+          else if(dataType instanceof IntegerDataType)
+          {
+
+ //          Integer ivalue = new Integer(value.trim());
+             Integer ivalue = Integer.decode(value);
+             qV.setValue(ivalue,loc);
+
+          }
+          else if(dataType instanceof VectorDataType)
+          {
+             qV.setValue(value,loc); // treat it like a string
+          } else
+             throw new SAXException("Can't load object of UNKNOWN datatype.");
+
+       } catch (Exception e) {
+             throw new SAXException("Can't set value in semantic object :"+e.getMessage());
+       }
+    }
+
 
     //
     // Protected Methods
@@ -918,46 +958,22 @@ implements LexicalHandler
     protected boolean checkDocVersion (String version)
     {
 // FIX
-      // if(version != XSSPVersion) { return false; } else { return true; }
+      // if(version != SOMLVersion) { return false; } else { return true; }
       return false;
     }
 
     /** Do special check for dealing with adding Semantic Objects. 
-     *  This method exists because its easier to deal with adding related
-     *  Semantic Objects in a global fashion rather than repeating code
+     *  This method exists because its easier to deal with adding member
+     *  Semantic Objects, AxisFrames, etc in a global fashion rather than repeating code
      *  in each of the SemanticObject handlers.
-     *  At any rate the logic is that if no parent SO exists, then it defaults to 
-     *  adding the Semantic Objects as XSSPElements in the XSSPDocument.
+     *  At any rate the logic is that if no parent Q exists, then it defaults to 
+     *  adding the Semantic Objects as QElements in the SOMLDocument.
      */
-    // TODO : this actually should be in a handler (for relationship) I think
-    protected void startHandlerAddSemanticObjectToParent(String namespaceURI, 
-    		SemanticObject newSO) 
+    protected void startHandlerAddsemantic objectToParent(String namespaceURI, SemanticObject q) 
     {
 
-            SemanticObject so = getCurrentSemanticObject();
-            if(so != null) {
-
-            	// TODO: This is not correct
-          //  	so.addRelationship(newSO, new URI("")); // everything else becomes a "member"
-
-             } else {
-
-                 // Add as a QElement to our document, as appropriate (e.g.
-                 // either to  node or as document root).
-                Element elem = getDocument().createXSSPElementNS(namespaceURI, so);
-                Node node = getCurrentNode();
-                if( node != null) {
-                   node.appendChild(elem);
-                } else { 
-                   getDocument().setDocumentElement(elem);
-                }
-
-             }
-
-    }
-
-
-    protected StartElementHandlerAction findStartHandler (String complexTypeName, String namespaceURI)
+            SemanticObject Q = getObjectWithSemantic Objects();
+            if(Q != null) protected StartElementHandlerAction findStartHandler (String complexTypeName, String namespaceURI)
     {
        Hashtable handlers = (Hashtable) StartElementHandlers.get(namespaceURI);
        StartElementHandlerAction handler = null;
@@ -1011,7 +1027,7 @@ implements LexicalHandler
     {
        String base = "";
        // drill down to look for "extension" or "restriction" children
-       NodeList children = typeDecl.getChildNodes();
+       Nodes children = typeDecl.getChildNodes();
        int nrof_children = children.getLength();
        Node contentElem = (Node) null;
        for (int i=0; i<nrof_children; i++) {
@@ -1026,7 +1042,7 @@ implements LexicalHandler
        }
 
        if(contentElem != null) {
-           NodeList cnodes = contentElem.getChildNodes();
+           Nodes cnodes = contentElem.getChildNodes();
            int nrof_cnodes = cnodes.getLength();
            Element baseElem = (Element) null;
            for (int i=0; i<nrof_cnodes; i++) {
@@ -1051,8 +1067,8 @@ implements LexicalHandler
        return base;
     }
 
-    protected Map<String,ComplexTypeInfo> getBaseTypesOfComplexTypes ( List types, String prefix) {
-       Map<String,ComplexTypeInfo> baseTypes = new Hashtable<String,ComplexTypeInfo>();
+    protected Map getBaseTypesOfComplexTypes ( List types, String prefix) {
+       Map baseTypes = new Hashtable();
        Iterator titer = types.iterator();
 
        if(!prefix.equals("")) {
@@ -1068,7 +1084,7 @@ implements LexicalHandler
           String base = findBaseType(elemDecl, prefix);
 
           ComplexTypeInfo info = new ComplexTypeInfo (name, base, mixed);
-          logger.debug("   Got schema complexType decl  n:"+name+" b:"+base+" mixed:"+mixed);
+logger.debug("   Got schema complexType decl  n:"+name+" b:"+base+" mixed:"+mixed);
           baseTypes.put(name,info);
        }
 
@@ -1076,15 +1092,15 @@ implements LexicalHandler
     }
 
     // generic utility routine to locate elements in DOM Document
-    protected List<Node> findElements (Document doc, String nodeName, String prefix) {
-       List<Node> list = new Vector<Node>();
+    protected List findElements (Document doc, String nodeName, String prefix) {
+       List list = new Vector();
 
        // collect all import nodes
        String qName = nodeName;
        if(!prefix.equals(""))
           qName = prefix + ":" + nodeName;
 
-       NodeList nodes = doc.getElementsByTagName(qName);
+       Nodes nodes = doc.getElementsByTagName(qName);
        int size = nodes.getLength();
        for (int i=0; i<size; i++)
           list.add(nodes.item(i));
@@ -1110,14 +1126,17 @@ implements LexicalHandler
        String url = "";
 
        // first: find the schema prefix mapping for our instance
-       for (String prefix : PrefixNamespaceMapping.keySet()) {
+       Enumeration prefixes = PrefixNamespaceMapping.keys();
+       while (prefixes.hasMoreElements()) {
+          String prefix = (String) prefixes.nextElement();
           String namespace = (String) PrefixNamespaceMapping.get(prefix);
-          if (namespace.equals(Constant.XML_SCHEMA_INSTANCE_NAMESPACE_URI)) {
-              schema_xmlns = prefix;
-              break;
-           }
+          if (namespace.equals(Constants.XML_SCHEMA_INSTANCE_NAMESPACE_URI))
+          {
+             schema_xmlns = prefix;
+             break;
+          }
        }
-       
+
        if(!schema_xmlns.equals(""))
           schema_location_attrib_name = schema_xmlns + ":" + schema_location_attrib_name;
 
@@ -1134,14 +1153,19 @@ implements LexicalHandler
        return url;
     }
 
-    protected List<HandlerMapInfo> initHandlerAssociations(String myURI, Map<String,String> prefixMap, Map<String,ComplexTypeInfo> complexTypeMap)
+    protected List initHandlerAssociations(String myURI, Hashtable prefixMap, Hashtable complexTypeMap)
     {
 
-       List<HandlerMapInfo> missingHandlers = new Vector<HandlerMapInfo>();
+       List missingHandlers = new Vector();
+       Hashtable startHandlers = new Hashtable();
+       Hashtable endHandlers = new Hashtable();
+       Hashtable charDataHandlers = new Hashtable();
 
        // go thru each complexType, adding as needed the mappings between handlers
-       for (String name : complexTypeMap.keySet()) {
-    	   
+       Enumeration typeNames = complexTypeMap.keys();
+       while (typeNames.hasMoreElements()) {
+             // gather information
+             String name = (String) typeNames.nextElement();
              // String base = (String) complexTypeMap.get(name);
              ComplexTypeInfo cinfo = (ComplexTypeInfo) complexTypeMap.get(name);
              String base = cinfo.base;
@@ -1160,13 +1184,13 @@ implements LexicalHandler
              //
 
              if(!StartElementHandlers.containsKey(myURI))
-                 StartElementHandlers.put(myURI,new Hashtable<String,HandlerAction>());
+                 StartElementHandlers.put(myURI,new Hashtable());
 
              if(!EndElementHandlers.containsKey(myURI))
-                 EndElementHandlers.put(myURI,new Hashtable<String,HandlerAction>());
+                 EndElementHandlers.put(myURI,new Hashtable());
 
              if(!CharDataHandlers.containsKey(myURI))
-                CharDataHandlers.put(myURI,new Hashtable<String,HandlerAction>());
+                CharDataHandlers.put(myURI,new Hashtable());
 
              // There are 2 possibilities. 1. its a "vanilla" (no base type) element/type
              // which we can rely on the regular DOM to handle. 2. it has a base type (has an
@@ -1177,20 +1201,20 @@ implements LexicalHandler
                  
                 if(findStartHandler(name,myURI) == null ) {
                      logger.debug(" Setting Default Start Handler for :"+name+" uri:"+uri+" myURI:"+myURI);
-                     StartElementHandlers.get(myURI).put(name,DefaultHandlers.get("startElement"));
+                     ((Hashtable) StartElementHandlers.get(myURI)).put(name,DefaultHandlers.get("startElement"));
                 }
 
                 if(findEndHandler(name,myURI) == null) {
                      logger.debug(" Setting Default End Handler for :"+name+" uri:"+uri+" myURI:"+myURI);
-                     EndElementHandlers.get(myURI).put(name,DefaultHandlers.get("endElement"));
+                     ((Hashtable) EndElementHandlers.get(myURI)).put(name,DefaultHandlers.get("endElement"));
                 }
 
                 if(findCharDataHandler(name,myURI,mixed) == null) {
                      logger.debug(" Setting Default CharData Handler for :"+name+" uri:"+uri+" myURI:"+myURI);
                      if (mixed == null || mixed.equals("")) 
-                         CharDataHandlers.get(myURI).put(name,DefaultHandlers.get("ignoreCharData"));
+                         ((Hashtable) CharDataHandlers.get(myURI)).put(name,DefaultHandlers.get("ignoreCharData"));
                      else 
-                         CharDataHandlers.get(myURI).put(name,DefaultHandlers.get("charData"));
+                         ((Hashtable) CharDataHandlers.get(myURI)).put(name,DefaultHandlers.get("charData"));
                 }
 
              } else {  // has base type... this means it was extended from a prior complex type, we 
@@ -1203,8 +1227,8 @@ implements LexicalHandler
                     // no prior handler so map to the parent types handler 
                     StartElementHandlerAction shandler = findStartHandler(base,uri);
                     if(shandler != null) {
-                       StartElementHandlers.get(myURI).put(name,shandler);
-                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+System.getProperty("line.separator")+"       start Handler:"+base+"["+uri+"]");
+                       ((Hashtable) StartElementHandlers.get(myURI)).put(name,shandler);
+                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+Constants.NEW_LINE+"       start Handler:"+base+"["+uri+"]");
                     } 
                     else
                          missingHandlers.add(new HandlerMapInfo(name,myURI,base,uri,HandlerType.START));
@@ -1217,8 +1241,8 @@ implements LexicalHandler
                     // no prior handler so map to the parent types handler 
                     EndElementHandlerAction ehandler = findEndHandler(base,uri);
                     if(ehandler != null) {
-                       EndElementHandlers.get(myURI).put(name,ehandler);
-                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+System.getProperty("line.separator")+"       end Handler:"+base+"["+uri+"]");
+                       ((Hashtable) EndElementHandlers.get(myURI)).put(name,ehandler);
+                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+Constants.NEW_LINE+"       end Handler:"+base+"["+uri+"]");
                     } else
                        missingHandlers.add(new HandlerMapInfo(name,myURI,base,uri,HandlerType.END));
                  }
@@ -1229,8 +1253,8 @@ implements LexicalHandler
                  } else {
                     CharDataHandlerAction cdhandler = findCharDataHandler(base,uri,mixed);
                     if(cdhandler != null) {
-                       CharDataHandlers.get(myURI).put(name,cdhandler);
-                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+System.getProperty("line.separator") +"       charData Handler:"+base+"["+uri+"] mixed:["+mixed+"]");
+                       ((Hashtable) CharDataHandlers.get(myURI)).put(name,cdhandler);
+                       logger.debug(" ==> Mapping complexType:"+name+"["+myURI+"] to"+Constants.NEW_LINE+"       charData Handler:"+base+"["+uri+"] mixed:["+mixed+"]");
                     } else
                        missingHandlers.add(new HandlerMapInfo(name,myURI,base,uri,HandlerType.CHAR,mixed));
                  }
@@ -1242,12 +1266,15 @@ implements LexicalHandler
 
     }
 
-    protected void initElementTypeAssociations(String myURI, Map<String,String> prefixMap, Map<String,List<Node>> elements)
+    protected void initElementTypeAssociations(String myURI, Hashtable prefixMap, Hashtable elements)
     {
 
-    	for (String namespace : elements.keySet()) {
+       Enumeration namespaceURIs = elements.keys();
+       while (namespaceURIs.hasMoreElements())
+       {
+           String namespace = (String) namespaceURIs.nextElement();
 
-           List<Node> elemList = elements.get(namespace);
+           List elemList = (List) elements.get(namespace);
            Iterator eiter = elemList.iterator();
            while (eiter.hasNext()) {
               Element elemDecl = (Element) eiter.next();
@@ -1272,11 +1299,11 @@ implements LexicalHandler
 
                  // expand table, if needed
                  if(!ElementTypeAssoc.containsKey(myURI))
-                    ElementTypeAssoc.put(myURI,new Hashtable<String,HandlerInfo>());
+                    ElementTypeAssoc.put(myURI,new Hashtable());
 
-                 logger.debug(" --> Mapping element:"+name+"["+myURI+"]"+System.getProperty("line.separator")+"       to handlerKey:"+type+"["+uri+"]");
+                 logger.debug(" --> Mapping element:"+name+"["+myURI+"]"+Constants.NEW_LINE+"       to handlerKey:"+type+"["+uri+"]");
                  HandlerInfo info = new HandlerInfo(type,uri);
-                 ElementTypeAssoc.get(myURI).put(name,info);
+                 ((Hashtable) ElementTypeAssoc.get(myURI)).put(name,info);
 
               }
 
@@ -1285,65 +1312,124 @@ implements LexicalHandler
     }
 
 
-    // set up XSSP handler associtions w/ schema complexTypes
+    // set up SOML handler associtions w/ schema complexTypes
     protected void initStartElementHandlers ()
     {
 
-        Map<String,HandlerAction> XSSPAssoc = new Hashtable<String,HandlerAction>();
-        Map<String,HandlerAction> xmlAssoc = new Hashtable<String,HandlerAction>();
-        
-        /*
-        XSSPAssoc.put(Constants.NodeTypeName.semantic object, new IllegalStartElementHandlerFunc()); // its abstract..never invoked as a node! 
-        XSSPAssoc.put(Constants.NodeTypeName.semantic object_CONTAINER, new semantic objectContainerStartElementHandlerFunc());
-        */
+        Hashtable SOMLAssoc = new Hashtable();
+        Hashtable mapAssoc = new Hashtable();
+        Hashtable xmlAssoc = new Hashtable();
+
+        SOMLAssoc.put(Constants.NodeTypeName.ALTERN_VALUES, new AltValuesContainerStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.ATOMIC_semantic object, new Atomicsemantic objectStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.AXISFRAME, new AxisFrameStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.COMPONENT, new ComponentStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new ObjectWithQuantitesStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.FLOAT_DATATYPE, new FloatDataTypeStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.INTEGER_DATATYPE, new IntegerDataTypeStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.LIST_semantic object, new Listsemantic objectStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.MATRIX_semantic object, new Matrixsemantic objectStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.semantic object, new IllegalStartElementHandlerFunc()); // its abstract..never invoked as a node! 
+        SOMLAssoc.put(Constants.NodeTypeName.semantic object_CONTAINER, new semantic objectContainerStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.REFERENCE_semantic object, new Refsemantic objectStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.STRING_DATATYPE, new StringDataTypeStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.TRIVIAL_semantic object, new Trivialsemantic objectStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VECTOR_DATATYPE, new VectorStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.UNITS, new UnitsStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VALUE, new ValueStartElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VALUES, new ValuesStartElementHandlerFunc());
+
+        // FIX: hacked in mapping handlers until separate mapping package is built.
+        mapAssoc.put(Constants.NodeTypeName.MAP, new mappingStartElementHandlerFunc());
 
         // generic XML handlers. we can certainly treat simple string and anyURI -based elements 
         xmlAssoc.put("string", new DefaultStartElementHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultStartElementHandlerFunc());
 
-        StartElementHandlers.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc); 
-        StartElementHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
+        StartElementHandlers.put(Constants.SOML_NAMESPACE_URI, SOMLAssoc); 
+        StartElementHandlers.put(Constants.MAPPING_NAMESPACE_URI, mapAssoc); 
+        StartElementHandlers.put(Constants.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
 
     }
 
-    // set up XSSP handler associtions w/ schema complexTypes
+    // set up SOML handler associtions w/ schema complexTypes
     protected void initCharDataHandlers()
     {
-        Map<String,HandlerAction> XSSPAssoc = new Hashtable<String,HandlerAction>();
-        Map<String,HandlerAction> xmlAssoc = new Hashtable<String,HandlerAction>();
-        
-        // XSSPAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new NullCharDataHandlerFunc());
+        Hashtable mapAssoc = new Hashtable();
+        Hashtable SOMLAssoc = new Hashtable();
+        Hashtable xmlAssoc = new Hashtable();
+
+        SOMLAssoc.put(Constants.NodeTypeName.ALTERN_VALUES, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.ATOMIC_semantic object, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.AXISFRAME, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.COMPONENT, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.FLOAT_DATATYPE, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.INTEGER_DATATYPE, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.LIST_semantic object, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.MATRIX_semantic object, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.semantic object, new IllegalCharDataHandlerFunc()); // its abstract..never invoked as a node! 
+        SOMLAssoc.put(Constants.NodeTypeName.semantic object_CONTAINER, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.REFERENCE_semantic object, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.STRING_DATATYPE, new NullCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.TRIVIAL_semantic object, new Trivialsemantic objectCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.UNITS, new UnitsCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VALUE, new ValueCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VALUES, new ValuesCharDataHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VECTOR_DATATYPE, new NullCharDataHandlerFunc());
+
+       // FIX: hacked in mapping handlers until separate mapping package is built.
+        mapAssoc.put(Constants.NodeTypeName.MAP, new NullCharDataHandlerFunc());
 
         // generic XML handlers. we can certainly treat simple string and anyURI-based elements 
         xmlAssoc.put("string", new DefaultElementWithCharDataHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultElementWithCharDataHandlerFunc());
 
-        CharDataHandlers.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc);
-        CharDataHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
+        CharDataHandlers.put(Constants.SOML_NAMESPACE_URI, SOMLAssoc);
+        CharDataHandlers.put(Constants.MAPPING_NAMESPACE_URI, mapAssoc);
+        CharDataHandlers.put(Constants.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
 
     }
 
-   // set up XSSP handler associtions w/ schema complexTypes
+   // set up SOML handler associtions w/ schema complexTypes
     protected void initEndElementHandlers ()
     {
-        Map<String,HandlerAction> XSSPAssoc = new Hashtable<String,HandlerAction>();
-        Map<String,HandlerAction> xmlAssoc = new Hashtable<String,HandlerAction>();
-        
-//        XSSPAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new semantic objectEndElementHandlerFunc());
+        Hashtable mapAssoc = new Hashtable();
+        Hashtable SOMLAssoc = new Hashtable();
+        Hashtable xmlAssoc = new Hashtable();
+
+        SOMLAssoc.put(Constants.NodeTypeName.ALTERN_VALUES, new AltValuesContainerEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.ATOMIC_semantic object, new semantic objectEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.AXISFRAME, new AxisFrameEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.COMPONENT, new ComponentEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.COMPOSITE_semantic object, new semantic objectEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.LIST_semantic object, new semantic objectEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.MATRIX_semantic object, new semantic objectEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.semantic object, new IllegalEndElementHandlerFunc()); // its abstract..never invoked as a node! 
+        SOMLAssoc.put(Constants.NodeTypeName.semantic object_CONTAINER, new NullEndElementHandlerFunc()); // metaData 
+        SOMLAssoc.put(Constants.NodeTypeName.REFERENCE_semantic object, new semantic objectEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.FLOAT_DATATYPE, new NullEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.INTEGER_DATATYPE, new NullEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.STRING_DATATYPE, new NullEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.TRIVIAL_semantic object, new semantic objectEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.UNITS, new NullEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VALUE, new NullEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VALUES, new ValuesEndElementHandlerFunc());
+        SOMLAssoc.put(Constants.NodeTypeName.VECTOR_DATATYPE, new VectorEndElementHandlerFunc());
+
+       // FIX: hacked in mapping handlers until separate mapping package is built.
+        mapAssoc.put(Constants.NodeTypeName.MAP, new NullEndElementHandlerFunc());
 
         // generic XML handlers. we can certainly treat simple string and anyURI-based elements 
         xmlAssoc.put("string", new DefaultEndElementHandlerFunc());
         xmlAssoc.put("anyURI", new DefaultEndElementHandlerFunc());
 
-        EndElementHandlers.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc); 
-        EndElementHandlers.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
+        EndElementHandlers.put(Constants.SOML_NAMESPACE_URI, SOMLAssoc); 
+        EndElementHandlers.put(Constants.MAPPING_NAMESPACE_URI, mapAssoc); 
+        EndElementHandlers.put(Constants.XML_SCHEMA_NAMESPACE_URI, xmlAssoc); 
 
     }
 
-    /** Initialize handlers, etc from declarations within the schema.
-     * 
-     * @param attrs
-     */
     protected void InitFromSchema (Attributes attrs) {
 
            String schema_info = findSchemaLocationFromAttribs(attrs);
@@ -1360,39 +1446,40 @@ implements LexicalHandler
                   HandlerMapInfo info = (HandlerMapInfo) iter.next();
                   boolean gotHandler = false;
 
-                  if (info.type == HandlerType.START) {
-                	  StartElementHandlerAction shandler = findStartHandler(info.name2,info.uri2);
-                	  if(shandler != null) {
-                		  StartElementHandlers.get(info.uri1).put(info.name1,shandler);
-                		  gotHandler = true;
-                   
-                	  }
-                  } else if (info.type == HandlerType.END) {
-                	  EndElementHandlerAction ehandler = findEndHandler(info.name2,info.uri2);
-                	  if(ehandler != null) {
-                		  EndElementHandlers.get(info.uri1).put(info.name1,ehandler);
-                		  gotHandler = true;
-                	  }
-                  } else if (info.type == HandlerType.CHAR) {
-                	  CharDataHandlerAction cdhandler = findCharDataHandler(info.name2,info.uri2,info.mixed);
-                	  if(cdhandler != null) {
-                		  CharDataHandlers.get(info.uri1).put(info.name1,cdhandler);
-                		  gotHandler = true;
-                	  }
+                  switch (info.type) {
+                       case HandlerType.START:
+                           StartElementHandlerAction shandler = findStartHandler(info.name2,info.uri2);
+                           if(shandler != null) {
+                               ((Hashtable) StartElementHandlers.get(info.uri1)).put(info.name1,shandler);
+                               gotHandler = true;
+                           }
+                           break;
+                       case HandlerType.END:
+                           EndElementHandlerAction ehandler = findEndHandler(info.name2,info.uri2);
+                           if(ehandler != null) {
+                               ((Hashtable) EndElementHandlers.get(info.uri1)).put(info.name1,ehandler);
+                               gotHandler = true;
+                           }
+                           break;
+                       case HandlerType.CHAR:
+                           CharDataHandlerAction cdhandler = findCharDataHandler(info.name2,info.uri2,info.mixed);
+                           if(cdhandler != null) {
+                               ((Hashtable) CharDataHandlers.get(info.uri1)).put(info.name1,cdhandler);
+                               gotHandler = true;
+                           }
+                           break;
                   }
 
-                  // reporting..probably a better way to do this..
-                  if(gotHandler) { 
-                      logger.debug(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+System.getProperty("line.separator")+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
-                  } else {
-                      String handlerTypeName = "start element";
-                      if(info.type == HandlerType.END) 
-                    	  handlerTypeName = "end element";
-                      if(info.type == HandlerType.CHAR) 
-                    	  handlerTypeName = "char data";
-                      logger.error(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+System.getProperty("line.separator")+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
-                      logger.error(" ** Can't find "+handlerTypeName+" Handler for complexType:"+info.name1
-                                  +"["+info.uri1+"] "+ System.getProperty("line.separator")
+                  if(gotHandler)
+                      logger.debug(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+Constants.NEW_LINE+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
+                  else
+                  {
+                      String handlerType = "start element";
+                      if(info.type == 1) handlerType = "end element";
+                      if(info.type == 2) handlerType = "char data";
+                      logger.error(" ==> Mapping complexType:"+info.name1+"["+info.uri1+"] to"+Constants.NEW_LINE+"       start Handler:"+info.name2+"["+info.uri2+"] for type:"+info.type);
+                      logger.error(" ** Can't find "+handlerType+" Handler for complexType:"+info.name1
+                                  +"["+info.uri1+"] "+Constants.NEW_LINE
                                   +"       (Missing handler:"+info.name2+"["+info.uri2+"])");
                   }
 
@@ -1402,7 +1489,7 @@ implements LexicalHandler
     }
 
     // convenience method
-    protected List<HandlerMapInfo> LoadSchema (String uri, String url )
+    protected List LoadSchema (String uri, String url )
     {
         return LoadSchema (uri, url, true);
     }
@@ -1411,10 +1498,10 @@ implements LexicalHandler
       * through the indicated schema to identify all the element handlers (and the associated
       * namespaces) which are needed.
       */
-    protected List<HandlerMapInfo> LoadSchema (String uri, String url, boolean warnLoaded )
+    protected List LoadSchema (String uri, String url, boolean warnLoaded )
     {
 
-      List<HandlerMapInfo> handlers = new Vector<HandlerMapInfo>();
+      List handlers = new Vector();
 
       // tack in the relative path to our source in the url
       url = RelativePath + url;
@@ -1447,7 +1534,7 @@ implements LexicalHandler
 
           // find prefix/namespacesURI pairs for this schema.
           String targetNamespace = "";
-          Map<String,String> schemaPrefixNamespaces = new Hashtable<String,String>();
+          Hashtable schemaPrefixNamespaces = new Hashtable();
           Element root = schemaDoc.getDocumentElement();
           NamedNodeMap attrs = root.getAttributes();
           int at_size = attrs.getLength();
@@ -1467,25 +1554,28 @@ implements LexicalHandler
           }
 
           // now gather information about included/imported/redefined sub-schema..
-          List<Node> imports = new Vector<Node>();
-          List<Node> redefine = new Vector<Node>();
-          List<Node> includes = new Vector<Node>();
-          Map<String,List<Node>> elements = new Hashtable<String,List<Node>>();
-          Map<String,List<Node>> types = new Hashtable<String,List<Node>>();
-          for (String prefix : schemaPrefixNamespaces.keySet())
-          {
+          List imports = new Vector();
+          List redefine = new Vector();
+          List includes = new Vector();
+          Hashtable elements = new Hashtable();
+          Map types = new Hashtable();
+          Enumeration prefixes = schemaPrefixNamespaces.keys();
+          while (prefixes.hasMoreElements()) {
+             String prefix = (String) prefixes.nextElement();
+
              imports.addAll(findElements(schemaDoc,"import",prefix));
              redefine.addAll(findElements(schemaDoc,"redefine",prefix));
              includes.addAll(findElements(schemaDoc,"include",prefix));
              elements.put(prefix, findElements(schemaDoc,"element",prefix));
              types.put(prefix, findElements(schemaDoc,"complexType",prefix));
+
           }
 
           // init handlers for INCLUDEd schema..
           Iterator iiter = includes.iterator();
           while (iiter.hasNext()) {
               Element includeElem = (Element) iiter.next();
-              List<HandlerMapInfo> missingImportSchemaHandlers =
+              List missingImportSchemaHandlers =
                    LoadSchema(uri, includeElem.getAttribute("schemaLocation"), false);
               handlers.addAll(missingImportSchemaHandlers);
           }
@@ -1495,8 +1585,8 @@ implements LexicalHandler
           Iterator iter = imports.iterator();
           while (iter.hasNext()) {
               Element importElem = (Element) iter.next();
-              List<HandlerMapInfo> missingImportSchemaHandlers =
-                   LoadSchema(importElem.getAttribute("namespace"), importElem.getAttribute("schemaLocation"));
+              List missingImportSchemaHandlers =
+                   LoadSchema(importElem.getAttribute("namespace"),importElem.getAttribute("schemaLocation"));
               handlers.addAll(missingImportSchemaHandlers);
           }
 
@@ -1512,7 +1602,7 @@ implements LexicalHandler
 
               // Q: isnt it more efficient to just to find the reference to these handlers 
               // rather than re-load them afresh again?
-              List<HandlerMapInfo> missingRedefineSchemaHandlers =
+              List missingRedefineSchemaHandlers =
                    LoadSchema(targetNamespace,redefineElem.getAttribute("schemaLocation"), false);
               handlers.addAll(missingRedefineSchemaHandlers);
 
@@ -1521,17 +1611,19 @@ implements LexicalHandler
 
           // init handlers for this schema..
           // lets cheat a little..we have already "by hand" set the element handlers
-          // for the XSSP schema, so no need to go thru this to do it
-          Matcher myMatcher = XSSPSchemaPattern.matcher(url);
-          if(uri.equals(Constant.XSSP_NAMESPACE_URI) && myMatcher.matches()) {
-              logger.debug("   skipping loading element handlers for XSSP schema.");
+          // for the SOML schema, so no need to go thru this to do it
+          Matcher myMatcher = SOMLSchemaPattern.matcher(url);
+          if(uri.equals(Constants.SOML_NAMESPACE_URI) && myMatcher.matches()) {
+              logger.debug("   skipping loading element handlers for SOML schema.");
               return handlers;
           }
-          
-          Map<String,ComplexTypeInfo> complexTypes = new Hashtable<String,ComplexTypeInfo>();
-          for (String prefix : schemaPrefixNamespaces.keySet()) {
+
+          prefixes = schemaPrefixNamespaces.keys();
+          Hashtable complexTypes = new Hashtable();
+          while (prefixes.hasMoreElements()) {
+             String prefix = (String) prefixes.nextElement();
              logger.debug(" Check input COMPLEXTYPE prefix:"+prefix);
-             complexTypes.putAll(getBaseTypesOfComplexTypes(types.get(prefix), prefix));
+             complexTypes.putAll(getBaseTypesOfComplexTypes((List) types.get(prefix), prefix));
           }
 
           handlers.addAll(initHandlerAssociations(targetNamespace, schemaPrefixNamespaces, complexTypes));
@@ -1542,15 +1634,15 @@ implements LexicalHandler
       } catch (IOException e) {
     	  // TODO: this this really a warning??
           logger.warn("Can't create input source for schema parser : "+e.getMessage());
-          logger.warn("Using the default XSSP handlers (there may be further problems related to this...)");
+          logger.warn("Using the default SOML handlers (there may be further problems related to this...)");
       } catch (SAXException e) {
     	  // TODO: this this really a warning??
           logger.warn("Can't parse schema input source : "+e.getMessage());
-          logger.warn("Using the default XSSP handlers (there may be further problems related to this...)");
+          logger.warn("Using the default SOML handlers (there may be further problems related to this...)");
       } catch (ParserConfigurationException e) {
     	  // TODO: this this really a warning??
           logger.warn("Can't create schema DOM parser : "+e.getMessage());
-          logger.warn("Using the default XSSP handlers (there may be further problems related to this...)");
+          logger.warn("Using the default SOML handlers (there may be further problems related to this...)");
       }
 
       return handlers;
@@ -1565,21 +1657,19 @@ implements LexicalHandler
     /** called by all constructors. May be used to re-initalize reader. 
      */
     private void init () {
-    
-    	// TODO : is this needed? initialize in the field declaration seems better.
-    	// Do we ever recall init()??
 
       // assign/init 'globals' (e.g. object fields)
-      Options = new Hashtable<String,String>();  
-      myDocument = (XSSPDocument) null;
+      Options = new Hashtable();  
+      myDocument = (SOMLDocument) null;
 
-      Notation = new HashSet<Map<String,String>>();
-      UnParsedEntity = new Hashtable<String,Map<String,String>>();
-      PrefixNamespaceMapping = new Hashtable<String,String>();
+      Notation = new HashSet();
+      UnParsedEntity = new Hashtable();
+      PrefixNamespaceMapping = new Hashtable();
 
-      NodeName = new Vector<String>();
-      Nodes = new Vector<Node>();
-      ElementNamespaceURIList = new Vector<String>();
+      NodeName = new Vector();
+      Nodes = new Vector();
+      Parentsemantic objectAltValueList = new Vector();
+      ElementNamespaceURIList = new Vector();
 
       RelativePath = "";
 
@@ -1587,31 +1677,33 @@ implements LexicalHandler
       // and element/type associations
       initHandlers();
 
-      LoadedSchema = new Hashtable<String,String>(); 
+      LoadedSchema = new Hashtable(); 
       AttemptedSchemaLoad = false;
+      AddingAltValues = false;
+      ExpectedValues = new Vector();
 
     }
 
     private void initHandlers() {
  
       // default handlers
-      DefaultHandlers = new Hashtable<String,HandlerAction>(); // table of default handlers 
+      DefaultHandlers = new Hashtable(); // table of default handlers 
       initDefaultHandlerHashtable();
 
       // element to complexType association
-      ElementTypeAssoc = new Hashtable<String,Map<String,HandlerInfo>>(); // assoc between element names and handler keys 
+      ElementTypeAssoc = new Hashtable(); // assoc between element names and handler keys 
       initElementTypeAssoc();
 
       // start Element
-      StartElementHandlers = new Hashtable<String,Map<String,HandlerAction>>(); // start node handler
+      StartElementHandlers = new Hashtable(); // start node handler
       initStartElementHandlers(); 
     
       // end Element
-      EndElementHandlers = new Hashtable<String,Map<String,HandlerAction>>(); // end node handler
+      EndElementHandlers = new Hashtable(); // end node handler
       initEndElementHandlers();
 
       // character data 
-      CharDataHandlers = new Hashtable<String,Map<String,HandlerAction>>(); // charData handler
+      CharDataHandlers = new Hashtable(); // charData handler
       initCharDataHandlers();
 
     }
@@ -1626,27 +1718,41 @@ implements LexicalHandler
     // initialize the associations between element names and complextypes (aka. keys for 
     // the dispatch table for start handler events) 
     // You may ask: why "hardwire" this table?
-    // We *could* do this by analysis of the XSSP.xsd everytime we load the document handler, 
+    // We *could* do this by analysis of the SOML.xsd everytime we load the document handler, 
     // but thats probably overkill, and a performance hit that we dont need to take.
     //
-    // Optionally, it might be nice to have this table declared in the "Constant" class..that
+    // Optionally, it might be nice to have this table declared in the "Constants" class..that
     // seems better..
     private void initElementTypeAssoc() {
 
-       Map<String,HandlerInfo> XSSPAssoc = new Hashtable<String,HandlerInfo>();
-       Map<String,HandlerInfo> xmlAssoc = new Hashtable<String,HandlerInfo>();
+       Hashtable SOMLAssoc = new Hashtable();
+       Hashtable xmlAssoc = new Hashtable();
 
-       // XSSP namespace associations
-//       XSSPAssoc.put(Constants.NodeName.COMPOSITE_semantic object, new HandlerInfo(Constants.NodeTypeName.COMPOSITE_semantic object));
-//       XSSPAssoc.put(Constants.NodeName.REFERENCE_semantic object, new HandlerInfo(Constants.NodeTypeName.REFERENCE_semantic object));
+       // SOML namespace associations
+       SOMLAssoc.put(Constants.NodeName.ALTERN_VALUES, new HandlerInfo(Constants.NodeTypeName.ALTERN_VALUES));
+       SOMLAssoc.put(Constants.NodeName.ATOMIC_semantic object, new HandlerInfo(Constants.NodeTypeName.ATOMIC_semantic object));
+       SOMLAssoc.put(Constants.NodeName.AXISFRAME, new HandlerInfo(Constants.NodeTypeName.AXISFRAME));
+       SOMLAssoc.put(Constants.NodeName.COMPONENT, new HandlerInfo(Constants.NodeTypeName.COMPONENT));
+       SOMLAssoc.put(Constants.NodeName.COMPOSITE_semantic object, new HandlerInfo(Constants.NodeTypeName.COMPOSITE_semantic object));
+       SOMLAssoc.put(Constants.NodeName.FLOAT_DATATYPE, new HandlerInfo(Constants.NodeTypeName.FLOAT_DATATYPE));
+       SOMLAssoc.put(Constants.NodeName.INTEGER_DATATYPE, new HandlerInfo(Constants.NodeTypeName.INTEGER_DATATYPE));
+       SOMLAssoc.put(Constants.NodeName.LIST_semantic object, new HandlerInfo(Constants.NodeTypeName.LIST_semantic object));
+       SOMLAssoc.put(Constants.NodeName.MATRIX_semantic object, new HandlerInfo(Constants.NodeTypeName.MATRIX_semantic object));
+       SOMLAssoc.put(Constants.NodeName.REFERENCE_semantic object, new HandlerInfo(Constants.NodeTypeName.REFERENCE_semantic object));
+       SOMLAssoc.put(Constants.NodeName.STRING_DATATYPE, new HandlerInfo(Constants.NodeTypeName.STRING_DATATYPE));
+       SOMLAssoc.put(Constants.NodeName.TRIVIAL_semantic object, new HandlerInfo(Constants.NodeTypeName.TRIVIAL_semantic object));
+       SOMLAssoc.put(Constants.NodeName.UNITS, new HandlerInfo(Constants.NodeTypeName.UNITS));
+       SOMLAssoc.put(Constants.NodeName.VECTOR_DATATYPE, new HandlerInfo(Constants.NodeTypeName.VECTOR_DATATYPE));
+       SOMLAssoc.put(Constants.NodeName.VALUE, new HandlerInfo(Constants.NodeTypeName.VALUE));
+       SOMLAssoc.put(Constants.NodeName.VALUES, new HandlerInfo(Constants.NodeTypeName.VALUES));
 
        // Simple string-based elements get the default handler
        xmlAssoc.put("string", new HandlerInfo("string"));
        xmlAssoc.put("anyURI", new HandlerInfo("anyURI"));
  
        // set up the associated namespace stuff
-       ElementTypeAssoc.put(Constant.XSSP_NAMESPACE_URI, XSSPAssoc);
-       ElementTypeAssoc.put(Constant.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
+       ElementTypeAssoc.put(Constants.SOML_NAMESPACE_URI, SOMLAssoc);
+       ElementTypeAssoc.put(Constants.XML_SCHEMA_NAMESPACE_URI, xmlAssoc);
 
     }
     
@@ -1675,7 +1781,7 @@ implements LexicalHandler
      */
     protected class HandlerInfo {
        public String name = "";
-       public String uri = Constant.XSSP_NAMESPACE_URI;
+       public String uri = Constants.SOML_NAMESPACE_URI;
 
        public HandlerInfo (String n ) {
          name = n; 
@@ -1691,13 +1797,13 @@ implements LexicalHandler
      */
    protected class HandlerMapInfo {
        public String name1 = "";
-       public String uri1 = Constant.XSSP_NAMESPACE_URI;
+       public String uri1 = Constants.SOML_NAMESPACE_URI;
        public String name2 = "";
-       public String uri2 = Constant.XSSP_NAMESPACE_URI;
+       public String uri2 = Constants.SOML_NAMESPACE_URI;
        public String mixed = "";
-       public HandlerType type = HandlerType.START;
+       public int type = HandlerType.START;
 
-       public HandlerMapInfo (String n1, String u1, String n2, String u2, HandlerType t, String mx ) {
+       public HandlerMapInfo (String n1, String u1, String n2, String u2, int t, String mx ) {
          name1 = n1; uri1 = u1;
          name2 = n2; uri2 = u2;
          type = t;
@@ -1709,7 +1815,7 @@ implements LexicalHandler
          name2 = n2; uri2 = u2;
        }
 
-       public HandlerMapInfo (String n1, String u1, String n2, String u2, HandlerType t) {
+       public HandlerMapInfo (String n1, String u1, String n2, String u2, int t) {
          name1 = n1; uri1 = u1;
          name2 = n2; uri2 = u2;
          type = t;
@@ -1717,5 +1823,5 @@ implements LexicalHandler
 
     }
 
-} // End of XSSPDocumentHandler class 
+} // End of SOMLDocumentHandler class 
 
