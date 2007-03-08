@@ -32,21 +32,15 @@
 
 package net.datamodel.soml.impl;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
-import net.datamodel.xssp.XMLSerializableObject;
-import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
+import net.datamodel.xssp.impl.AbstractReferenceableXMLSerializableObject;
 import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
-import net.datamodel.xssp.parse.Specification;
-import net.datamodel.xssp.parse.XMLReferenceSerializationType;
 
 import org.apache.log4j.Logger;
 
@@ -55,30 +49,26 @@ import org.apache.log4j.Logger;
  * A SemanticObject also may be in a (semantically-typed) relationship 
  * with other SemanticObjects. 
  */
-public class SemanticObjectImpl extends AbstractXMLSerializableObject 
+public class SemanticObjectImpl 
+extends AbstractReferenceableXMLSerializableObject 
 implements SemanticObject {
 	
 	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
 
     // Fields
-	private static final String RELATIONSHIP_FIELD_NAME = "relationship";
-    private static final String ID_FIELD_NAME = "soid";
-    private static final String URI_FIELD_NAME = "URI";
-    
-    protected static final String ReferenceNodeName = "refNode";
-    protected static final String IDRefAttributeName = "oidRef";
-    
-    // Methods
+	//
+	private static final String relationshipFieldName = "relationship";
+    private static final String uriFieldName = "URI";
+   
+    // Constructors
     //
 
-    // Constructors
-
-    /** Construct with a given URI.
+	/** Construct with a given URI.
      * @throws NullPointerException if the passed URI value is null.
      */
-    public SemanticObjectImpl ( URI URI) { 
+    public SemanticObjectImpl (URI uri) { 
        this();
-       setURI(URI);
+       setURI(uri);
     }
     
     /** Construct with a default URI of "URI:unknown".
@@ -86,30 +76,22 @@ implements SemanticObject {
      */
     protected SemanticObjectImpl () { 
     	
-        // resetFields();
+    	// configure the referencing fields/info 
+    	idRefFieldName = "soRefId"; 
+    	idFieldName = "soId"; 
+    	xmlReferenceNodeName = "semanticObjectRef";
+       
         setXMLNodeName("semanticObject");
         
         // now initialize XML fields
         // order matters! these are in *reverse* order of their
         // occurence in the schema/DTD
-        addField(URI_FIELD_NAME, "URI:unknown", XMLFieldType.ATTRIBUTE);
-        addField(ID_FIELD_NAME, "", XMLFieldType.ATTRIBUTE);
-        addField(RELATIONSHIP_FIELD_NAME, new RelationshipList(), XMLFieldType.CHILD);
+        addField(uriFieldName, "URI:unknown", XMLFieldType.ATTRIBUTE);
+        addField(relationshipFieldName, new RelationshipList(), XMLFieldType.CHILD);
         
     }
 
     // Accessor Methods
-
-    /**
-     * The id of an instance of this class. It should be unique across all components and quantities within a given document/object tree.
-     */
-    public String getId () { return (String) getFieldValue(ID_FIELD_NAME); }
-
-    /*
-     *  (non-Javadoc)
-     * @see net.datamodel.qml.SemanticObject#setId(java.lang.String)
-     */ 
-    public void setId ( String value  ) { setFieldValue(ID_FIELD_NAME, value); }
 
     /*
      *  (non-Javadoc)
@@ -189,7 +171,7 @@ implements SemanticObject {
 	 */
 	public URI getURI() {
 		try {
-			return new URI ((String) getFieldValue(URI_FIELD_NAME));
+			return new URI ((String) getFieldValue(uriFieldName));
 		} catch (Exception e) {
 			logger.error("Invalid URI for object returned.:"+e.getMessage());
 			return (URI) null; // shouldnt happen as we only let valid URIs in..
@@ -233,7 +215,7 @@ implements SemanticObject {
 	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
 	public List<Relationship> getRelationships() {
-        return (List<Relationship>) getFieldValue(RELATIONSHIP_FIELD_NAME);
+        return (List<Relationship>) getFieldValue(relationshipFieldName);
     }
 
     // Operations
@@ -251,69 +233,9 @@ implements SemanticObject {
 		*/
 		// Take the URI and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    setFieldValue(URI_FIELD_NAME, value.toASCIIString());
+	    setFieldValue(uriFieldName, value.toASCIIString());
 	}
 
-	/**
-     * @return boolean value of whether or not some content was written.
-     */
-    protected boolean basicXMLWriter (
-                                      Map<String,XMLSerializableObject> idTable,
-                                      Map<String,String> prefixTable,
-                                      Writer outputWriter,
-                                      String indent,
-                                      String newNodeNameString,
-                                      boolean indentFirstNode
-                                    )
-    throws IOException
-    {
-
-         // we need to check to see if we are referencing some other SO.
-         // IF so, then we WONT print out normally, rather, we will print
-         // ourselves out as a reference node.
-         String id = getId();
-         if(id != null && !id.equals("") && idTable != null)
-         {
-             SemanticObject idOwner = (SemanticObject) idTable.get(id);
-             if(idOwner != null && idOwner != this)
-             {
-
-               Specification spec = Specification.getInstance();
-                if( spec.getSerializeRefStyle() == XMLReferenceSerializationType.COLLAPSE)
-                {
-
-                   boolean isPretty = spec.isPrettyOutput();
-
-                   if(isPretty && indentFirstNode)
-                      outputWriter.write(indent);
-
-                   outputWriter.write("<"+ReferenceNodeName+" "+IDRefAttributeName+"=\""+id+"\"/>");
-
-                   return true;
-
-                } else { // reassign the id of this semantic object
-                   setId(findUniqueIdName(idTable,id));
-                   idTable.put(getId(), this);
-                   logger.warn("Reassigning semantic id soid from:"+id+" to "+getId()+" to avoid collision of ids");
-                }
-
-             }
-         }
-
-         // use regular method
-         return super.basicXMLWriter(idTable, prefixTable, outputWriter, indent, newNodeNameString, indentFirstNode);
-    }
-
-    // find unique id name within a idtable of objects
-    protected String findUniqueIdName( Map<String,XMLSerializableObject> idTable, String baseIdName)
-    {
-       StringBuilder testName = new StringBuilder (baseIdName);
-       while (idTable.containsKey(testName.toString())) {
-           testName.append("0"); // isn't there something better to append here??
-       }
-       return testName.toString();
-    }
-    
     /** Quick internal class to hold all relationships between our object 
      * and other SO's. 
      */
