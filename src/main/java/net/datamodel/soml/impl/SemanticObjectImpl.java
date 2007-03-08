@@ -52,61 +52,61 @@ import org.apache.log4j.Logger;
 public class SemanticObjectImpl 
 extends AbstractReferenceableXMLSerializableObject 
 implements SemanticObject {
-	
+
 	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
 
-    // Fields
+	// Fields
 	//
 	private static final String relationshipFieldName = "relationship";
-    private static final String uriFieldName = "URI";
-   
-    // Constructors
-    //
+	private static final String uriFieldName = "URI";
+
+	// Constructors
+	//
 
 	/** Construct with a given URI.
-     * @throws NullPointerException if the passed URI value is null.
-     */
-    public SemanticObjectImpl (URI uri) { 
-       this();
-       setURI(uri);
-    }
-    
-    /** Construct with a default URI of "URI:unknown".
-     * Not meant for public consumption..
-     */
-    protected SemanticObjectImpl () { 
-    	
-    	// configure the referencing fields/info 
-    	idRefFieldName = "soRefId"; 
-    	idFieldName = "soId"; 
-    	xmlReferenceNodeName = "semanticObjectRef";
-       
-        setXMLNodeName("semanticObject");
-        
-        // now initialize XML fields
-        // order matters! these are in *reverse* order of their
-        // occurence in the schema/DTD
-        addField(uriFieldName, "URI:unknown", XMLFieldType.ATTRIBUTE);
-        addField(relationshipFieldName, new RelationshipList(), XMLFieldType.CHILD);
-        
-    }
+	 * @throws NullPointerException if the passed URI value is null.
+	 */
+	public SemanticObjectImpl (URI uri) { 
+		this();
+		setURI(uri);
+	}
 
-    // Accessor Methods
+	/** Construct with a default URI of "URI:unknown".
+	 * Not meant for public consumption..
+	 */
+	protected SemanticObjectImpl () { 
 
-    /*
-     *  (non-Javadoc)
-     * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
-     */ 
-	public boolean addRelationship (SemanticObject target, URI relationURI) 
+		// configure the referencing fields/info 
+		idRefFieldName = "soRefId"; 
+		idFieldName = "soId"; 
+		xmlReferenceNodeName = "semanticObjectRef";
+
+		setXMLNodeName("semanticObject");
+
+		// now initialize XML fields
+		// order matters! these are in *reverse* order of their
+		// occurence in the schema/DTD
+		addField(uriFieldName, "URI:unknown", XMLFieldType.ATTRIBUTE);
+		addField(relationshipFieldName, new RelationshipList(), XMLFieldType.CHILD);
+
+	}
+
+	// Accessor Methods
+
+	/*
+	 *  (non-Javadoc)
+	 * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
+	 */ 
+	public final boolean addRelationship (SemanticObject target, URI relationURI) 
 	throws IllegalArgumentException, NullPointerException 
-    {
+	{
 
 		// check if we have a non-null object to relate to.
 		if (null == target)
 		{
 			throw new NullPointerException("addRelationship: passed null object.");
 		}
-		
+
 		// check if the relationship selected already exists in the calling object
 		// with the target
 		List<SemanticObject> soList = getRelatedSemanticObjects(relationURI);
@@ -119,17 +119,17 @@ implements SemanticObject {
 							target+" in relationship URI:"+relationURI.toASCIIString());
 			}
 		}
-		
+
 		// now we add the relationship and return success 
 		return getRelationships().add(new RelationshipImpl(relationURI, target));
-		
-    }
 
-    /*
+	}
+
+	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#removeRelationship(net.datamodel.soml.URI, net.datamodel.soml.SemanticObject)
 	 */
-	public boolean removeRelationship(URI URI, SemanticObject target) {
+	public final boolean removeRelationship(URI URI, SemanticObject target) {
 		List<Relationship> removeList = getRelationships();
 		for (Relationship test : removeList) {
 			if (test.getTarget() == target) {
@@ -138,20 +138,20 @@ implements SemanticObject {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#clearAllRelationships()
 	 */
-	public void clearAllRelationships() {
+	public final void clearAllRelationships() {
 		getRelationships().clear();
 	}
-	
+
 	/*
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URI)
 	 */
-	public boolean removeAllRelationships (URI URI) {
+	public final boolean removeAllRelationships (URI URI) {
 		boolean success = true;
 		List<Relationship> testList = getRelationships(URI);
 		if (testList.size() > 0) {
@@ -165,11 +165,11 @@ implements SemanticObject {
 		return success;
 	}
 
-    /*
+	/*
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#getURI()
 	 */
-	public URI getURI() {
+	public final URI getURI() {
 		try {
 			return new URI ((String) getFieldValue(uriFieldName));
 		} catch (Exception e) {
@@ -178,13 +178,13 @@ implements SemanticObject {
 		}
 	}
 
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObjects(net.datamodel.soml.URI)
 	 */
-	public List<SemanticObject> getRelatedSemanticObjects (URI relationshipURI) {
-		
+	public final List<SemanticObject> getRelatedSemanticObjects (URI relationshipURI) {
+
 		List<SemanticObject> found = new Vector<SemanticObject>();
 		for (Relationship rel: getRelationships()) {
 			logger.debug("rel:" + rel); 
@@ -200,7 +200,7 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelationships(net.datamodel.soml.URI)
 	 */
-	public List<Relationship> getRelationships (URI URI) 
+	public final List<Relationship> getRelationships (URI URI) 
 	{
 		List<Relationship> found = new Vector<Relationship>();
 		for (Relationship rel : getRelationships()) {
@@ -214,49 +214,47 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
-	public List<Relationship> getRelationships() {
-        return (List<Relationship>) getFieldValue(relationshipFieldName);
-    }
+	public final List<Relationship> getRelationships() {
+		return (List<Relationship>) getFieldValue(relationshipFieldName);
+	}
 
-    // Operations
-    //
+	// Operations
+	//
 
 	/** Set the URI, representing the semantic meaning, of this object.
 	 * 
 	 * @param value of the URI to set
 	 * @throws NullPointerException if a null value is passed.
 	 */
-	protected void setURI (URI value) {
+	protected final void setURI (URI value) {
 		/*// not needed..the toAsciiString method call below will cause NullPointerException if URI == null 
 		if (value == null)
 			throw new NullPointerException("SemanticObjectImpl cant set URI to null value."); 
-		*/
+		 */
 		// Take the URI and convert it to a string for storage in object/serialization.
 		// Not optimal, but works (for now).
-	    setFieldValue(uriFieldName, value.toASCIIString());
+		setFieldValue(uriFieldName, value.toASCIIString());
 	}
 
-    /** Quick internal class to hold all relationships between our object 
-     * and other SO's. 
-     */
-    class RelationshipList<Relationship> 
-    extends AbstractXMLSerializableObjectList
-    { 
-    	// simply change the node name to "relationship"
-    	// and set no serialization when its empty 
-    	RelationshipList() { 
-    		super(""); // should *not* have a node name 
-    		this.setSerializeWhenEmpty(false);
-    	}
+	/** Quick internal class to hold all relationships between our object 
+	 * and other SO's. 
+	 */
+	class RelationshipList<Relationship> 
+	extends AbstractXMLSerializableObjectList
+	{ 
+		// simply change the node name to "relationship"
+		// and set no serialization when its empty 
+		RelationshipList() { 
+			super(""); // should *not* have a node name 
+			this.setSerializeWhenEmpty(false);
+		}
 
 		@Override
 		public String toString() {
 			return this.getClass()+"@"+this.hashCode();
 		}
-    	
-    }
 
+	}
 
-    
 }
 

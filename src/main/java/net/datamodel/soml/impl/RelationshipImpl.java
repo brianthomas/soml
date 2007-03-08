@@ -43,7 +43,7 @@ implements Relationship
    	 * (non-Javadoc)
    	 * @see net.datamodel.soml.Relationship#getTarget()
    	 */
-	public SemanticObject getTarget() {
+	public final SemanticObject getTarget() {
 		return (SemanticObject) getFieldValue(TARGET_FIELD_NAME);
 	}
 	
@@ -51,6 +51,6 @@ implements Relationship
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.Relationship#getURI()
 	 */
-	public URI getURI() { return (URI) getFieldValue(URI_FIELD_NAME); }
+	public final URI getURI() { return (URI) getFieldValue(URI_FIELD_NAME); }
 	
 }

@@ -42,13 +42,13 @@ implements UnmixedSemanticObjectList<T>
 	 *  (non-Javadoc)
 	 * @see edu.umd.astro.transform.UnmixedCollection#getURI(java.net.URI)
 	 */
-	public URI getURI () { return uri; } 
+	public final URI getURI () { return uri; } 
 	
 	/** May only add objects which have same uri as the collection.
 	 * 
 	 */
 	@Override
-	public void add(int arg0, T o) {
+	public final void add(int arg0, T o) {
 		if(can_add(o))
 			super.add(arg0, o);
 	}
@@ -57,7 +57,7 @@ implements UnmixedSemanticObjectList<T>
 	 * 
 	 */
 	@Override
-	public boolean addAll(int arg0, Collection<? extends T> col) 
+	public final boolean addAll(int arg0, Collection<? extends T> col) 
 	{
 		// ugh. NOT performance oriented! Checking every item 'by hand' 
 		for (T item : col)
@@ -73,14 +73,14 @@ implements UnmixedSemanticObjectList<T>
 	/** May only set objects which have the same uri as the collection.
 	 */
 	@Override
-	public T set(int arg0, T o) {
+	public final T set(int arg0, T o) {
 		if(can_add(o))
 			return super.set(arg0, o);
 		return null;
 	}
 
 	@Override
-	public boolean add(T o) {
+	public final boolean add(T o) {
 		if(can_add(o))
 			return super.add(o);
 		return false;
