@@ -47,26 +47,14 @@ public interface SOMLDocument extends XSSPDocument
 
    /** Create an element node which is linked to the given target
     * semantic object. The namespace of the element node created 
-    * defaults to the target namespace of the document.
+    * defaults to the target namespace of the passed semantic object.
     * 
     * @param so
     * @return
     * @throws DOMException
     */
    public SOMLElement createSOMLElement(SemanticObject so) throws DOMException;
-   
-   /** Create an namespaced element node which is linked to the given target
-    * semantic object.
-    * @param namespaceURI
-    * @param so
-    * @return
-    * @throws DOMException
-    */ 
-   public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so) throws DOMException;
-   
-   // TODO: WHat is this, is this needed??
-   public Map<String,SemanticObject> getSemanticObjectIdTable();
-   
+  
    /** Return references to all semantic objects held within this document.
     * 
     * @param deep
