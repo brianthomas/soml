@@ -67,19 +67,24 @@ implements SOMLDocument
 		return soElem;
 	}
 
-	public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject SemanticObject)
+//	public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so)
+	/** Create a namespaced element from a semantic object. This method 
+	 * picks up the namespaceURI from the semantic object.
+	 *
+	 * @throws DOMException if a so is passed which lacks namespaceURI or if we get an underlying IOException
+	 */
+	public SOMLElement createSOMLElementNS(SemanticObject so)
 	throws DOMException
 	{
-
-		SOMLElementImpl soElem = null;
+		if (so.getNamespaceURI() == null)
+			throw new DOMException(DOMException.INVALID_STATE_ERR, "cant create namespaced SemanticObject which has namespaceURI set to null!");
+		
 		try {
-			soElem = new SOMLElementImpl(namespaceURI, SemanticObject, this);
+			return new SOMLElementImpl(so, this);
 		} catch (IOException e) {
 			// dunno if this is the right error code.. but what the hell
 			throw new DOMException(DOMException.INVALID_STATE_ERR, e.getMessage());
 		}
-		return soElem;
-
 	}
 
 	@Override
@@ -103,7 +108,6 @@ implements SOMLDocument
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }
 

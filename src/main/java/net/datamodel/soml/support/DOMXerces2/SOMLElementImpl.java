@@ -52,23 +52,26 @@ implements SOMLElement
 	
 	private static final Logger logger = Logger.getLogger(SOMLElementImpl.class);
 
-	// this has same issue as the constructor above
+	// create a namespaced (from the so) element. 
 	public SOMLElementImpl (SemanticObject so, DocumentImpl doc) 
-	throws IOException,NullPointerException
-	{
-		super (so, doc);
+	throws IOException,NullPointerException {
+		super(so, doc);
 		setSemanticObject(so);
 	}
 
 	//
 	// Get/Set Methods 
 	//
+	
+	public final SemanticObject getSemanticObject() { return (SemanticObject) getUserData(); }
 
-	public SemanticObject getSemanticObject() {
-		return (SemanticObject) getUserData();
-	}
-
-	public void setSemanticObject (SemanticObject o) 
+	/** Set the semantic object which this element represents.
+	 * We reuse the userData field from NodeImpl superclass.
+	 * 
+	 * @param o
+	 * @throws NullPointerException
+	 */
+	protected final void setSemanticObject (SemanticObject o) 
 	throws NullPointerException {
 		setUserData(o);
 	}
@@ -79,6 +82,7 @@ implements SOMLElement
 
 	/** */
 	@Override
+	// TODO: doc on overriding this method
 	public Node appendChild(Node newChild) 
 	throws DOMException
 	{
@@ -108,6 +112,7 @@ implements SOMLElement
 
 	/** */
 	@Override
+	// TODO: doc on overriding this method
 	public Node insertBefore(Node newChild, Node refChild) throws DOMException
 	{
 
@@ -133,6 +138,7 @@ implements SOMLElement
 
 	/** */
 	@Override
+	// TODO: doc on overriding this method
 	public Node removeChild(Node oldChild) 
 	throws DOMException
 	{
@@ -157,6 +163,7 @@ implements SOMLElement
 
 	/** */
 	@Override
+	// TODO: doc on overriding this method
 	public Node replaceChild(Node newChild, Node oldChild) 
 	throws DOMException
 	{
