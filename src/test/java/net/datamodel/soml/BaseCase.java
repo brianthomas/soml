@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package net.datamodel.soml;
 
 import java.net.URI;
