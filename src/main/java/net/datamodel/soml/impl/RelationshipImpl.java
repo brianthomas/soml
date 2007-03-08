@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * @author thomas
  *
  */ 
-class RelationshipImpl extends AbstractXMLSerializableObject
+class RelationshipImpl  extends AbstractXMLSerializableObject
 implements Relationship
 {
    	private static final String URI_FIELD_NAME = "URI";
