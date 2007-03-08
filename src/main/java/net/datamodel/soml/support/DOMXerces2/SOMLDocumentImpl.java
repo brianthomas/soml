@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.support.SOMLDocument;
 import net.datamodel.soml.support.SOMLElement;
@@ -67,7 +68,6 @@ implements SOMLDocument
 		return soElem;
 	}
 
-//	public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so)
 	/** Create a namespaced element from a semantic object. This method 
 	 * picks up the namespaceURI from the semantic object.
 	 *
@@ -88,21 +88,10 @@ implements SOMLDocument
 	}
 
 	@Override
-	public String getNamespaceURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getNamespaceURI() { return Constant.SOML_NAMESPACE_URI; }
 
 	@Override
-	public String getSchemaName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, SemanticObject> getSemanticObjectIdTable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getSchemaName() { return Constant.SOML_SCHEMA_NAME; }
 
 	public List getSemanticObjects(boolean deep) {
 		// TODO Auto-generated method stub
