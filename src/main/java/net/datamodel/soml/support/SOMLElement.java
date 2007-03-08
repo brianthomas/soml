@@ -45,12 +45,5 @@ public interface SOMLElement extends XSSPElement
 	 */
 	public SemanticObject getSemanticObject();
 
-	/** Set the target SO which the element will represent.
-	 * 
-	 * @param so
-	 */
-	// TODO: needed? Cant we get away with putting this in the constructor?
-	public void setSemanticObject(SemanticObject so);
-
 }
 
