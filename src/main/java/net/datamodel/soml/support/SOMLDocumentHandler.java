@@ -27,6 +27,8 @@
 
 package net.datamodel.soml.support;
 
+import java.util.Map;
+
 import net.datamodel.xssp.parse.XSSPDocumentHandler;
 
 /** 
@@ -37,8 +39,9 @@ import net.datamodel.xssp.parse.XSSPDocumentHandler;
 public class SOMLDocumentHandler extends XSSPDocumentHandler
 {
 	
-//	private static final Logger logger = Logger.getLogger(SOMLDocumentHandler.class);
 	public SOMLDocumentHandler (SOMLDocument doc) { super(doc); }
+	
+	public SOMLDocumentHandler (SOMLDocument doc, Map<String,String> options) { super(doc, options); }
 
 } // End of SOMLDocumentHandler class 
 
