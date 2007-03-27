@@ -33,7 +33,6 @@ package net.datamodel.soml.support.DOMXerces2;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
