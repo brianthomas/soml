@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <project>
-
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>net.datamodel</groupId>
   <artifactId>soml</artifactId>
   <name>Semantic Object Model</name>
-  <version>0.51</version>
+  <version>0.52</version>
   <description>SOML (Semantic Object Model Language) Java package provides
 handy representations of (instances of) semantic objects.</description>
   <build>
@@ -49,6 +47,7 @@ handy representations of (instances of) semantic objects.</description>
       <name>UMD Local Repository</name>
       <url>http://archive.astro.umd.edu/maven</url>
     </repository>
+
     <repository>
       <id>ibiblio-repository</id>
       <name>IBIBLIO Maven Repository</name>
@@ -83,3 +82,4 @@ handy representations of (instances of) semantic objects.</description>
   </distributionManagement>
 
 </project>
+ 
