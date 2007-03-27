@@ -73,7 +73,7 @@ extends ReferenceableXMLSerializableObject
      * @throws NullPointerException if attempting to adding an null (!!)
      * @param target object to set up the relationship to.
      * @param relationship the URI of the relationship to establish.
-     * @retURI boolean value of whether addition was successfull or not.
+     * @return boolean value of whether addition was successfull or not.
      */
      public boolean addRelationship (SemanticObject target, URI relationship) 
      throws IllegalArgumentException, NullPointerException;
@@ -81,7 +81,7 @@ extends ReferenceableXMLSerializableObject
     /** Remove all relationships which match the passed URI.
      * 
      * @param URI of the relationships to remove 
-     * @retURI true if the relationship was removed. 
+     * @return true if the relationship was removed. 
      */
     public boolean removeAllRelationships (URI uri);
     
@@ -96,7 +96,7 @@ extends ReferenceableXMLSerializableObject
      * 
      * @param uri
      * @param target
-     * @retURI
+     * @return
      */
     public boolean removeRelationship (URI uri, SemanticObject target);
     
@@ -104,20 +104,20 @@ extends ReferenceableXMLSerializableObject
      * the value of the relationship URI.
      * 
      * @param URI which represents the relationship between the parent and the member 
-     * @retURI List of SemanticObjects which are in the given relationship to the caller.
+     * @return List of SemanticObjects which are in the given relationship to the caller.
      */
     public List<SemanticObject> getRelatedSemanticObjects (URI relationship);
     
     /** Get the list of relationships which the calling SemanticObject 'owns'.
      * 
-     * @retURI List of all relationships which the calling SO owns.
+     * @return List of all relationships which the calling SO owns.
      */ 
     public List<Relationship> getRelationships ( );
     
     /** Get the list of relationships which the calling SemanticObject 'owns'
      * that match the passed URI value.
      * @param relationshipURI the URI of the relationship(s) to match. 
-     * @retURI List of relationships which have the named URI.
+     * @return List of relationships which have the named URI.
      */
     public List<Relationship> getRelationships(URI relationshipURI);
 
@@ -125,7 +125,7 @@ extends ReferenceableXMLSerializableObject
      * of this object.  The URI maybe the same for different instances of a 
      * SemanticObject. (e.g. it is not guarrenteed to be unique)
      *  
-     * @retURI URI of the object 
+     * @return URI of the object 
      */
 	public URI getURI();
 	
