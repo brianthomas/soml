@@ -22,8 +22,8 @@ public class TestSerialization extends BaseCase {
 	private static final Logger logger = Logger.getLogger(TestSerialization.class);
 	
 	private static void checkXMLOutput (XMLSerializableObject obj, String expectedOut) {
-//		logger.debug("XML output:["+obj.toXMLString()+"]");
-//		logger.debug("  expected:["+expectedOut+"]");
+		logger.debug("XML output:["+obj.toXMLString()+"]");
+		logger.debug("  expected:["+expectedOut+"]");
 		assertEquals("XML output as expected", expectedOut, obj.toXMLString());
 	}
 	
