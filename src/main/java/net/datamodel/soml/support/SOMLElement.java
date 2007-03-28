@@ -41,7 +41,7 @@ public interface SOMLElement extends XSSPElement
 	
 	/** Return the target SO of which this element represents.
 	 * 
-	 * @return
+	 * @return the SemanticObject which this XML Element node represents.
 	 */
 	public SemanticObject getSemanticObject();
 

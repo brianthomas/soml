@@ -50,6 +50,8 @@ public class SOMLElementImpl extends XSSPElementImpl
 implements SOMLElement
 {
 	
+	private static final long serialVersionUID = 4925471960280942643L;
+	
 	private static final Logger logger = Logger.getLogger(SOMLElementImpl.class);
 
 	// create a namespaced (from the so) element. 
@@ -76,11 +78,10 @@ implements SOMLElement
 		setUserData(o);
 	}
 
-	//
-	// Other Public Methods
-	//
-
-	/** */
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.xssp.parse.DOMXerces2.XSSPElementImpl#appendChild(org.w3c.dom.Node)
+	 */
 	@Override
 	// TODO: doc on overriding this method
 	public Node appendChild(Node newChild) 
@@ -110,7 +111,10 @@ implements SOMLElement
 		return newChild;
 	}
 
-	/** */
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.xssp.parse.DOMXerces2.XSSPElementImpl#insertBefore(org.w3c.dom.Node, org.w3c.dom.Node)
+	 */
 	@Override
 	// TODO: doc on overriding this method
 	public Node insertBefore(Node newChild, Node refChild) throws DOMException
@@ -136,7 +140,10 @@ implements SOMLElement
 		return node;
 	}
 
-	/** */
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.xssp.parse.DOMXerces2.XSSPElementImpl#removeChild(org.w3c.dom.Node)
+	 */
 	@Override
 	// TODO: doc on overriding this method
 	public Node removeChild(Node oldChild) 
@@ -161,7 +168,10 @@ implements SOMLElement
 		return oldChild;
 	}
 
-	/** */
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.xssp.parse.DOMXerces2.XSSPElementImpl#replaceChild(org.w3c.dom.Node, org.w3c.dom.Node)
+	 */
 	@Override
 	// TODO: doc on overriding this method
 	public Node replaceChild(Node newChild, Node oldChild) 

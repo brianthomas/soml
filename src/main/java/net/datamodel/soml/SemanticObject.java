@@ -41,8 +41,9 @@ import net.datamodel.xssp.ReferenceableXMLSerializableObject;
  * to other objects, and that relationship is identified by its own URI which is
  * separate from the objects in the relationship. Ultimately, it is intended for
  * the URIs to be used to identify how these various instance structures map 
- * to an Ontology (OWL, Web Ontology Language, W3C specification: 
- * @linkplain{http://www.w3.org/2004/OWL/} is the basis for this implementation).
+ * to an Ontology (OWL, Web Ontology Language, W3C specification; 
+ * <i>see <b>http://www.w3.org/2004/OWL/</b></i> is the basis for this 
+ * implementation).
  * 
  * @author thomas
  * @version $VersionId:$
