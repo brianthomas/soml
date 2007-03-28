@@ -227,13 +227,10 @@ implements SemanticObject {
 	 * @throws NullPointerException if a null value is passed.
 	 */
 	protected final void setURI (URI value) {
-		/*// not needed..the toAsciiString method call below will cause NullPointerException if URI == null 
-		if (value == null)
-			throw new NullPointerException("SemanticObjectImpl cant set URI to null value."); 
-		 */
-		// Take the URI and convert it to a string for storage in object/serialization.
-		// Not optimal, but works (for now).
-		setFieldValue(uriFieldName, value.toASCIIString());
+		// Take the URI and convert it to a string for storage 
+		// in object/serialization. If the URI is null, then 
+		// be sure to avoid calling toASCIIString, and just store the null.
+		setFieldValue(uriFieldName, (null == value ) ? null : value.toASCIIString());
 	}
 
 	/** Quick internal class to hold all relationships between our object 
