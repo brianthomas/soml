@@ -172,15 +172,11 @@ implements SemanticObject {
 	public final URI getURI() {
 		String value = (String) getFieldValue(uriFieldName);
 
-		if (value == null) { 
-			return null;
-		} else {
-			try {
-				return new URI (value);
-			} catch (Exception e) {
-				logger.error("Invalid URI for object returned.:"+e.getMessage());
-				return (URI) null; // shouldnt happen as we only let valid URIs in..
-			}
+		try {
+			return new URI (value);
+		} catch (Exception e) {
+			logger.error("Invalid URI for object returned.:"+e.getMessage());
+			return (URI) null; // shouldnt happen as we only let valid URIs in..
 		}
 	}
 
@@ -234,8 +230,8 @@ implements SemanticObject {
 	protected final void setURI (URI value) {
 		// Take the URI and convert it to a string for storage 
 		// in object/serialization. If the URI is null, then 
-		// be sure to avoid calling toASCIIString, and just store the null.
-		setFieldValue(uriFieldName, (null == value ) ? null : value.toASCIIString());
+		// toASCIIString will throw nullpointer exception for us.
+		setFieldValue(uriFieldName, value.toASCIIString());
 	}
 
 	/** Quick internal class to hold all relationships between our object 
