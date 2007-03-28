@@ -36,6 +36,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Vector;
 
+import net.datamodel.soml.Constant;
 import net.datamodel.soml.Relationship;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
@@ -58,7 +59,7 @@ implements SemanticObject {
 	// Fields
 	//
 	private static final String relationshipFieldName = "relationship";
-	private static final String uriFieldName = "URI";
+	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
 
 	// Constructors
 	//
