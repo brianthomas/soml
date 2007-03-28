@@ -16,6 +16,6 @@ public class Constant {
 	 * serialization of instances of SemanticObject, Relationship and
 	 * UnmixedSemanticObjectList classes.
 	 */
-	public static final String SOML_URI_ATTRIBUTE_NAME = "uri";
+	public static final String SOML_URI_ATTRIBUTE_NAME = "URI";
 
 }
