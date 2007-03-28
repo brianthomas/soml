@@ -39,22 +39,22 @@ public class TestAPI extends BaseCase
 		assertNotNull("Can build UnmixedSemanticObjectListImpl", unlist);
 		
 		// try to set null URI in SO 
-		boolean nullProhibited = false;
+		boolean nullOK = true;
 		try {
 			SemanticObject so_null = new SemanticObjectImpl (null);
 		} catch (NullPointerException e ) {
-			nullProhibited = true;
+			nullOK = false;
 		}
-		assertTrue("Not allowed to pass null URI value in SO constructor!", nullProhibited); 
+		assertTrue("Allowed to pass null URI value in SO constructor!", nullOK); 
 		
 		// try to set null URI in UnmixedList
-		nullProhibited = false;
+		nullOK = true;
 		try {
-			UnmixedSemanticObjectList unlist_null = new UnmixedSemanticObjectListImpl(null);
+			new UnmixedSemanticObjectListImpl(null);
 		} catch (NullPointerException e) {
-			nullProhibited = true;
+			nullOK = false;
 		}
-		assertTrue("Not allowed to pass null URI value in UnmixedSemanticObjectList constructor!", nullProhibited); 
+		assertTrue("Not allowed to pass null URI value in UnmixedSemanticObjectList constructor!", !nullOK); 
 		
 	}
 	
