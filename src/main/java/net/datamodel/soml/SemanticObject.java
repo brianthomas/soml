@@ -80,7 +80,7 @@ extends ReferenceableXMLSerializableObject
      
     /** Remove all relationships which match the passed URI.
      * 
-     * @param URI of the relationships to remove 
+     * @param uri of the relationships to remove 
      * @return true if the relationship was removed. 
      */
     public boolean removeAllRelationships (URI uri);
@@ -96,14 +96,14 @@ extends ReferenceableXMLSerializableObject
      * 
      * @param uri
      * @param target
-     * @return
+     * @return true if the relationship was removed
      */
     public boolean removeRelationship (URI uri, SemanticObject target);
     
     /** Retrieve the semantic object in relationship to the caller by
      * the value of the relationship URI.
      * 
-     * @param URI which represents the relationship between the parent and the member 
+     * @param relationship URI which represents the association between the parent and the member 
      * @return List of SemanticObjects which are in the given relationship to the caller.
      */
     public List<SemanticObject> getRelatedSemanticObjects (URI relationship);
@@ -125,7 +125,7 @@ extends ReferenceableXMLSerializableObject
      * of this object.  The URI maybe the same for different instances of a 
      * SemanticObject. (e.g. it is not guarrenteed to be unique)
      *  
-     * @return URI of the object 
+     * @return a URI of the SemanticObject 
      */
 	public URI getURI();
 	

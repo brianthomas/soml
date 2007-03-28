@@ -22,13 +22,13 @@ public interface Relationship extends XMLSerializableObject
 	
 	/** Find the target SemanticObject of the relationship.
 	 * 
-	 * @return
+	 * @return the target object.
 	 */
 	public SemanticObject getTarget ();
 	
 	/** Find the relationship URI.
 	 * 
-	 * @return
+	 * @return URI of the relationship (<b>not</b> the URI of the target).
 	 */
 	public URI getURI();
 	
