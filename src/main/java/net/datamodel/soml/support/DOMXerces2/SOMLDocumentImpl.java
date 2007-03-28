@@ -92,7 +92,11 @@ implements SOMLDocument
 	@Override
 	public String getSchemaName() { return Constant.SOML_SCHEMA_NAME; }
 
-	public List getSemanticObjects(boolean deep) {
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.support.SOMLDocument#getSemanticObjects(boolean)
+	 */
+	public List<SemanticObject> getSemanticObjects(boolean deep) {
 		// TODO Auto-generated method stub
 		return null;
 	}

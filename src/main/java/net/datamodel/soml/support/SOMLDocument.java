@@ -50,17 +50,17 @@ public interface SOMLDocument extends XSSPDocument
     * defaults to the target namespace of the passed semantic object.
     * 
     * @param so
-    * @return
     * @throws DOMException
+    * @return the XML ELement node which represents the SemanticObject
     */
    public SOMLElement createSOMLElement(SemanticObject so) throws DOMException;
   
    /** Return references to all semantic objects held within this document.
     * 
     * @param deep
-    * @return
+    * @return a list of semantic objects 
     */
-   public List getSemanticObjects(boolean deep);
+   public List<SemanticObject> getSemanticObjects(boolean deep);
   
 }
 
