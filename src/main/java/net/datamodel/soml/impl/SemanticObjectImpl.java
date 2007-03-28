@@ -224,7 +224,6 @@ implements SemanticObject {
 	/** Set the URI, representing the semantic meaning, of this object.
 	 * 
 	 * @param value of the URI to set
-	 * @throws NullPointerException if a null value is passed.
 	 */
 	protected final void setURI (URI value) {
 		// Take the URI and convert it to a string for storage 
