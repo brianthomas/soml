@@ -12,6 +12,10 @@ public class Constant {
 	 */ 
 	public static final String SOML_SCHEMA_NAME = "SOML_01.xsd";
 	
+	/** The name of the attribute which stores the URI in the XML 
+	 * serialization of instances of SemanticObject, Relationship and
+	 * UnmixedSemanticObjectList classes.
+	 */
 	public static final String SOML_URI_ATTRIBUTE_NAME = "uri";
 
 }
