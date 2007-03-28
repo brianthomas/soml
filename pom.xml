@@ -33,7 +33,7 @@ handy representations of (instances of) semantic objects.</description>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <overview>${basedir}/docs/Overview.html</overview>
+          <overview>${basedir}/doc/Overview.html</overview>
         </configuration>
       </plugin>
 
