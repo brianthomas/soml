@@ -170,11 +170,17 @@ implements SemanticObject {
 	 * @see net.datamodel.qml.SemanticObject#getURI()
 	 */
 	public final URI getURI() {
-		try {
-			return new URI ((String) getFieldValue(uriFieldName));
-		} catch (Exception e) {
-			logger.error("Invalid URI for object returned.:"+e.getMessage());
-			return (URI) null; // shouldnt happen as we only let valid URIs in..
+		String value = (String) getFieldValue(uriFieldName);
+
+		if (value == null) { 
+			return null;
+		} else {
+			try {
+				return new URI (value);
+			} catch (Exception e) {
+				logger.error("Invalid URI for object returned.:"+e.getMessage());
+				return (URI) null; // shouldnt happen as we only let valid URIs in..
+			}
 		}
 	}
 
