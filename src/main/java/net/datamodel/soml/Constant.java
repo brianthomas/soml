@@ -11,5 +11,7 @@ public class Constant {
 	/** The name of the relevant version of the schema file for this package.
 	 */ 
 	public static final String SOML_SCHEMA_NAME = "SOML_01.xsd";
+	
+	public static final String SOML_URI_ATTRIBUTE_NAME = "uri";
 
 }
