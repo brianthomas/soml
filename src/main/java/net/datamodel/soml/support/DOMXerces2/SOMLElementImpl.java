@@ -58,24 +58,14 @@ implements SOMLElement
 	public SOMLElementImpl (SemanticObject so, DocumentImpl doc) 
 	throws IOException,NullPointerException {
 		super(so, doc);
-		setSemanticObject(so);
 	}
 
-	//
-	// Get/Set Methods 
-	//
-	
-	public final SemanticObject getSemanticObject() { return (SemanticObject) getUserData(); }
-
-	/** Set the semantic object which this element represents.
-	 * We reuse the userData field from NodeImpl superclass.
-	 * 
-	 * @param o
-	 * @throws NullPointerException
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.support.SOMLElement#getSemanticObject()
 	 */
-	protected final void setSemanticObject (SemanticObject o) 
-	throws NullPointerException {
-		setUserData(o);
+	public final SemanticObject getSemanticObject() { 
+		return (SemanticObject) getXMLSerializableObjectWithFields(); 
 	}
 
 	/*
@@ -121,17 +111,21 @@ implements SOMLElement
 	{
 
 		Node node = null;
-
-		if (newChild instanceof SOMLElement)
-		{
-			SOMLElement soElem = (SOMLElement) newChild;
-			SemanticObject so = soElem.getSemanticObject();
+		if (newChild instanceof SOMLElement 
+				&& 
+			refChild instanceof SOMLElement
+		) {
+			
+			node = super.insertBefore(newChild,refChild);
+			
+			SOMLElement soElemRef = (SOMLElement) refChild;
+			SOMLElement soElemNew = (SOMLElement) newChild;
+			SemanticObject soNew = soElemNew.getSemanticObject();
+			SemanticObject soRef = soElemRef.getSemanticObject();
 
 			// Add as a member
-			// TODO: add relationship
-//			getSemanticObject().addMember(so);
-
-			node = super.insertBefore(newChild,refChild);
+			// TODO: add relationship? 
+//			getSemanticObject().addRelationship(soRef);
 
 		} else {
 			throw new DOMException (DOMException.NOT_SUPPORTED_ERR, "Can't remove regular DOM Element from SOMLElement object.");
