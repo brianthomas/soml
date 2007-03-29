@@ -33,6 +33,7 @@ package net.datamodel.soml.support.DOMXerces2;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
 
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
@@ -93,9 +94,22 @@ implements SOMLDocument
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.support.SOMLDocument#getSemanticObjects(boolean)
 	 */
-	public List<SemanticObject> getSemanticObjects(boolean deep) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SemanticObject> getSemanticObjects (boolean deep) {
+		List<SemanticObject> soList = new Vector<SemanticObject>(); 
+		for (Object key : userData.keySet()) {
+			if (key instanceof SOMLElement)
+			{
+				SOMLElement soElem = (SOMLElement) key;
+				soList.add(soElem.getSemanticObject()); 
+				// FIXME: need to delve deep into the stackwithout repeating referenced SemanticObjects
+				// we already have.
+				/*
+				if (deep)
+					soList.addAll(findSemanticObjects(soElem.getQuantity()));
+				*/
+			}
+		}
+		return soList;
 	}
 
 }
