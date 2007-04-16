@@ -10,7 +10,7 @@ public class Constant {
 
 	/** The name of the relevant version of the schema file for this package.
 	 */ 
-	public static final String SOML_SCHEMA_NAME = "SOML_01.xsd";
+	public static final String SOML_SCHEMA_NAME = "SOML_54.xsd";
 	
 	/** The name of the attribute which stores the URI in the XML 
 	 * serialization of instances of SemanticObject, Relationship and
