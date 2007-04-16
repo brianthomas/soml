@@ -21,6 +21,14 @@ public class BaseParseCase extends BaseCase {
 
 	private static final Logger logger = Logger.getLogger(BaseParseCase.class);
 	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		// copy over sample files into test directory
+		
+	}
+
 	// check the parsing of a document for which we have no handlers.
 	// (e.g. we use the unconfigured/default DocumentHandlerImpl which
 	// ships with SOML)
