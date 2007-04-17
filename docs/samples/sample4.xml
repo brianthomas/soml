@@ -1,0 +1,30 @@
+<?xml version="1.0" standalone="no" ?>
+<!-- cross ref'ing example between 2 SO's -->
+<so:semanticObject 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns:so="http://www.data-model.net/SemanticObject" 
+      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_54.xsd"
+      URI="urn:test:SemanticObject1"
+>
+
+  <!-- in the relationship1 with an obj2 -->
+  <so:relationship URI="urn:test:rel12">
+      <so:semanticObject soid="obj2" URI="urn:test:SemanticObject2">
+     	   <!-- obj2 has relationship to object 3 -->
+		  <so:relationship URI="urn:test:rel23">
+		      <so:refSO soidRef="obj3"/>
+		  </so:relationship>
+      </so:semanticObject>
+  </so:relationship>
+  
+  <!-- in relationship2 with obj3 -->
+  <so:relationship URI="urn:test:rel13">
+      <so:semanticObject soid="obj3" URI="urn:test:SemanticObject2">
+     	   <!-- obj3 has relationship to object 2 -->
+		  <so:relationship URI="urn:test:rel32">
+		      <so:refSO soidRef="obj2"/>
+		  </so:relationship>
+      </so:semanticObject>
+  </so:relationship>
+  
+</so:semanticObject>
