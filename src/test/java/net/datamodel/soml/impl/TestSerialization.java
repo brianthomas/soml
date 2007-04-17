@@ -21,12 +21,6 @@ public class TestSerialization extends BaseCase {
 
 	private static final Logger logger = Logger.getLogger(TestSerialization.class);
 	
-	private static void checkXMLOutput (XMLSerializableObject obj, String expectedOut) {
-		logger.debug("XML output:["+obj.toXMLString()+"]");
-		logger.debug("  expected:["+expectedOut+"]");
-		assertEquals("XML output as expected", expectedOut, obj.toXMLString());
-	}
-	
 	public void test1a() {
 		
 		logger.info("Check URI serialization.");
@@ -80,8 +74,25 @@ public class TestSerialization extends BaseCase {
 		logger.info("Check unmixedlist serialization.");
 	}
 	
+	// test Inter-referential relationships
+	//
+	public void test4() {
+		
+		logger.info("test serialization of Inter-referential relationships"); 
+		
+		// first create some test objects...
+		SemanticObject so1 = new SemanticObjectImpl(uri1);
+		SemanticObject so2 = new SemanticObjectImpl(uri2);
+		
+		so1.addRelationship(so2, rel_URI);
+		so2.addRelationship(so1, rel_URI2);
+		
+		checkXMLOutput(so1,"");
+		checkXMLOutput(so2,"");
+		
+	}
 	
-	private void checkBuildURI (String content) {
+	private static void checkBuildURI (String content) {
 		logger.debug("check build URI:["+content+"]");
 		URI test = null;
 		try {
@@ -90,6 +101,12 @@ public class TestSerialization extends BaseCase {
 			logger.debug(" Cant build URI given value:["+content+"]!!");
 		}
 		assertNotNull("URI is ok:["+content+"]", test);
+	}
+	
+	private static void checkXMLOutput (XMLSerializableObject obj, String expectedOut) {
+		logger.debug("XML output:["+obj.toXMLString()+"]");
+		logger.debug("  expected:["+expectedOut+"]");
+		assertEquals("XML output as expected", expectedOut, obj.toXMLString());
 	}
 
 }
