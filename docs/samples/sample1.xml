@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone="no" ?>
+<so:semanticObject 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns:so="http://www.data-model.net/SemanticObject" 
+      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_54.xsd"
+      URI="urn:test:SemanticObject1"
+>
+  <so:relationship URI="urn:test:rel1">
+      <so:semanticObject URI="urn:test:SemanticObject2"/>
+  </so:relationship>
+</so:semanticObject>
