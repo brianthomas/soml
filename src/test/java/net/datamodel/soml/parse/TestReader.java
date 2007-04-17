@@ -19,7 +19,7 @@ public class TestReader extends BaseParseCase {
 	public void test1() {
 		logger.info("test creating reader with several document types");
 		
-		createReader(new NonSOMLTestDocumentImpl());
+		UtilityForParseTests.createReader(new NonSOMLTestDocumentImpl());
 		
 	}
 	

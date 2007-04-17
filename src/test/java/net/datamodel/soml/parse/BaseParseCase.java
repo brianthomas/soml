@@ -1,8 +1,8 @@
-/**
- * 
- */
+
 package net.datamodel.soml.parse;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.StringReader;
 
 import net.datamodel.soml.BaseCase;
@@ -21,21 +21,60 @@ public class BaseParseCase extends BaseCase {
 
 	private static final Logger logger = Logger.getLogger(BaseParseCase.class);
 	
+	protected static final String schemaDirectory = "docs/schema";
+	protected static final String samplesDirectory = "docs/samples";
+	protected static final String testDirectory = "target/test-samples";
+	
+	protected static String [] samplefiles = null;
+	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		
 		// copy over sample files into test directory
+		logger.debug("Setup test directory");
 		
+		logger.debug("mkdir test sample directory: "+testDirectory);
+		new File(testDirectory).mkdir();
+		
+		logger.debug("find sample and schema files");
+		samplefiles = new File(samplesDirectory).list(new OnlyXML());
+		String [] sampleschemafiles = new File(samplesDirectory).list(new OnlySchema());
+		String [] baseschemafiles = new File(schemaDirectory).list(new OnlySchema());
+		
+		logger.debug("copy over sample and schema files to test directory");
+		try {
+			UtilityForParseTests.copyFiles(samplefiles, samplesDirectory, testDirectory); 
+			UtilityForParseTests.copyFiles(sampleschemafiles, samplesDirectory, testDirectory); 
+			UtilityForParseTests.copyFiles(baseschemafiles, schemaDirectory, testDirectory); 
+		} catch (Exception e) {
+			logger.error("Cant set up tests : "+ e.getMessage());
+			e.printStackTrace();
+		}
+		
+	}
+	
+	class OnlyXML implements FilenameFilter {
+		public boolean accept (File dir, String s) {
+			if (s.endsWith(".xml")) { return true; }
+			return false;
+		}
+	}
+	
+	class OnlySchema implements FilenameFilter {
+		public boolean accept (File dir, String s) {
+			if (s.endsWith(".xsd")) { return true; }
+			return false;
+		}
 	}
 
 	// check the parsing of a document for which we have no handlers.
 	// (e.g. we use the unconfigured/default DocumentHandlerImpl which
 	// ships with SOML)
-	static void checkDefaultHandlerParse(TestableDocument d) 
+	static void checkDefaultHandlerParse (TestableDocument d) 
 	{
 	
-		SOMLReader r = createReader(d);
+		SOMLReader r = UtilityForParseTests.createReader(d);
 		boolean canRead = true;
 		try {
 			InputSource inputsource = new InputSource(new StringReader(d.getExpectedOutput()));
@@ -49,19 +88,6 @@ public class BaseParseCase extends BaseCase {
 		// check serialization
 		checkXMLOutput(d.getExpectedOutput(), r.getDocument().toXMLString());
 		
-	}
-	
-	static SOMLReader createReader (SOMLDocument doc) {
-		
-		assertTrue("got an reference for the document", null != doc);
-		logger.debug("Document ref is:"+doc.getSchemaName());
-		
-		// create the reader
-		SOMLReader r = new SOMLReader(doc);
-		logger.debug("Reader ref is:"+r);
-		assertTrue("got an object reference for the reader", null != r);
-		
-		return r;
 	}
 	
 	static void checkXMLOutput (String actual, String expected) {
@@ -79,7 +105,9 @@ public class BaseParseCase extends BaseCase {
 	class NonSOMLTestDocumentImpl extends SOMLDocumentImpl
 	implements TestableDocument
 	{
-		public String getExpectedOutput() {  return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><elem1>dude</elem1></doc>"; }
+		public String getExpectedOutput() { 
+			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><elem1>dude</elem1></doc>"; 
+		}
 	}
 		
 }
