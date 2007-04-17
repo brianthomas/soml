@@ -5,12 +5,15 @@
       xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_54.xsd"
       URI="urn:test:SemanticObject1"
 >
+
   <!-- in the relationship1 with an object -->
   <so:relationship URI="urn:test:rel1">
       <so:semanticObject URI="urn:test:SemanticObject2"/>
   </so:relationship>
+  
   <!-- in the same relationship with a different object -->
   <so:relationship URI="urn:test:rel1">
       <so:semanticObject URI="urn:test:SemanticObject3"/>
   </so:relationship>
+  
 </so:semanticObject>
