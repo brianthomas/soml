@@ -4,9 +4,6 @@ package net.datamodel.soml;
 import java.net.URI;
 import java.util.List;
 
-import net.datamodel.soml.Relationship;
-import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.UnmixedSemanticObjectList;
 import net.datamodel.soml.impl.SemanticObjectImpl;
 import net.datamodel.soml.impl.UnmixedSemanticObjectListImpl;
 
@@ -74,31 +71,32 @@ public class TestAPI extends BaseCase
 		assertTrue("SO retURIs the correct URI", so.getURI().equals(uri1));
 		
 		// bi-directional between obj1 and obj2
-		assertTrue("can addRelationship obj1 to obj2", so.addRelationship(so2, rel_URI));
-		assertTrue("can addRelationship obj2 to obj1", so2.addRelationship(so, rel_URI));
+		assertTrue("can addRelationship obj1 to obj2", so.addProperty(so2, rel_URI));
+		assertTrue("can addRelationship obj2 to obj1", so2.addProperty(so, rel_URI));
 		// the *same* type of bi-directional rel between obj1 and obj3
-		assertTrue("can addRelationship obj1 to obj3", so.addRelationship(so3, rel_URI));
-		assertTrue("can addRelationship obj3 to obj1", so3.addRelationship(so, rel_URI));
+		assertTrue("can addRelationship obj1 to obj3", so.addProperty(so3, rel_URI));
+		assertTrue("can addRelationship obj3 to obj1", so3.addProperty(so, rel_URI));
 		// bi-directional between obj2 and obj3
-		assertTrue("can addrelationship obj3 to obj2", so3.addRelationship(so2, rel_URI2));
-		assertTrue("can addrelationship obj2 to obj3", so2.addRelationship(so3, rel_URI2));
+		assertTrue("can addrelationship obj3 to obj2", so3.addProperty(so2, rel_URI2));
+		assertTrue("can addrelationship obj2 to obj3", so2.addProperty(so3, rel_URI2));
 		// uni-directional, only obj1 is aware of relationship to obj4 
-		assertTrue("can addrelationship obj1 to obj4", so.addRelationship(so4, rel_URI3)); 
+		assertTrue("can addrelationship obj1 to obj4", so.addProperty(so4, rel_URI3)); 
 		
 		// check we have correct number of relationships in both objects now
-		assertTrue("SO1 has the correct number of relationships",so.getRelationships().size() == 3);
-		assertTrue("SO2 has the correct number of relationships",so2.getRelationships().size() == 2);
-		assertTrue("SO3 has the correct number of relationships",so3.getRelationships().size() == 2);
-		assertTrue("SO4 has the correct number of relationships",so4.getRelationships().size() == 0);
+		assertTrue("SO1 has the correct number of relationships",so.getProperties().size() == 3);
+		assertTrue("SO2 has the correct number of relationships",so2.getProperties().size() == 2);
+		assertTrue("SO3 has the correct number of relationships",so3.getProperties().size() == 2);
+		assertTrue("SO4 has the correct number of relationships",so4.getProperties().size() == 0);
 		
-		List<Relationship> relList = so.getRelationships(rel_URI); 
-		Relationship rel1 = relList.get(0);
-		assertEquals("Relationship URI is expected one", rel_URI, rel1.getURI());
-		assertEquals("Relationship target is expected one", so2, rel1.getTarget());
+		List<Property> relList = so.getProperties(rel_URI); 
+		Property rel1 = relList.get(0);
+		assertEquals("Property URI is expected one", rel_URI, rel1.getURI());
+		assertTrue("Property is an object property", rel1 instanceof ObjectProperty); 
+		assertEquals("Property target is expected one", so2, ((ObjectProperty) rel1).getTarget());
 		
 		// check that the 1 object is the one we expect
-		List<SemanticObject> check1 = so.getRelatedSemanticObjects(rel_URI);
-		List<SemanticObject> check2 = so2.getRelatedSemanticObjects(rel_URI2);
+		List<SemanticObject> check1 = so.getSemanticObjects(rel_URI);
+		List<SemanticObject> check2 = so2.getSemanticObjects(rel_URI2);
 		this.assertEquals("Object 1: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 2, check1.size()); 
 		this.assertEquals("Object 2: number of objs in relationship:"+rel_URI2.toASCIIString()+" is correct", 1, check2.size()); 
 		
@@ -107,49 +105,49 @@ public class TestAPI extends BaseCase
 	
 		// check that getRelationships for both objs retURIs a relationship 
 		// which points to  the expected object
-		SemanticObject check3 = ((Relationship) so2.getRelationships().get(0)).getTarget();
-		SemanticObject check4 = ((Relationship) so.getRelationships().get(0)).getTarget();
+		SemanticObject check3 = ((ObjectProperty) so2.getProperties().get(0)).getTarget();
+		SemanticObject check4 = ((ObjectProperty) so.getProperties().get(0)).getTarget();
 		assertTrue("getRelationships retURIs relationship pointing to right obj (and equals method)", check4.equals(so2));
 		assertTrue("getRelationships retURIs relationship pointing to right obj", check3 == so);
 		
 		// RemoveRelationship(URI, target) tests
-		assertTrue("can remove specific relationships with given URI, target", so.removeRelationship(rel_URI, so2)); 
-		this.assertEquals("After removal Object 1: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so.getRelationships(rel_URI).size()); 
+		assertTrue("can remove specific relationships with given URI, target", so.removeObjectProperty(rel_URI, so2)); 
+		this.assertEquals("After removal Object 1: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so.getProperties(rel_URI).size()); 
 		// but the objects pointed to still have their relationships, even if
 		// the URI of the relationship is the same.
-		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so2.getRelationships(rel_URI).size()); 
-		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getRelationships(rel_URI).size()); 
+		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so2.getProperties(rel_URI).size()); 
+		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getProperties(rel_URI).size()); 
 		
 		// removeAllRelationships tests. 
-		assertTrue("can remove all relationships with given URI", so.removeAllRelationships(rel_URI)); 
-		this.assertEquals("After removal Object 1: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 0, so.getRelationships(rel_URI).size()); 
+		assertTrue("can remove all relationships with given URI", so.removeAllProperties(rel_URI)); 
+		this.assertEquals("After removal Object 1: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 0, so.getProperties(rel_URI).size()); 
 		// but the objects pointed to still have their relationships, even if
 		// the URI of the relationship is the same.
-		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so2.getRelationships(rel_URI).size()); 
-		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getRelationships(rel_URI).size()); 
+		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so2.getProperties(rel_URI).size()); 
+		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getProperties(rel_URI).size()); 
 		
 		// test a BAD addRelationship (catch error for re-adding duplicate) 
 		boolean badRelProhibited = false;
 		try {
-			so.addRelationship(so4, rel_URI3); 
+			so.addProperty(so4, rel_URI3); 
 		} catch (IllegalArgumentException e) {
 			badRelProhibited = true;
 		}
 		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
 		
 		// test a BAD removeRelationship (catch error) 
-		assertTrue("Should fail to remove rel_URI2 from Obj1", !so.removeAllRelationships(rel_URI2));
-		assertTrue("Should fail to remove rel_URI from Obj1 for Obj2 (already removed)",!so.removeRelationship(rel_URI, so2));
+		assertTrue("Should fail to remove rel_URI2 from Obj1", !so.removeAllProperties(rel_URI2));
+		assertTrue("Should fail to remove rel_URI from Obj1 for Obj2 (already removed)",!so.removeObjectProperty(rel_URI, so2));
 		
-		so.removeAllRelationships(rel_URI);
+		so.removeAllProperties(rel_URI);
 		// no objects left now
-		for (Relationship r : so.getRelationships()) {
-			logger.debug(" **** SO Relationship uri:"+r.getURI().toASCIIString()+" target:"+r.getTarget().getURI().toASCIIString());
+		for (Property r : so.getProperties()) {
+			logger.debug(" **** SO Property uri:"+r.getURI().toASCIIString()+" target:"+((ObjectProperty)r).getTarget().getURI().toASCIIString());
 		}
-		assertEquals("Correct number of remaining relationships", 1, so.getRelationships().size());
+		assertEquals("Correct number of remaining relationships", 1, so.getProperties().size());
 		
-		so.clearAllRelationships();
-		assertEquals("Correct number of remaining relationships", 0, so.getRelationships().size());
+		so.removeAllProperties();
+		assertEquals("Correct number of remaining relationships", 0, so.getProperties().size());
 		
 		// Method checks not yet implemented..
 		//

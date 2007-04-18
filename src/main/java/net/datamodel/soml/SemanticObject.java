@@ -37,13 +37,16 @@ import net.datamodel.xssp.ReferenceableXMLSerializableObject;
 
 /**
  * The interface for all objects which have Semantic meaning as represented
- * by a Unique Resource Identifier (URI). Each of these objects may be in a relationship 
- * to other objects, and that relationship is identified by its own URI which is
- * separate from the objects in the relationship. Ultimately, it is intended for
- * the URIs to be used to identify how these various instance structures map 
- * to an Ontology (OWL, Web Ontology Language, W3C specification; 
- * <i>see <b>http://www.w3.org/2004/OWL/</b></i> is the basis for this 
- * implementation).
+ * by a Unique Resource Identifier (URI). Each of these objects may be in a 
+ * relationship with other semantic objects (the objects are then known as 
+ * properties of the parent object). Each property is identified by its own 
+ * URI which is separate from the objects which are serving as the target of
+ * the property. 
+ * 
+ * Ultimately, it is intended for the URIs to be used to identify how these 
+ * various instance structures map  to an Ontology (OWL, Web Ontology Language, 
+ * W3C specification ;<i>see <b>http://www.w3.org/2004/OWL/</b></i>; is 
+ * the basis for this implementation).
  * 
  * @author thomas
  * @version $VersionId:$
@@ -55,72 +58,72 @@ extends ReferenceableXMLSerializableObject
     // Operations
 	
    /**
-     * Add a (uni-directional) relationship between 2 SemanticObjects (SO). 
-     * The caller is considered to 'own' the relationship which 'points to' 
+     * Add a (uni-directional) property between 2 SemanticObjects (SO). 
+     * The caller is considered to 'own' the property which 'points to' 
      * the target SO. After this is successfully called, <i>only the calling</i> 
-     * SO will show the other SO in its list of related objects. 
+     * SO will show the other SO in its list of related objects/properties. 
      * 
-     * The following restrictions exist on relationships between SOs:
+     * The following restrictions exist on properties between SOs:
      * <ul> 
-     *    Only <i>one</i> relationship may exist between 2 SOs for a given relationship /:RI. <br/> 
-     *    A SO may not be in relationship with itself.
+     *    Only <i>one</i> property may exist between 2 SOs for a given property /:RI. <br/> 
+     *    A SO may not be in property with itself.
      * </ul>
-     *  Note that the relationship URI used identifies only the <i>relationship</i>
+     *  Note that the property URI used identifies only the <i>property</i>
      *  between the calling object and the target, not the <i>semantic identity</i> 
      *  of the target object itself (which should have its own, separate URI value).
      * 
      * @throws IllegalArgumentException if adding self, or the same object already exists with 
-     *         the same (relationship) URI.
+     *         the same (property) URI.
      * @throws NullPointerException if attempting to adding an null (!!)
-     * @param target object to set up the relationship to.
-     * @param relationship the URI of the relationship to establish.
+     * @param target object to set up the property to.
+     * @param property the URI of the property to establish.
      * @return boolean value of whether addition was successfull or not.
      */
-     public boolean addRelationship (SemanticObject target, URI relationship) 
+     public boolean addProperty (SemanticObject target, URI property) 
      throws IllegalArgumentException, NullPointerException;
      
-    /** Remove all relationships which match the passed URI.
+    /** Remove all properties which match the passed URI.
      * 
-     * @param uri of the relationships to remove 
-     * @return true if the relationship was removed. 
+     * @param uri of the properties to remove 
+     * @return true if the property was removed. 
      */
-    public boolean removeAllRelationships (URI uri);
+    public boolean removeAllProperties (URI uri);
     
-    /** Remove (clear) all relationships in the calling object 
-     * regardless of relationship URI. Does not affect target object
-     * relationships. 
+    /** Remove (clear) all properties in the calling object 
+     * regardless of property URI. Does not affect target object
+     * properties. 
      */
-    public void clearAllRelationships();
+    public void removeAllProperties();
     
-    /** Remove the relationship which has the passed URI <i>and</i> the
+    /** Remove any properties which have the passed URI <i>and</i> the
      * identified target SemanticObject.
      * 
-     * @param uri
+     * @param propertyUri
      * @param target
-     * @return true if the relationship was removed
+     * @return true if the property was removed
      */
-    public boolean removeRelationship (URI uri, SemanticObject target);
+    public boolean removeObjectProperty (URI propertyUri, SemanticObject target);
     
-    /** Retrieve the semantic object in relationship to the caller by
-     * the value of the relationship URI.
+    /** Retrieve any semantic objects which are are properties of 
+     * the parent SemanticObject with the given property URI. 
      * 
-     * @param relationship URI which represents the association between the parent and the member 
-     * @return List of SemanticObjects which are in the given relationship to the caller.
+     * @param propertyURI the URI which represents the property describing the objects to search for 
+     * @return List of SemanticObjects which are in the given property to the caller.
      */
-    public List<SemanticObject> getRelatedSemanticObjects (URI relationship);
+    public List<SemanticObject> getSemanticObjects (URI propertyURI);
     
-    /** Get the list of relationships which the calling SemanticObject 'owns'.
+    /** Get the list of properties which the calling SemanticObject 'owns'.
      * 
-     * @return List of all relationships which the calling SO owns.
+     * @return List of all properties which the calling SO owns.
      */ 
-    public List<Relationship> getRelationships ( );
+    public List<Property> getProperties ( );
     
-    /** Get the list of relationships which the calling SemanticObject 'owns'
+    /** Get the list of properties which the calling SemanticObject 'owns'
      * that match the passed URI value.
-     * @param relationshipURI the URI of the relationship(s) to match. 
-     * @return List of relationships which have the named URI.
+     * @param propertyURI the URI of the property(s) to match. 
+     * @return List of properties which have the named URI.
      */
-    public List<Relationship> getRelationships(URI relationshipURI);
+    public List<Property> getProperties(URI propertyURI);
 
     /** Get the URI which represents the semantic meaning (ontological class) 
      * of this object.  The URI maybe the same for different instances of a 

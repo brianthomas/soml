@@ -42,14 +42,14 @@ public class TestSerialization extends BaseCase {
 		
 		SemanticObject so = new SemanticObjectImpl (uri1);
 		SemanticObject so2 = new SemanticObjectImpl (uri2);
-		so2.addRelationship(so, rel_URI); 
+		so2.addProperty(so, rel_URI); 
 		
 		// test non-pretty output 
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\"/>");
 		checkXMLOutput(so2,"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+
-				"<relationship URI=\"urn:test:rel1\">"+
+				"<property URI=\"urn:test:rel1\">"+
 				"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+
-				"</relationship></semanticObject>");
+				"</property></semanticObject>");
 		
 		// test pretty output 
 		spec.setPrettyOutput(true);
@@ -60,9 +60,9 @@ public class TestSerialization extends BaseCase {
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
 		checkXMLOutput(so2,
 				"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+newLine
-				+indent+"<relationship URI=\"urn:test:rel1\">"+newLine
+				+indent+"<property URI=\"urn:test:rel1\">"+newLine
 				+indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+newLine
-				+indent+"</relationship>"+newLine
+				+indent+"</property>"+newLine
 				+"</semanticObject>");
 		
 		spec.setPrettyOutput(false); // reset for next test 
@@ -76,18 +76,18 @@ public class TestSerialization extends BaseCase {
 		// TODO
 	}
 	
-	// test Inter-referential relationships
+	// test Inter-referential propertys
 	//
 	public void test4() {
 		
-		logger.info("test serialization of Inter-referential relationships"); 
+		logger.info("test serialization of Inter-referential propertys"); 
 		
 		// first create some test objects...
 		SemanticObject so1 = new SemanticObjectImpl(uri1);
 		SemanticObject so2 = new SemanticObjectImpl(uri2);
 		
-		so1.addRelationship(so2, rel_URI);
-		so2.addRelationship(so1, rel_URI2);
+		so1.addProperty(so2, rel_URI);
+		so2.addProperty(so1, rel_URI2);
 		
 		// pretty output is more rigourous test
 		Specification.getInstance().setPrettyOutput(true);
@@ -95,24 +95,24 @@ public class TestSerialization extends BaseCase {
 		String newLine = System.getProperty("line.separator");
 		String expectedOutput1 = 
 			"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\">"+newLine+ 
-			indent+"<relationship URI=\"urn:test:rel1\">"+newLine+ 
+			indent+"<property URI=\"urn:test:rel1\">"+newLine+ 
 			indent+indent+"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id1\">"+newLine+ 
-			indent+indent+indent+"<relationship URI=\"urn:test:rel2\">"+newLine+ 
+			indent+indent+indent+"<property URI=\"urn:test:rel2\">"+newLine+ 
 			indent+indent+indent+indent+"<semanticObjectRef soRefId=\"id0\"/>"+newLine+ 
-			indent+indent+indent+"</relationship>"+newLine+
+			indent+indent+indent+"</property>"+newLine+
 			indent+indent+"</semanticObject>"+newLine+
-			indent+"</relationship>"+newLine+
+			indent+"</property>"+newLine+
 			"</semanticObject>";
 		
 		String expectedOutput2 = 
 			"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id1\">"+newLine+ 
-			indent+"<relationship URI=\"urn:test:rel2\">"+newLine+ 
+			indent+"<property URI=\"urn:test:rel2\">"+newLine+ 
 			indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\">"+newLine+ 
-			indent+indent+indent+"<relationship URI=\"urn:test:rel1\">"+newLine+ 
+			indent+indent+indent+"<property URI=\"urn:test:rel1\">"+newLine+ 
 			indent+indent+indent+indent+"<semanticObjectRef soRefId=\"id1\"/>"+newLine+ 
-			indent+indent+indent+"</relationship>"+newLine+
+			indent+indent+indent+"</property>"+newLine+
 			indent+indent+"</semanticObject>"+newLine+
-			indent+"</relationship>"+newLine+
+			indent+"</property>"+newLine+
 			"</semanticObject>";
 		
 		

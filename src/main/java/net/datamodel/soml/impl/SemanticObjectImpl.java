@@ -37,7 +37,8 @@ import java.util.List;
 import java.util.Vector;
 
 import net.datamodel.soml.Constant;
-import net.datamodel.soml.Relationship;
+import net.datamodel.soml.ObjectProperty;
+import net.datamodel.soml.Property;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.impl.AbstractReferenceableXMLSerializableObject;
@@ -98,7 +99,7 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
 	 */ 
-	public final boolean addRelationship (SemanticObject target, URI relationURI) 
+	public final boolean addProperty (SemanticObject target, URI relationURI) 
 	throws IllegalArgumentException, NullPointerException 
 	{
 
@@ -110,7 +111,7 @@ implements SemanticObject {
 
 		// check if the relationship selected already exists in the calling object
 		// with the target
-		List<SemanticObject> soList = getRelatedSemanticObjects(relationURI);
+		List<SemanticObject> soList = getSemanticObjects(relationURI);
 		if (soList.size() > 0)
 		{
 			for (SemanticObject test : soList)
@@ -122,19 +123,17 @@ implements SemanticObject {
 		}
 
 		// now we add the relationship and return success 
-		return getRelationships().add(new RelationshipImpl(relationURI, target));
+		return getProperties().add(new ObjectPropertyImpl(relationURI, target));
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#removeRelationship(net.datamodel.soml.URI, net.datamodel.soml.SemanticObject)
-	 */
-	public final boolean removeRelationship(URI URI, SemanticObject target) {
-		List<Relationship> removeList = getRelationships();
-		for (Relationship test : removeList) {
-			if (test.getTarget() == target) {
-				return getRelationships().remove(test); // there should only be one, so return now  
+	public final boolean removeObjectProperty(URI URI, SemanticObject target) {
+		List<Property> removeList = getProperties();
+		for (Property test : removeList) {
+			if (test instanceof ObjectProperty 
+					&& ((ObjectProperty)test).getTarget() == target) 
+			{
+				return getProperties().remove(test); // there should only be one, so return now  
 			}
 		}
 		return false;
@@ -144,21 +143,21 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#clearAllRelationships()
 	 */
-	public final void clearAllRelationships() {
-		getRelationships().clear();
+	public final void removeAllProperties() {
+		getProperties().clear();
 	}
 
 	/*
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URI)
 	 */
-	public final boolean removeAllRelationships (URI URI) {
+	public final boolean removeAllProperties (URI URI) {
 		boolean success = true;
-		List<Relationship> testList = getRelationships(URI);
+		List<Property> testList = getProperties(URI);
 		if (testList.size() > 0) {
-			for (Relationship target : testList)
+			for (Property target : testList)
 			{
-				if (!getRelationships().remove(target))
+				if (!getProperties().remove(target))
 					success = false;
 			}
 		} else 
@@ -186,14 +185,15 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObjects(net.datamodel.soml.URI)
 	 */
-	public final List<SemanticObject> getRelatedSemanticObjects (URI relationshipURI) {
+	public final List<SemanticObject> getSemanticObjects (URI propertyURI) {
 
 		List<SemanticObject> found = new Vector<SemanticObject>();
-		for (Relationship rel: getRelationships()) {
+		for (Property rel: getProperties()) {
 			logger.debug("rel:" + rel); 
 			logger.debug("  URI :" + rel.getURI()); 
-			if (null != rel && rel.getURI().equals(relationshipURI)) {
-				found.add(rel.getTarget()); // matched, so add it to found list
+			if (null != rel && rel.getURI().equals(propertyURI)) {
+				if (rel instanceof ObjectProperty)
+				found.add(((ObjectProperty)rel).getTarget()); // matched, so add it to found list
 			}
 		}
 		return found;
@@ -203,10 +203,10 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelationships(net.datamodel.soml.URI)
 	 */
-	public final List<Relationship> getRelationships (URI URI) 
+	public final List<Property> getProperties (URI URI) 
 	{
-		List<Relationship> found = new Vector<Relationship>();
-		for (Relationship rel : getRelationships()) {
+		List<Property> found = new Vector<Property>();
+		for (Property rel : getProperties()) {
 			if (rel.getURI().equals(URI))
 				found.add(rel);
 		}
@@ -217,8 +217,8 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelationships()
 	 */
-	public final List<Relationship> getRelationships() {
-		return (List<Relationship>) getFieldValue(relationshipFieldName);
+	public final List<Property> getProperties() {
+		return (List<Property>) getFieldValue(relationshipFieldName);
 	}
 
 	// Operations
