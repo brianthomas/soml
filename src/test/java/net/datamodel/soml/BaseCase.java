@@ -4,15 +4,19 @@ package net.datamodel.soml;
 import java.net.URI;
 
 import junit.framework.TestCase;
+import net.datamodel.xssp.XMLSerializableObject;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
  * @author thomas
  *
  */
-public class BaseCase  extends TestCase {
+public class BaseCase extends TestCase {
 	
+	private static final Logger logger = Logger.getLogger(BaseCase.class);
+
 	protected URI uri1 = null;
 	protected URI uri2 = null;
 	protected URI uri3 = null;
@@ -42,6 +46,5 @@ public class BaseCase  extends TestCase {
 		}
 		
 	}
-	
 
 }

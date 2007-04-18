@@ -45,9 +45,10 @@ public class TestSerialization extends BaseCase {
 		so2.addRelationship(so, rel_URI); 
 		
 		// test non-pretty output 
-		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\"/>");
-		checkXMLOutput(so2,"<semanticObject URI=\"urn:test:SemanticObject2\">"+
-				"<relationship URI=\"urn:test:rel1\"><semanticObject URI=\"urn:test:SemanticObject1\"/>"+
+		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\"/>");
+		checkXMLOutput(so2,"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+
+				"<relationship URI=\"urn:test:rel1\">"+
+				"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+
 				"</relationship></semanticObject>");
 		
 		// test pretty output 
@@ -56,11 +57,11 @@ public class TestSerialization extends BaseCase {
 		String indent = spec.getPrettyOutputIndentation();
 		String newLine = System.getProperty("line.separator");
 		
-		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\"/>");
+		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
 		checkXMLOutput(so2,
-				"<semanticObject URI=\"urn:test:SemanticObject2\">"+newLine
+				"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+newLine
 				+indent+"<relationship URI=\"urn:test:rel1\">"+newLine
-				+indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\"/>"+newLine
+				+indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+newLine
 				+indent+"</relationship>"+newLine
 				+"</semanticObject>");
 		
@@ -71,7 +72,8 @@ public class TestSerialization extends BaseCase {
 	// test UnmixedList serialization
 	//
 	public void test3() {
-		logger.info("Check unmixedlist serialization.");
+		logger.info("Check unmixedlist serialization. -- TODO!");
+		// TODO
 	}
 	
 	// test Inter-referential relationships
@@ -87,9 +89,37 @@ public class TestSerialization extends BaseCase {
 		so1.addRelationship(so2, rel_URI);
 		so2.addRelationship(so1, rel_URI2);
 		
-		checkXMLOutput(so1,"");
-		checkXMLOutput(so2,"");
+		// pretty output is more rigourous test
+		Specification.getInstance().setPrettyOutput(true);
+		String indent = Specification.getInstance().getPrettyOutputIndentation();
+		String newLine = System.getProperty("line.separator");
+		String expectedOutput1 = 
+			"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\">"+newLine+ 
+			indent+"<relationship URI=\"urn:test:rel1\">"+newLine+ 
+			indent+indent+"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id1\">"+newLine+ 
+			indent+indent+indent+"<relationship URI=\"urn:test:rel2\">"+newLine+ 
+			indent+indent+indent+indent+"<semanticObjectRef soRefId=\"id0\"/>"+newLine+ 
+			indent+indent+indent+"</relationship>"+newLine+
+			indent+indent+"</semanticObject>"+newLine+
+			indent+"</relationship>"+newLine+
+			"</semanticObject>";
 		
+		String expectedOutput2 = 
+			"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id1\">"+newLine+ 
+			indent+"<relationship URI=\"urn:test:rel2\">"+newLine+ 
+			indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\">"+newLine+ 
+			indent+indent+indent+"<relationship URI=\"urn:test:rel1\">"+newLine+ 
+			indent+indent+indent+indent+"<semanticObjectRef soRefId=\"id1\"/>"+newLine+ 
+			indent+indent+indent+"</relationship>"+newLine+
+			indent+indent+"</semanticObject>"+newLine+
+			indent+"</relationship>"+newLine+
+			"</semanticObject>";
+		
+		
+		checkXMLOutput(so1,expectedOutput1);
+		checkXMLOutput(so2,expectedOutput2);
+		
+		Specification.getInstance().setPrettyOutput(false);
 	}
 	
 	private static void checkBuildURI (String content) {

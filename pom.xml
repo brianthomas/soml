@@ -59,7 +59,7 @@ handy representations of (instances of) semantic objects.</description>
     <dependency>
       <groupId>net.datamodel</groupId>
       <artifactId>xssp</artifactId>
-      <version>0.96-5</version>
+      <version>0.96-6</version>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
