@@ -13,7 +13,7 @@
   
   <!-- in different relationship with a same object, using reference -->
   <so:relationship URI="urn:test:rel2">
-      <so:refSO soidRef="obj1"/>
+      <so:semanticObjectRef soidRef="obj1"/>
   </so:relationship>
   
 </so:semanticObject>

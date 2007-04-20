@@ -77,6 +77,6 @@
 
   <!-- elements -->
   <xsd:element name="semanticObject" type="SemanticObjectType" substitutionGroup="SemanticObjectGroup"/>
-  <xsd:element name="refSO" type="refSOType" substitutionGroup="SemanticObjectGroup"/>
+  <xsd:element name="semanticObjectRef" type="refSOType" substitutionGroup="SemanticObjectGroup"/>
 
 </xsd:schema>

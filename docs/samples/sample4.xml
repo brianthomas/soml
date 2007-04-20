@@ -12,7 +12,7 @@
       <so:semanticObject soid="obj2" URI="urn:test:SemanticObject2">
      	   <!-- obj2 has relationship to object 3 -->
 		  <so:relationship URI="urn:test:rel23">
-		      <so:refSO soidRef="obj3"/>
+		      <so:semanticObjectRef soidRef="obj3"/>
 		  </so:relationship>
       </so:semanticObject>
   </so:relationship>
@@ -22,7 +22,7 @@
       <so:semanticObject soid="obj3" URI="urn:test:SemanticObject2">
      	   <!-- obj3 has relationship to object 2 -->
 		  <so:relationship URI="urn:test:rel32">
-		      <so:refSO soidRef="obj2"/>
+		      <so:semanticObjectRef soidRef="obj2"/>
 		  </so:relationship>
       </so:semanticObject>
   </so:relationship>
