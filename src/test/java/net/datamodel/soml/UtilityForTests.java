@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.datamodel.soml.parse;
+package net.datamodel.soml;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,10 +39,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author thomas
  *
  */
-public class UtilityForParseTests 
+public class UtilityForTests 
 {
 
-	private static final Logger logger = Logger.getLogger(UtilityForParseTests.class);
+	private static final Logger logger = Logger.getLogger(UtilityForTests.class);
 
 	private static final String SaxParserName = "org.apache.xerces.parsers.SAXParser";
 	

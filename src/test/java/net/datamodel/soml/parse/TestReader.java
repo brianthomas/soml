@@ -5,6 +5,8 @@ package net.datamodel.soml.parse;
 
 import java.io.StringReader;
 
+import net.datamodel.soml.UtilityForTests;
+
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
@@ -19,7 +21,7 @@ public class TestReader extends BaseParseCase {
 	public void test1() {
 		logger.info("test creating reader with several document types");
 		
-		UtilityForParseTests.createReader(new NonSOMLTestDocumentImpl());
+		UtilityForTests.createReader(new NonSOMLTestDocumentImpl());
 		
 	}
 	

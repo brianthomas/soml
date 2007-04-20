@@ -6,6 +6,7 @@ import java.io.FilenameFilter;
 import java.io.StringReader;
 
 import net.datamodel.soml.BaseCase;
+import net.datamodel.soml.UtilityForTests;
 import net.datamodel.soml.support.SOMLDocument;
 import net.datamodel.soml.support.SOMLReader;
 import net.datamodel.soml.support.DOMXerces2.SOMLDocumentImpl;
@@ -44,9 +45,9 @@ public class BaseParseCase extends BaseCase {
 		
 		logger.debug("copy over sample and schema files to test directory");
 		try {
-			UtilityForParseTests.copyFiles(samplefiles, samplesDirectory, testDirectory); 
-			UtilityForParseTests.copyFiles(sampleschemafiles, samplesDirectory, testDirectory); 
-			UtilityForParseTests.copyFiles(baseschemafiles, schemaDirectory, testDirectory); 
+			UtilityForTests.copyFiles(samplefiles, samplesDirectory, testDirectory); 
+			UtilityForTests.copyFiles(sampleschemafiles, samplesDirectory, testDirectory); 
+			UtilityForTests.copyFiles(baseschemafiles, schemaDirectory, testDirectory); 
 		} catch (Exception e) {
 			logger.error("Cant set up tests : "+ e.getMessage());
 			e.printStackTrace();
@@ -74,7 +75,7 @@ public class BaseParseCase extends BaseCase {
 	static void checkDefaultHandlerParse (TestableDocument d) 
 	{
 	
-		SOMLReader r = UtilityForParseTests.createReader(d);
+		SOMLReader r = UtilityForTests.createReader(d);
 		boolean canRead = true;
 		try {
 			InputSource inputsource = new InputSource(new StringReader(d.getExpectedOutput()));

@@ -8,6 +8,9 @@ import java.net.URISyntaxException;
 
 import net.datamodel.soml.BaseCase;
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.soml.UtilityForTests;
+import net.datamodel.soml.support.SOMLDocument;
+import net.datamodel.soml.support.DOMXerces2.SOMLDocumentImpl;
 import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.parse.Specification;
 
@@ -58,12 +61,15 @@ public class TestSerialization extends BaseCase {
 		String newLine = System.getProperty("line.separator");
 		
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
+		checkDocumentRepresentation(so);
+		
 		checkXMLOutput(so2,
 				"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+newLine
 				+indent+"<property URI=\"urn:test:rel1\">"+newLine
 				+indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+newLine
 				+indent+"</property>"+newLine
 				+"</semanticObject>");
+		checkDocumentRepresentation(so2);
 		
 		spec.setPrettyOutput(false); // reset for next test 
 		
@@ -117,9 +123,25 @@ public class TestSerialization extends BaseCase {
 		
 		
 		checkXMLOutput(so1,expectedOutput1);
-		checkXMLOutput(so2,expectedOutput2);
+		checkDocumentRepresentation(so1);
 		
+		checkXMLOutput(so2,expectedOutput2);
+		checkDocumentRepresentation(so2);
+
 		Specification.getInstance().setPrettyOutput(false);
+	}
+	
+	private static void checkDocumentRepresentation (SemanticObject so) {
+		
+		SOMLDocument doc = new SOMLDocumentImpl();
+		doc.setDocumentElement(doc.createSOMLElement(so));
+
+		try {
+			UtilityForTests.checkValidXMLRepresentation(doc, false); 
+			UtilityForTests.checkValidXMLRepresentation(doc, true); 
+		} catch (Exception e) {
+			fail("check doc representation check failed:"+e.getMessage());
+		}
 	}
 	
 	private static void checkBuildURI (String content) {
@@ -138,5 +160,6 @@ public class TestSerialization extends BaseCase {
 		logger.debug("  expected:["+expectedOut+"]");
 		assertEquals("XML output as expected", expectedOut, obj.toXMLString());
 	}
+	
 
 }

@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import net.datamodel.soml.UtilityForTests;
 import net.datamodel.soml.support.SOMLDocument;
 import net.datamodel.soml.support.SOMLReader;
 import net.datamodel.soml.support.DOMXerces2.SOMLDocumentImpl;
@@ -68,7 +69,7 @@ public class TestLoad extends BaseParseCase
 			     
 				assertTrue("can write file", outputfile.canWrite());
 				assertTrue("File has non-zero extent", outputfile.length() > 0);
-				assertTrue ("Output document is valid", UtilityForParseTests.validateFile (testDirectory+"/tmp.xml"));
+				assertTrue ("Output document is valid", UtilityForTests.validateFile (testDirectory+"/tmp.xml"));
 				
 				// clean up		
 				
@@ -148,7 +149,7 @@ public class TestLoad extends BaseParseCase
 		logger.debug("Attempting to load file : ["+inputfile+"]");
 
 		SOMLDocument doc = new SOMLDocumentImpl();
-		SOMLReader r = UtilityForParseTests.createReader(doc);
+		SOMLReader r = UtilityForTests.createReader(doc);
 
 		r.parseFile(inputfile);
 		return doc;
