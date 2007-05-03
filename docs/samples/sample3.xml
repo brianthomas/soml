@@ -2,7 +2,7 @@
 <so:semanticObject 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xmlns:so="http://www.data-model.net/SemanticObject" 
-      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_54.xsd"
+      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_55.xsd"
       URI="urn:test:SemanticObject1"
 >
 
