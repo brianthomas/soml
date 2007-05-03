@@ -59,15 +59,14 @@ public class UtilityForTests
 		return r;
 	}
 
-	public static final void checkValidXMLRepresentation (XSSPDocument doc, boolean pretty )
+	public static final void checkValidXMLRepresentation (XSSPDocument doc )
 	throws Exception
 	{
-		logger.debug("checkValidXMLRepresentation:");
+		boolean pretty = Specification.getInstance().isPrettyOutput();
+		logger.debug("checkValidXMLRepresentation pretty:"+pretty);
 
 		String xmlRep = doc.toXMLString();
 		StringReader sr = new StringReader(xmlRep);
-
-		Specification.getInstance().setPrettyOutput(pretty);
 
 		logger.debug("   Document XML is:\n"+xmlRep);
 		TestCase.assertTrue("Is valid version? pretty:"+pretty, validateSrc(new InputSource(sr), SaxParserName));
@@ -105,8 +104,11 @@ public class UtilityForTests
 		doc.setDocumentElement(elem);
 
 		// now check various representations
-		checkValidXMLRepresentation(doc, false);
-		checkValidXMLRepresentation(doc, true);
+		Specification.getInstance().setPrettyOutput(false);
+		checkValidXMLRepresentation(doc);
+		Specification.getInstance().setPrettyOutput(true);
+		checkValidXMLRepresentation(doc);
+		Specification.getInstance().setPrettyOutput(false);
 
 	}
 
