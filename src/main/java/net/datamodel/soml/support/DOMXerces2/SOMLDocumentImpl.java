@@ -54,6 +54,8 @@ implements SOMLDocument
 
 //	private static final Logger logger = Logger.getLogger(SOMLDocumentImpl.class);
 
+	private static final long serialVersionUID = 7577314938617456466L;
+
 	public SOMLElement createSOMLElement(SemanticObject SemanticObject) 
 	throws DOMException
 	{
@@ -92,21 +94,15 @@ implements SOMLDocument
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.support.SOMLDocument#getSemanticObjects(boolean)
+	 * @see net.datamodel.soml.support.SOMLDocument#getSemanticObjects()
 	 */
-	public List<SemanticObject> getSemanticObjects (boolean deep) {
+	public List<SemanticObject> getSemanticObjects () {
 		List<SemanticObject> soList = new Vector<SemanticObject>(); 
 		for (Object key : userData.keySet()) {
 			if (key instanceof SOMLElement)
 			{
 				SOMLElement soElem = (SOMLElement) key;
 				soList.add(soElem.getSemanticObject()); 
-				// FIXME: need to delve deep into the stackwithout repeating referenced SemanticObjects
-				// we already have.
-				/*
-				if (deep)
-					soList.addAll(findSemanticObjects(soElem.getQuantity()));
-				*/
 			}
 		}
 		return soList;

@@ -70,10 +70,9 @@ public interface SOMLDocument extends XSSPDocument
   
    /** Return references to all semantic objects held within this document.
     * 
-    * @param deep
-    * @return a list of semantic objects 
+    * @return a list of semantic objects held by the document 
     */
-   public List<SemanticObject> getSemanticObjects(boolean deep);
+   public List<SemanticObject> getSemanticObjects();
   
 }
 
