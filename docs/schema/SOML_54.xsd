@@ -55,7 +55,7 @@
                                minOccurs="0" maxOccurs="unbounded"
                    />
               </xsd:sequence>
-              <xsd:attribute name="soid" type="xsd:ID" use="optional"/>
+              <xsd:attribute name="soId" type="xsd:ID" use="optional"/>
               <xsd:attribute name="URI" type="xsd:anyURI"/>
               <xsd:anyAttribute namespace="##any"/> <!-- allow other namespaces to add attribs to SO's -->
    	  </xsd:extension>
@@ -67,7 +67,7 @@
    <xsd:complexType name="refSOType">
       <xsd:complexContent>
         <xsd:extension base="AbstractSOType">
-          <xsd:attribute name="soidRef" type="xsd:IDREF" use="required"/>
+          <xsd:attribute name="soIdRef" type="xsd:IDREF" use="required"/>
         </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>

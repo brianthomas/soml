@@ -9,20 +9,20 @@
 
   <!-- in the relationship1 with an obj2 -->
   <so:relationship URI="urn:test:rel12">
-      <so:semanticObject soid="obj2" URI="urn:test:SemanticObject2">
+      <so:semanticObject soId="obj2" URI="urn:test:SemanticObject2">
      	   <!-- obj2 has relationship to object 3 -->
 		  <so:relationship URI="urn:test:rel23">
-		      <so:semanticObjectRef soidRef="obj3"/>
+		      <so:semanticObjectRef soIdRef="obj3"/>
 		  </so:relationship>
       </so:semanticObject>
   </so:relationship>
   
   <!-- in relationship2 with obj3 -->
   <so:relationship URI="urn:test:rel13">
-      <so:semanticObject soid="obj3" URI="urn:test:SemanticObject2">
+      <so:semanticObject soId="obj3" URI="urn:test:SemanticObject2">
      	   <!-- obj3 has relationship to object 2 -->
 		  <so:relationship URI="urn:test:rel32">
-		      <so:semanticObjectRef soidRef="obj2"/>
+		      <so:semanticObjectRef soIdRef="obj2"/>
 		  </so:relationship>
       </so:semanticObject>
   </so:relationship>
