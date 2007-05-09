@@ -28,8 +28,6 @@ extends BaseCase
 
 	private static final Logger logger = Logger.getLogger(TestSerialization.class);
 	
-	// TODO
-	/*
 	public void test1() {
 		
 		logger.info("Check URI serialization.");
@@ -42,7 +40,6 @@ extends BaseCase
 	    checkBuildURI("urn:isbn:096139210x"); 
 		
 	}
-	*/
 	
 	public void test2() {
 		logger.info("Check SO serialization.");
@@ -55,20 +52,18 @@ extends BaseCase
 		so2.addProperty(so, rel_URI); 
 		
 		// test non-pretty output 
-		/*
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\"/>");
 		checkXMLOutput(so2,"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+
 				"<property URI=\"urn:test:rel1\">"+
 				"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+
 				"</property></semanticObject>");
-				*/
 		checkDocumentRepresentation(so);
 		
 		// test pretty output 
 		spec.setPrettyOutput(true);
 		
-	//	checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
-	//	checkDocumentRepresentation(so);
+		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
+		checkDocumentRepresentation(so);
 		
 		// TODO
 		/*
@@ -159,14 +154,21 @@ extends BaseCase
 		selem.setAttribute("xsi:schemaLocation",schemaLoc);
 		doc.setDocumentElement(selem);
 		
+		boolean success = false;
 		try {
 			Specification.getInstance().setPrettyOutput(true);
+			logger.error("run test");
 			UtilityForTests.checkValidXMLRepresentation(doc); 
 			Specification.getInstance().setPrettyOutput(false);
 			UtilityForTests.checkValidXMLRepresentation(doc); 
+			success = true;
 		} catch (Exception e) {
-			fail("check doc representation check failed:"+e.getMessage());
+			logger.error(e.getMessage());
 		}
+		assertTrue("check doc representation OK", success);
+		
+		// back to way it was..
+		selem.removeAttribute("xsi:schemaLocation");
 	}
 	
 	private static void checkBuildURI (String content) {

@@ -110,6 +110,10 @@ public class UtilityForTests
 		checkValidXMLRepresentation(doc);
 		Specification.getInstance().setPrettyOutput(false);
 
+		// as you where..
+		logger.debug("Unset schema location:"+schemaLoc);
+		elem.removeAttribute("xsi:schemaLocation"); 
+		
 	}
 
 	public static final void copyFiles (String[] files, String sourceDirectory, String destDirectory) 

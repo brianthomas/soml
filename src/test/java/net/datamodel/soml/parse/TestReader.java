@@ -3,12 +3,9 @@
  */
 package net.datamodel.soml.parse;
 
-import java.io.StringReader;
-
 import net.datamodel.soml.UtilityForTests;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 /**
  * @author thomas

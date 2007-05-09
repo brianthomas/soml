@@ -40,9 +40,9 @@ public class BaseCase extends TestCase {
 //		 make sure log4j.props are loaded
 		PropertyConfigurator.configure("src/test/resources/log4j.properties");
 		
-		if (!didInit) {
+//		if (!didInit) {
 		// initialize URIs for tests
-		try {
+//		try {
 			uri1 = new URI("urn:test:SemanticObject1");
 			uri2 = new URI("urn:test:SemanticObject2");
 			uri3 = new URI("urn:test:SemanticObject3");
@@ -50,10 +50,10 @@ public class BaseCase extends TestCase {
 			rel_URI = new URI("urn:test:rel1");
 			rel_URI2 = new URI("urn:test:rel2");
 			rel_URI3 = new URI("urn:test:rel3");
-		} catch (Exception e) {
-			fail ("Test Setup Error:"+e.getMessage());
-			throw e;
-		}
+//		} catch (Exception e) {
+//			fail ("Test Setup Error:"+e.getMessage());
+//			throw e;
+//		}
 		
 			// copy over sample files into test directory
 			logger.debug("Setup test directory");
@@ -77,7 +77,7 @@ public class BaseCase extends TestCase {
 			}
 			
 			didInit = true;
-		}
+		//}
 		
 	}
 	

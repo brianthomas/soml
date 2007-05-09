@@ -60,7 +60,7 @@ public class BaseParseCase extends BaseCase {
 	implements TestableDocument
 	{
 		public String getExpectedOutput() { 
-			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><elem1>dude</elem1></doc>"; 
+			return "<?xml version=\"1.0\"?><doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><elem1>dude</elem1></doc>"; 
 		}
 	}
 		
