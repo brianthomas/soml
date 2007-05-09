@@ -4,7 +4,7 @@
   <groupId>net.datamodel</groupId>
   <artifactId>soml</artifactId>
   <name>Semantic Object Model</name>
-  <version>0.60</version>
+  <version>0.61</version>
   <description>SOML (Semantic Object Model Language) Java package provides
 handy representations of (instances of) semantic objects.</description>
   <build>
@@ -59,19 +59,22 @@ handy representations of (instances of) semantic objects.</description>
     <dependency>
       <groupId>net.datamodel</groupId>
       <artifactId>xssp</artifactId>
-      <version>0.97</version>
+      <version>0.97-2</version>
     </dependency>
+    
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.13</version>
     </dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.0</version>
       <scope>test</scope>
     </dependency>
+    
   </dependencies>
 
   <distributionManagement>
