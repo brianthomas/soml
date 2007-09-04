@@ -81,6 +81,15 @@ public class TestAPI extends BaseCase
 		assertTrue("can addrelationship obj2 to obj3", so2.addProperty(so3, rel_URI2));
 		// uni-directional, only obj1 is aware of relationship to obj4 
 		assertTrue("can addrelationship obj1 to obj4", so.addProperty(so4, rel_URI3)); 
+
+		// test a BAD addRelationship (catch error for re-adding duplicate propURI/targetURI combination) 
+		boolean badRelProhibited = false;
+		try {
+			so.addProperty(so4, rel_URI3); 
+		} catch (IllegalArgumentException e) {
+			badRelProhibited = true;
+		}
+		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
 		
 		// check we have correct number of relationships in both objects now
 		assertTrue("SO1 has the correct number of relationships",so.getProperties().size() == 3);
@@ -126,18 +135,6 @@ public class TestAPI extends BaseCase
 		this.assertEquals("After removal Object 2: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so2.getProperties(rel_URI).size()); 
 		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getProperties(rel_URI).size()); 
 		
-		// test a BAD addRelationship (catch error for re-adding duplicate) 
-		// NOTE : as of 0.62 this is no longer true..we allow as many duplicates
-		// as the user desires
-		/*  
-		boolean badRelProhibited = false;
-		try {
-			so.addProperty(so4, rel_URI3); 
-		} catch (IllegalArgumentException e) {
-			badRelProhibited = true;
-		}
-		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
-		*/
 		
 		// test a BAD removeRelationship (catch error) 
 		assertTrue("Should fail to remove rel_URI2 from Obj1", !so.removeAllProperties(rel_URI2));

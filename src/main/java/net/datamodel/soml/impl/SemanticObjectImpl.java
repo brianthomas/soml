@@ -100,7 +100,7 @@ implements SemanticObject {
 	 * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
 	 */ 
 	public final boolean addProperty (SemanticObject target, URI relationURI) 
-	throws NullPointerException 
+	throws IllegalArgumentException, NullPointerException 
 	{
 
 		// check if we have a non-null object to relate to.
@@ -109,11 +109,37 @@ implements SemanticObject {
 			throw new NullPointerException("addRelationship: passed null object.");
 		}
 
+		if (hasProperty(relationURI, target.getURI()))
+		{
+			throw new IllegalArgumentException("Already has a property with the combination prop uri:"+
+					relationURI.toASCIIString()+" target uri:"+target.getURI().toASCIIString());
+		}
+			
 		// now we add the relationship and return success 
 		return getProperties().add(new ObjectPropertyImpl(relationURI, target));
 
 	}
 
+	/** Determine if the object has a property-target combination with
+	 * the indicated URIs.
+	 * 
+	 * @param propertyURI
+	 * @param targetURI
+	 * @return
+	 */
+	public final boolean hasProperty (URI propertyURI, URI targetURI)
+	{
+		for (Property prop : getProperties(propertyURI)) {
+			if (prop instanceof ObjectProperty) {
+				SemanticObject target = ((ObjectProperty) prop).getTarget();
+				if (target.getURI().equals(targetURI)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+			
 	public final boolean removeObjectProperty(URI URI, SemanticObject target) {
 		List<Property> removeList = getProperties();
 		for (Property test : removeList) {
