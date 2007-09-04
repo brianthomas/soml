@@ -4,6 +4,7 @@
 package net.datamodel.soml.parse;
 
 import net.datamodel.soml.UtilityForTests;
+import net.datamodel.xssp.parse.Specification;
 
 import org.apache.log4j.Logger;
 
@@ -24,6 +25,7 @@ public class TestReader extends BaseParseCase {
 	
 	public void test2 () {
 		logger.info("Try to load SOML document with no soml stuff");
+		Specification.getInstance().setPrettyOutput(false);
 		checkDefaultHandlerParse(new NonSOMLTestDocumentImpl()); 
 	}
 	

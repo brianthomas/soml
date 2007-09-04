@@ -72,15 +72,13 @@ extends ReferenceableXMLSerializableObject
      *  between the calling object and the target, not the <i>semantic identity</i> 
      *  of the target object itself (which should have its own, separate URI value).
      * 
-     * @throws IllegalArgumentException if adding self, or the same object already exists with 
-     *         the same (property) URI.
      * @throws NullPointerException if attempting to adding an null (!!)
      * @param target object to set up the property to.
      * @param property the URI of the property to establish.
      * @return boolean value of whether addition was successfull or not.
      */
      public boolean addProperty (SemanticObject target, URI property) 
-     throws IllegalArgumentException, NullPointerException;
+     throws NullPointerException;
      
     /** Remove all properties which match the passed URI.
      * 

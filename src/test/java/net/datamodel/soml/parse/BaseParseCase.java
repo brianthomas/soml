@@ -1,8 +1,6 @@
 
 package net.datamodel.soml.parse;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.StringReader;
 
 import net.datamodel.soml.BaseCase;
@@ -44,10 +42,10 @@ public class BaseParseCase extends BaseCase {
 		
 	}
 	
-	static void checkXMLOutput (String actual, String expected) {
+	static void checkXMLOutput (String expected, String actual) {
 		logger.debug("XML output:["+actual+"]");
 		logger.debug("  expected:["+expected+"]");
-		assertEquals("XML output as expected", actual, expected );
+		assertEquals("XML output as expected", expected, actual );
 	}
 	
 	interface TestableDocument extends SOMLDocument {
@@ -60,7 +58,7 @@ public class BaseParseCase extends BaseCase {
 	implements TestableDocument
 	{
 		public String getExpectedOutput() { 
-			return "<?xml version=\"1.0\"?><doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><elem1>dude</elem1></doc>"; 
+			return "<?xml version=\"1.0\"?><doc xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><elem1>DUDE</elem1></doc>"; 
 		}
 	}
 		

@@ -127,6 +127,9 @@ public class TestAPI extends BaseCase
 		this.assertEquals("After removal Object 3: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 1, so3.getProperties(rel_URI).size()); 
 		
 		// test a BAD addRelationship (catch error for re-adding duplicate) 
+		// NOTE : as of 0.62 this is no longer true..we allow as many duplicates
+		// as the user desires
+		/*  
 		boolean badRelProhibited = false;
 		try {
 			so.addProperty(so4, rel_URI3); 
@@ -134,6 +137,7 @@ public class TestAPI extends BaseCase
 			badRelProhibited = true;
 		}
 		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
+		*/
 		
 		// test a BAD removeRelationship (catch error) 
 		assertTrue("Should fail to remove rel_URI2 from Obj1", !so.removeAllProperties(rel_URI2));

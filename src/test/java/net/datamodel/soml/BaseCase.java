@@ -37,8 +37,6 @@ public class BaseCase extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-//		 make sure log4j.props are loaded
-		PropertyConfigurator.configure("src/test/resources/log4j.properties");
 		
 //		if (!didInit) {
 		// initialize URIs for tests

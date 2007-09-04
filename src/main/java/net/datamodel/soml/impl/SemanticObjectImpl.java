@@ -100,26 +100,13 @@ implements SemanticObject {
 	 * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
 	 */ 
 	public final boolean addProperty (SemanticObject target, URI relationURI) 
-	throws IllegalArgumentException, NullPointerException 
+	throws NullPointerException 
 	{
 
 		// check if we have a non-null object to relate to.
 		if (null == target)
 		{
 			throw new NullPointerException("addRelationship: passed null object.");
-		}
-
-		// check if the relationship selected already exists in the calling object
-		// with the target
-		List<SemanticObject> soList = getSemanticObjects(relationURI);
-		if (soList.size() > 0)
-		{
-			for (SemanticObject test : soList)
-			{
-				if (test == target)
-					throw new IllegalArgumentException("addRelationship: a relationship already exists with passed SO:"+
-							target+" in relationship URI:"+relationURI.toASCIIString());
-			}
 		}
 
 		// now we add the relationship and return success 
