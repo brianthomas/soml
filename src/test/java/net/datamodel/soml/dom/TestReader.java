@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.datamodel.soml.parse;
+package net.datamodel.soml.dom;
 
 import net.datamodel.soml.UtilityForTests;
 import net.datamodel.xssp.parse.Specification;

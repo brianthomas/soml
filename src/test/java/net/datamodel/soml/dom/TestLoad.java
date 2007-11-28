@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.datamodel.soml.parse;
+package net.datamodel.soml.dom;
 
 import java.io.BufferedWriter;
 import java.io.File;
