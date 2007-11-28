@@ -27,7 +27,7 @@
    Brian Thomas  (baba-luu@earthlink.net)
 */
 
-package net.datamodel.soml.support;
+package net.datamodel.soml.dom;
 
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.xssp.parse.XSSPElement;

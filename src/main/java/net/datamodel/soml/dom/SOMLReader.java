@@ -27,7 +27,7 @@
    
 */
 
-package net.datamodel.soml.support;
+package net.datamodel.soml.dom;
 
 import net.datamodel.xssp.parse.XSSPReader;
 

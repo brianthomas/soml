@@ -28,12 +28,12 @@
    Brian Thomas  (baba-luu@earthlink.net)
 */
 
-package net.datamodel.soml.support.DOMXerces2;
+package net.datamodel.soml.dom.DOMXerces2;
 
 import java.io.IOException;
 
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.support.SOMLElement;
+import net.datamodel.soml.dom.SOMLElement;
 import net.datamodel.xssp.parse.DOMXerces2.XSSPElementImpl;
 
 import org.apache.log4j.Logger;

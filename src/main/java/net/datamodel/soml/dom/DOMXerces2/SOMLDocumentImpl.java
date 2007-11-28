@@ -29,7 +29,7 @@
 */
 
 
-package net.datamodel.soml.support.DOMXerces2;
+package net.datamodel.soml.dom.DOMXerces2;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,8 +37,8 @@ import java.util.Vector;
 
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.support.SOMLDocument;
-import net.datamodel.soml.support.SOMLElement;
+import net.datamodel.soml.dom.SOMLDocument;
+import net.datamodel.soml.dom.SOMLElement;
 import net.datamodel.xssp.parse.DOMXerces2.AbstractXSSPDocument;
 
 import org.w3c.dom.DOMException;

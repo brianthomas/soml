@@ -16,10 +16,10 @@ import java.io.Writer;
 import junit.framework.TestCase;
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.soml.support.SOMLDocument;
-import net.datamodel.soml.support.SOMLElement;
-import net.datamodel.soml.support.SOMLReader;
-import net.datamodel.soml.support.DOMXerces2.SOMLDocumentImpl;
+import net.datamodel.soml.dom.SOMLDocument;
+import net.datamodel.soml.dom.SOMLElement;
+import net.datamodel.soml.dom.SOMLReader;
+import net.datamodel.soml.dom.DOMXerces2.SOMLDocumentImpl;
 import net.datamodel.xssp.parse.Specification;
 import net.datamodel.xssp.parse.XSSPDocument;
 

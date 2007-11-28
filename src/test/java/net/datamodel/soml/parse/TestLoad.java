@@ -10,9 +10,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import net.datamodel.soml.UtilityForTests;
-import net.datamodel.soml.support.SOMLDocument;
-import net.datamodel.soml.support.SOMLReader;
-import net.datamodel.soml.support.DOMXerces2.SOMLDocumentImpl;
+import net.datamodel.soml.dom.SOMLDocument;
+import net.datamodel.soml.dom.SOMLReader;
+import net.datamodel.soml.dom.DOMXerces2.SOMLDocumentImpl;
 import net.datamodel.xssp.parse.Specification;
 
 import org.apache.log4j.Logger;

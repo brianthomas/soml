@@ -25,7 +25,7 @@
    Brian Thomas  (baba-luu@earthlink.net)
 */
 
-package net.datamodel.soml.support;
+package net.datamodel.soml.dom;
 
 import java.util.Map;
 
