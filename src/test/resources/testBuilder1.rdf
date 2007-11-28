@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- create semantic object test, build from RDF model -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:j.0="http://test.org/testThings.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:j.1="http://viper.astro.umd.edu/ont/Quantity.owl#" > 
+  <rdf:Description rdf:about="http://test.org/testOps.owl#thing4">
+    <j.1:hasQuantity rdf:resource="http://test.org/testOps.owl#quantity1"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdf:type rdf:resource="http://test.org/testThings.owl#ThingWithFloatProp"/>
+    <owl:sameAs rdf:resource="http://test.org/testOps.owl#thing4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://test.org/testOps.owl#quantity1">
+    <j.1:hasValue rdf:resource="http://test.org/testOps.owl#value1"/>
+    <j.1:name>Time Passed</j.1:name>
+    <j.1:hasUnits rdf:resource="http://test.org/testOps.owl#unit1"/>
+    <j.1:description>the amount of time passed</j.1:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdf:type rdf:resource="http://test.org/testThings.owl#FloatQ3"/>
+    <owl:sameAs rdf:resource="http://test.org/testOps.owl#quantity1"/>
+  </rdf:Description>
+</rdf:RDF>
