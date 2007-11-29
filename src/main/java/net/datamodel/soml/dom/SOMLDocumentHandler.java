@@ -29,7 +29,7 @@ package net.datamodel.soml.dom;
 
 import java.util.Map;
 
-import net.datamodel.xssp.parse.XSSPDocumentHandler;
+import net.datamodel.xssp.dom.XSSPDocumentHandler;
 
 /** 
  *     Contains the core SAX document handler for the Reader. It also contains

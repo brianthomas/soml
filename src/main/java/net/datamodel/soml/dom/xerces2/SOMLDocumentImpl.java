@@ -39,7 +39,7 @@ import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLElement;
-import net.datamodel.xssp.parse.DOMXerces2.AbstractXSSPDocument;
+import net.datamodel.xssp.dom.xerces2.AbstractXSSPDocument;
 
 import org.w3c.dom.DOMException;
 

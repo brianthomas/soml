@@ -13,8 +13,7 @@ import net.datamodel.soml.UtilityForTests;
 import net.datamodel.soml.dom.BaseParseCase;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLReader;
-import net.datamodel.soml.dom.xerces2.SOMLDocumentImpl;
-import net.datamodel.xssp.parse.Specification;
+import net.datamodel.xssp.dom.Specification;
 
 import org.apache.log4j.Logger;
 

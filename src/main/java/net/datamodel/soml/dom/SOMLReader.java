@@ -29,7 +29,7 @@
 
 package net.datamodel.soml.dom;
 
-import net.datamodel.xssp.parse.XSSPReader;
+import net.datamodel.xssp.dom.XSSPReader;
 
 /** This class is used to create SOMLDocument from SOML files/streams.
  * As a default it uses the Xerces2 SAXParser.

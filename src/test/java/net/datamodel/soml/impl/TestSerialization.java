@@ -14,7 +14,7 @@ import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLElement;
 import net.datamodel.soml.dom.xerces2.SOMLDocumentImpl;
 import net.datamodel.xssp.XMLSerializableObject;
-import net.datamodel.xssp.parse.Specification;
+import net.datamodel.xssp.dom.Specification;
 
 import org.apache.log4j.Logger;
 

@@ -30,7 +30,7 @@
 package net.datamodel.soml.dom;
 
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.xssp.parse.XSSPElement;
+import net.datamodel.xssp.dom.XSSPElement;
 
 /**
  * SOMLElement is a DOM element interface for elements which hold Quantities within.

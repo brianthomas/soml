@@ -29,10 +29,9 @@
 package net.datamodel.soml.dom;
 
 import java.util.List;
-import java.util.Map;
 
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.xssp.parse.XSSPDocument;
+import net.datamodel.xssp.dom.XSSPDocument;
 
 import org.w3c.dom.DOMException;
 

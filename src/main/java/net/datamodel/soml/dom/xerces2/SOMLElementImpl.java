@@ -34,7 +34,7 @@ import java.io.IOException;
 
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.dom.SOMLElement;
-import net.datamodel.xssp.parse.DOMXerces2.XSSPElementImpl;
+import net.datamodel.xssp.dom.xerces2.XSSPElementImpl;
 
 import org.apache.log4j.Logger;
 import org.apache.xerces.dom.DocumentImpl;

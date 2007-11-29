@@ -4,7 +4,7 @@
 package net.datamodel.soml.dom;
 
 import net.datamodel.soml.UtilityForTests;
-import net.datamodel.xssp.parse.Specification;
+import net.datamodel.xssp.dom.Specification;
 
 import org.apache.log4j.Logger;
 
