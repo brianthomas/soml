@@ -35,7 +35,7 @@ public class SemanticObjectBuilder {
 	 * @return
 	 * @throws SemanticObjectBuilderException
 	 */
-	public static SemanticObject createSemanticObject (Individual in) 
+	public static final SemanticObject createSemanticObject (Individual in) 
 	throws SemanticObjectBuilderException
 	{
 		
@@ -51,7 +51,13 @@ public class SemanticObjectBuilder {
 		return so;
 	}
 
-	private static void addProperty (SemanticObject parent, Statement s) 
+	/** Small utility to add a property to a semantic object. 
+	 * 
+	 * @param parent
+	 * @param s
+	 * @throws SemanticObjectBuilderException
+	 */
+	protected static void addProperty (SemanticObject parent, Statement s) 
 	throws SemanticObjectBuilderException
 	{
 		String propUri = s.getPredicate().getURI();
@@ -77,7 +83,13 @@ public class SemanticObjectBuilder {
 		
 	}
 	
-	private static URI createURI (String uriStr) 
+	/** Small utility method to create an URI and throw an exeception appropriately.
+	 * 
+	 * @param uriStr
+	 * @return
+	 * @throws SemanticObjectBuilderException
+	 */
+	protected static URI createURI (String uriStr) 
 	throws SemanticObjectBuilderException
 	{
 		try {
