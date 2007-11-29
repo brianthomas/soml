@@ -101,6 +101,12 @@ handy representations of (instances of) semantic objects.</description>
     </dependency>
     
     <dependency>
+       <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>2.7.5</version>
+    </dependency>
+    
+    <dependency>
       <groupId>net.datamodel</groupId>
       <artifactId>xssp</artifactId>
       <version>0.98</version>

@@ -50,19 +50,30 @@ extends TestCase
 		
 		if (!isSetup) {
 
-			OntModel model = createOntModel(BaseOntModelUri);
-			builder = new TestBuilder().new ExtendedBuilder(model);
+			logger.debug("Setting up tests");
+			
+			try {
+				OntModel model = createOntModel(BaseOntModelUri);
+				builder = new TestBuilder().new ExtendedBuilder(model);
+			} catch (Exception e) {
+				e.printStackTrace();
+				//logger.error(e.getMessage());
+				// fail(e.getMessage());
+			}
+			logger.debug(" created builder:"+builder);
 	
 			// create the test model query
 			try {
 				for (int i = 0; i < testModelFile.length; i++) {
+					logger.debug(" Create model:"+testModelFile[i]);
 					testModels[i] = createOntModel(new File(testModelFile[i]));
+					logger.debug(" finished Create model:"+testModelFile[i]);
 				}
 			} catch (Exception e) {
-				logger.error("error in constructing test rdf models:" + e.getMessage(), e);
+				logger.error("error in constructing test rdf models:" + e.getMessage());
 				fail("cant run tests:"+e.getMessage());
-				System.exit(0); // harsh toke
 			}
+			
 			logger.debug("setup finished");
 			isSetup = true;
 		}
@@ -77,8 +88,10 @@ extends TestCase
 	 */
 	private static OntModel createOntModel (String ontoUri) {
 
+		logger.debug("CreateOntModel uri:"+ontoUri);
 		OntModel queryModel = ModelFactory.createOntologyModel(modelSpec);
 		FileManager fm = FileManager.get();
+		logger.debug("  file manager:"+fm);
 		queryModel.add(fm.loadModel(ontoUri,null, "RDF/XML-ABBREV"));
 		return queryModel;
 	}
@@ -86,15 +99,20 @@ extends TestCase
 	private static OntModel createOntModel (File ontoFile) 
 	throws FileNotFoundException 
 	{
-		OntModel ontModel = ModelFactory.createOntologyModel();
+		logger.debug("CreateOntMOdel w/ file");
+		OntModel ontModel = ModelFactory.createOntologyModel(modelSpec);
+		logger.debug(" TRY TO READ ONTOFILE:"+ontoFile);
 		ontModel.read(new FileInputStream(ontoFile), null);
+		logger.debug(" return MODEL:"+ontModel);
 		return ontModel;
 	}
 
 	public void test1() {
 		
+		logger.info("Test builder"); 
+		
+		// iterate over models, testing heach individual in model data
 		for (OntModel testModel : testModels) {
-			
 			for (Iterator i = testModel.listIndividuals(); i.hasNext(); ) {
 				Individual in = (Individual) i.next();
 				try {
@@ -104,6 +122,7 @@ extends TestCase
 					// Check the class of the output object. For one object, we 
 					// had a special handler build it, otherwise, its SemanticObjectImpl
 					// class 
+					
 					if (in.getURI().equals(SpecialInstanceURI)) {
 						assertEquals("Class for special object is correct", TestSemanticObject.class, so.getClass());
 					} else { 
@@ -111,6 +130,7 @@ extends TestCase
 					}
 					
 				} catch (SemanticObjectBuilderException e) {
+					logger.error(e.getMessage());
 					fail(e.getLocalizedMessage());
 				}
 			}
