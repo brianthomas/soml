@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.datamodel.soml.dom;
+package net.datamodel.soml.dom.xerces2;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,9 +10,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import net.datamodel.soml.UtilityForTests;
+import net.datamodel.soml.dom.BaseParseCase;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLReader;
-import net.datamodel.soml.dom.DOMXerces2.SOMLDocumentImpl;
+import net.datamodel.soml.dom.xerces2.SOMLDocumentImpl;
 import net.datamodel.xssp.parse.Specification;
 
 import org.apache.log4j.Logger;

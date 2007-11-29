@@ -28,7 +28,7 @@
    Brian Thomas  (baba-luu@earthlink.net)
 */
 
-package net.datamodel.soml.dom.DOMXerces2;
+package net.datamodel.soml.dom.xerces2;
 
 import java.io.IOException;
 

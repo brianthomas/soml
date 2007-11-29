@@ -29,7 +29,7 @@
 */
 
 
-package net.datamodel.soml.dom.DOMXerces2;
+package net.datamodel.soml.dom.xerces2;
 
 import java.io.IOException;
 import java.util.List;

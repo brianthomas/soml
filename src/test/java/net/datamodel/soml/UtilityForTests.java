@@ -19,7 +19,7 @@ import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLElement;
 import net.datamodel.soml.dom.SOMLReader;
-import net.datamodel.soml.dom.DOMXerces2.SOMLDocumentImpl;
+import net.datamodel.soml.dom.xerces2.SOMLDocumentImpl;
 import net.datamodel.xssp.parse.Specification;
 import net.datamodel.xssp.parse.XSSPDocument;
 
