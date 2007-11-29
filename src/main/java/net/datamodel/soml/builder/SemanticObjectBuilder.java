@@ -29,6 +29,12 @@ public class SemanticObjectBuilder {
 	private static final String RDFTypeURI = RDF.getURI()+"type";
 	private static final String OWLSameAsURI = OWL.getURI()+"sameAs";
 	
+	/** Create a SemanticObject from a {@link com.hp.hpl.jena.ontology.Individual}.
+	 * 
+	 * @param in
+	 * @return
+	 * @throws SemanticObjectBuilderException
+	 */
 	public static SemanticObject createSemanticObject (Individual in) 
 	throws SemanticObjectBuilderException
 	{
