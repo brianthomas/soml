@@ -30,6 +30,7 @@ extends TestCase
 	protected static OntModel[] testModels = new OntModel[testModelFile.length];
 	
 	private static boolean isSetup = false;
+	private static SemanticObjectBuilder builder = new SemanticObjectBuilder();
 	
 	@Override
 	protected void setUp() 
@@ -70,7 +71,7 @@ extends TestCase
 			for (Iterator i = testModel.listIndividuals(); i.hasNext(); ) {
 				Individual in = (Individual) i.next();
 				try {
-					SemanticObject so = SemanticObjectBuilder.createSemanticObject(in); 
+					SemanticObject so = builder.createSemanticObject(in); 
 					assertNotNull("Can create SO",so);
 				} catch (SemanticObjectBuilderException e) {
 					fail(e.getLocalizedMessage());
