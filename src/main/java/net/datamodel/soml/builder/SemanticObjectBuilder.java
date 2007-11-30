@@ -174,8 +174,8 @@ public class SemanticObjectBuilder
 	{
 		String propUri = s.getPredicate().getURI();
 		
-		// we skip adding rdf:type, owl:sameAs properties
-		if (propUri.equals(RDFTypeURI) || propUri.equals(OWLSameAsURI))
+		// we skip adding owl:sameAs properties
+		if (propUri.equals(OWLSameAsURI))
 			return;
 		
 		logger.debug("addProperty ( pred:"+propUri+" obj:"+s.getObject()+")");
