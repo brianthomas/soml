@@ -56,6 +56,7 @@ public class SemanticObjectBuilder
 	 * @param handler
 	 */
 	protected void addHandler(String rdfTypeUri, SemanticObjectHandler handler) {
+		logger.debug("addHandler rdf:type="+rdfTypeUri+" handler:"+handler); 
 		handlers.put(rdfTypeUri,handler);
 	}
 	
@@ -65,10 +66,11 @@ public class SemanticObjectBuilder
 	 * @return
 	 */
 	protected SemanticObjectHandler findHandler (String rdfTypeUri) {
-		if(handlers.containsKey(rdfTypeUri))
+		if(handlers.containsKey(rdfTypeUri)) {
 			return handlers.get(rdfTypeUri);
-		else
+		} else {
 			return DefaultHandler;
+		}
 	}
 	
 	/** Create a SemanticObject from a {@link com.hp.hpl.jena.ontology.Individual}.
@@ -185,7 +187,8 @@ public class SemanticObjectBuilder
 			
 			logger.debug("  prop value is Individual"); 
 			SemanticObject target = builder.createSemanticObject((Individual) s.getObject().as(Individual.class));
-			parent.addProperty(target, createURI(s.getPredicate().getURI()));
+			if (target != null)
+				parent.addProperty(target, createURI(s.getPredicate().getURI()));
 			
 		} else { 
 			logger.debug("  prop value is NOT an object");
