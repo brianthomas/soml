@@ -33,7 +33,7 @@ extends TestCase
 
 	protected static String[] testModelFile = { 
 		BASE_TEST_RESOURCE_DIR + "/testBuilder1.rdf",
-//		BASE_TEST_RESOURCE_DIR + "/testBuilder2.rdf"
+		BASE_TEST_RESOURCE_DIR + "/testBuilder2.rdf"
 	}; 
 	
 	// This rdf:type has a special handler we will check for
@@ -185,7 +185,8 @@ extends TestCase
 	extends SemanticObjectBuilder 
 	{
 		
-		String classURI = "http://test.org/testThings.owl#FloatQ3";
+		// special class to treat
+		String classURI = "http://test.org/testThings.owl#FloatQ";
 		
 		public ExtendedBuilder (OntModel model) {
 			super(model); 

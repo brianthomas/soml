@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
-<!-- create semantic object test, build from RDF model -->
+<!-- create semantic object test, build from RDF model,
+     this serialization has an object (quantity1) which 
+     declares itself as member of several classes, but 
+     we only have a handler for one of them, the 
+     superclass of "FloatQ3" ("FloatQ") 
+ -->
 <rdf:RDF
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:j.0="http://test.org/testThings.owl#"
@@ -19,7 +24,9 @@
     <j.1:hasUnits rdf:resource="http://test.org/testOps.owl#unit1"/>
     <j.1:description>the amount of time passed</j.1:description>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdf:type rdf:resource="http://archive.astro.umd.edu/ont/Quantity.owl#Quantity"/>
     <rdf:type rdf:resource="http://test.org/testThings.owl#FloatQ"/>
+    <rdf:type rdf:resource="http://test.org/testThings.owl#FloatQ3"/>
     <owl:sameAs rdf:resource="http://test.org/testOps.owl#quantity1"/>
   </rdf:Description>
 </rdf:RDF>

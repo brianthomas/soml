@@ -6,7 +6,11 @@ package net.datamodel.soml.builder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Vector;
 
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.impl.SemanticObjectImpl;
@@ -68,14 +72,19 @@ public class SemanticObjectBuilder
 	 * @param uri
 	 * @return
 	 */
-	protected SemanticObjectHandler findHandler (String rdfTypeUri) {
-		if(handlers.containsKey(rdfTypeUri)) {
-			logger.debug("RETURN SPECIAL HANDLER for uri:"+rdfTypeUri);
-			return handlers.get(rdfTypeUri);
-		} else {
-			logger.debug("RETURN DEFAULT HANDLER");
-			return DefaultHandler;
+	protected SemanticObjectHandler findHandler (List<String> rdfTypeUris) {
+		
+		SemanticObjectHandler h = null;
+		for (String rdfTypeUri : rdfTypeUris)
+		{
+			if(handlers.containsKey(rdfTypeUri)) {
+				logger.debug("RETURN SPECIAL HANDLER for uri:"+rdfTypeUri);
+				return handlers.get(rdfTypeUri);
+			} 
 		}
+		// no match!?!? then return default handler
+		logger.debug("RETURN DEFAULT HANDLER");
+		return DefaultHandler;
 	}
 	
 	/** Create a SemanticObject from a {@link com.hp.hpl.jena.ontology.Individual}.
@@ -92,7 +101,7 @@ public class SemanticObjectBuilder
 		logger.debug("---> createSemanticObject (uri:"+uri+")");
 		
 		// create the SO using the desired rdf:type 
-		SemanticObject so = findHandler(findRDFType(in)).create(this,in);
+		SemanticObject so = findHandler(findRDFTypes(in)).create(this,in);
 		
 		return so;
 		
@@ -104,10 +113,13 @@ public class SemanticObjectBuilder
 	 * trees, but as this is bad practice, we ignore this issue for
 	 * now.
 	 */
-	private String findRDFType (Individual in) {
+	// return 'ranked' list of classes, with most preferable class
+	// at the beginning of the list
+	private List<String> findRDFTypes (Individual in) 
+	{
 		
-		String type = OWLThingURI;
-		int numOfSubClasses = 1000000; // pick something arbitrarily high
+		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
+		types.put(new Integer(1000000000),OWLThingURI);
 		
 		// look for rdf:type properties...then rank them
 		// according to how many superclasses each has
@@ -127,20 +139,23 @@ public class SemanticObjectBuilder
 					if (oc != null) {
 						int num_subs = findNrofSubClasses(oc);
 						logger.debug("** class uri:"+typeUri+" has "+num_subs+" subclasses");
-						// if this new class has more super classes, then
-						// it is preferable 
-						if (num_subs < numOfSubClasses) {
-							type = typeUri;
-							numOfSubClasses = num_subs;
-						}
+						Integer key = new Integer(num_subs);
+						// TODO : fix collisions...can occur from multiple inheritance
+						if (!types.containsKey(key))
+							types.put(key, typeUri); 
 					} else
 						logger.warn(" Unable to find class uri:"+typeUri+" in model!");
 				}
 			}
 		}
 		
-		logger.debug(" = Found Individual rdf:type = "+type); 
-		return type;
+		// hmm. 'values()' returns a COllection, which is not guarrenteed to
+		// be in any order (??). So use this hack to build a list
+		List<String> ret = new Vector<String>();
+		for (Integer key : types.keySet())
+			ret.add(types.get(key));
+			
+		return ret;
 	}
 	
 	private int findNrofSubClasses (OntClass oc) {
@@ -292,6 +307,7 @@ public class SemanticObjectBuilder
 		public SemanticObject create (SemanticObjectBuilder b, Individual in) throws SemanticObjectBuilderException;
 		
 	}
+	
 	
 }
 
