@@ -71,25 +71,27 @@ public class TestAPI extends BaseCase
 		assertTrue("SO retURIs the correct URI", so.getURI().equals(uri1));
 		
 		// bi-directional between obj1 and obj2
-		assertTrue("can addRelationship obj1 to obj2", so.addProperty(so2, rel_URI));
-		assertTrue("can addRelationship obj2 to obj1", so2.addProperty(so, rel_URI));
+		assertTrue("can addRelationship obj1 to obj2", so.addProperty(rel_URI,so2));
+		assertTrue("can addRelationship obj2 to obj1", so2.addProperty(rel_URI,so));
 		// the *same* type of bi-directional rel between obj1 and obj3
-		assertTrue("can addRelationship obj1 to obj3", so.addProperty(so3, rel_URI));
-		assertTrue("can addRelationship obj3 to obj1", so3.addProperty(so, rel_URI));
+		assertTrue("can addRelationship obj1 to obj3", so.addProperty(rel_URI, so3));
+		assertTrue("can addRelationship obj3 to obj1", so3.addProperty(rel_URI, so));
 		// bi-directional between obj2 and obj3
-		assertTrue("can addrelationship obj3 to obj2", so3.addProperty(so2, rel_URI2));
-		assertTrue("can addrelationship obj2 to obj3", so2.addProperty(so3, rel_URI2));
+		assertTrue("can addrelationship obj3 to obj2", so3.addProperty(rel_URI2, so2));
+		assertTrue("can addrelationship obj2 to obj3", so2.addProperty(rel_URI2, so3));
 		// uni-directional, only obj1 is aware of relationship to obj4 
-		assertTrue("can addrelationship obj1 to obj4", so.addProperty(so4, rel_URI3)); 
+		assertTrue("can addrelationship obj1 to obj4", so.addProperty(rel_URI3, so4)); 
 
+		/*  // test no longer true 
 		// test a BAD addRelationship (catch error for re-adding duplicate propURI/targetURI combination) 
 		boolean badRelProhibited = false;
 		try {
-			so.addProperty(so4, rel_URI3); 
+			so.addProperty(rel_URI3, so4); 
 		} catch (IllegalArgumentException e) {
 			badRelProhibited = true;
 		}
 		assertTrue("Throws error correctly for bad addRelationship", badRelProhibited);
+		*/
 		
 		// check we have correct number of relationships in both objects now
 		assertTrue("SO1 has the correct number of relationships",so.getProperties().size() == 3);

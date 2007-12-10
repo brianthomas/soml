@@ -63,24 +63,40 @@ extends ReferenceableXMLSerializableObject
      * the target SO. After this is successfully called, <i>only the calling</i> 
      * SO will show the other SO in its list of related objects/properties. 
      * 
-     * The following restrictions exist on properties between SOs:
+     * The following restriction exists on properties between SOs:
      * <ul> 
-     *    Only <i>one</i> property may exist between 2 SOs for a given property /:RI. <br/> 
-     *    A SO may not be in property with itself.
+     *    A SO may not be a property of itself.
      * </ul>
-     *  Note that the property URI used identifies only the <i>property</i>
-     *  between the calling object and the target, not the <i>semantic identity</i> 
-     *  of the target object itself (which should have its own, separate URI value).
      * 
-     * @throws IllegalArgumentException if adding self, or the same object already exists with 
-     *         the same (property) URI.
      * @throws NullPointerException if attempting to adding an null (!!)
-     * @param target object to set up the property to.
      * @param property the URI of the property to establish.
+     * @param value SemanticObject which is the value of the property.
      * @return boolean value of whether addition was successfull or not.
      */
-     public boolean addProperty (SemanticObject target, URI property) 
+     public boolean addProperty (URI property, SemanticObject value) 
      throws NullPointerException;
+     
+     /** Add a datatype property on the SemanticObject. 
+      * 
+      *  Note that the property URI used identifies only the <i>property</i>
+      *  between the calling object and the target, not the <i>semantic identity</i> 
+      *  of the target object itself (which should have its own, separate URI value).
+      *  In this method call, the datatypeURI is implicitly set to <i>xsd:string</i>.
+      * 
+      * @param property the URI which represents the property 
+      * @param value the string which represents the value 
+      * @return true if the property was successfully added 
+      */
+     public boolean addProperty (URI property, String value);
+     
+     /** Add a datatype property on the SemanticObject. 
+      * 
+      * @param property
+      * @param datatypeURI  
+      * @param value
+      * @return true if the property was successfully added 
+      */
+     public boolean addProperty (URI property, URI datatypeURI, String value);
      
     /** Remove all properties which match the passed URI.
      * 

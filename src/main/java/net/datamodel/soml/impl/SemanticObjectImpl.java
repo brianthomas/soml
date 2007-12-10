@@ -93,33 +93,41 @@ implements SemanticObject {
 
 	}
 
-	// Accessor Methods
-
 	/*
-	 *  (non-Javadoc)
-	 * @see net.datamodel.qml.SemanticObject#addRELATIONSHIP(net.datamodel.qml.SemanticObject, java.net.URI)
-	 */ 
-	public final boolean addProperty (SemanticObject target, URI relationURI) 
-	throws IllegalArgumentException, NullPointerException 
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#addProperty(java.net.URI, net.datamodel.soml.SemanticObject)
+	 */
+	public final boolean addProperty (URI propertyURI, SemanticObject value)
+	throws NullPointerException 
 	{
 
 		// check if we have a non-null object to relate to.
-		if (null == target)
-		{
-			throw new NullPointerException("addRelationship: passed null object.");
+		if (null == value) {
+			throw new NullPointerException("addProperty: passed null value object.");
 		}
 
-		if (hasProperty(relationURI, target.getURI()))
-		{
-			throw new IllegalArgumentException("Already has a property with the combination prop uri:"+
-					relationURI.toASCIIString()+" target uri:"+target.getURI().toASCIIString());
-		}
-			
 		// now we add the relationship and return success 
-		return getProperties().add(new ObjectPropertyImpl(relationURI, target));
+		return getProperties().add(new ObjectPropertyImpl(propertyURI, value));
 
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#addProperty(java.net.URI, java.lang.String)
+	 */
+	public boolean addProperty(URI propertyURI, String value) {
+		// add an xsd:string value
+		return getProperties().add(new DataTypePropertyImpl(propertyURI, value));
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#addProperty(java.net.URI, java.net.URI, java.lang.String)
+	 */
+	public boolean addProperty(URI propertyURI, URI dtURI, String value) {
+		return getProperties().add(new DataTypePropertyImpl(propertyURI, dtURI, value));
+	}
+	
 	/** Determine if the object has a property-target combination with
 	 * the indicated URIs.
 	 * 

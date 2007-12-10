@@ -8,8 +8,10 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.impl.SemanticObjectImpl;
+import net.datamodel.xssp.dom.Specification;
 
 import org.apache.log4j.Logger;
+import org.mindswap.pellet.jena.PelletReasonerFactory;
 
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
@@ -26,8 +28,8 @@ extends TestCase
 	protected static String BASE_TEST_RESOURCE_DIR = "src/test/resources";
 	
 	private static final String BaseOntModelUri = "http://test.org/testThings.owl";
-	private static final OntModelSpec modelSpec = OntModelSpec.OWL_MEM;
-//	private static final OntModelSpec modelSpec = PelletReasonerFactory.THE_SPEC; // dont need a reasoner..we are just counting sub/super classes 
+//	private static final OntModelSpec modelSpec = OntModelSpec.OWL_MEM;
+	private static final OntModelSpec modelSpec = PelletReasonerFactory.THE_SPEC; // dont need a reasoner..we are just counting sub/super classes 
 
 	protected static String[] testModelFile = { 
 		BASE_TEST_RESOURCE_DIR + "/testBuilder1.rdf",
@@ -41,6 +43,7 @@ extends TestCase
 	
 	private static boolean isSetup = false;
 	private static SemanticObjectBuilder builder = null;
+	private static SemanticObjectBuilder extended_builder = null;
 	
 	@Override
 	protected void setUp() 
@@ -54,13 +57,15 @@ extends TestCase
 			
 			try {
 				OntModel model = createOntModel(BaseOntModelUri);
-				builder = new TestBuilder().new ExtendedBuilder(model);
+				builder = new SemanticObjectBuilder(model);
+				extended_builder = new TestBuilder().new ExtendedBuilder(model);
 			} catch (Exception e) {
 				e.printStackTrace();
 				//logger.error(e.getMessage());
 				// fail(e.getMessage());
 			}
 			logger.debug(" created builder:"+builder);
+			logger.debug(" created builder:"+extended_builder);
 	
 			// create the test model query
 			try {
@@ -111,14 +116,47 @@ extends TestCase
 		
 		logger.info("Test builder"); 
 		
+		Specification.getInstance().setPrettyOutput(true);
+		
 		// iterate over models, testing heach individual in model data
 		for (OntModel testModel : testModels) {
 			for (Iterator i = testModel.listIndividuals(); i.hasNext(); ) {
 				Individual in = (Individual) i.next();
 				try {
+					
 					SemanticObject so = builder.createSemanticObject(in); 
 					assertNotNull("Can create SO",so);
 					
+					logger.debug("Created SO :\n"+so.toXMLString());
+					// Check the class of the output object. For one object, we 
+					// had a special handler build it, otherwise, its SemanticObjectImpl
+					// class 
+					
+				} catch (SemanticObjectBuilderException e) {
+					logger.error(e.getMessage());
+					fail(e.getLocalizedMessage());
+				}
+			}
+		}
+		
+	}
+	
+	public void test2() {
+		
+		logger.info("Test Extended builder"); 
+		
+		Specification.getInstance().setPrettyOutput(true);
+		
+		// iterate over models, testing heach individual in model data
+		for (OntModel testModel : testModels) {
+			for (Iterator i = testModel.listIndividuals(); i.hasNext(); ) {
+				Individual in = (Individual) i.next();
+				try {
+					
+					SemanticObject so = extended_builder.createSemanticObject(in); 
+					assertNotNull("Can create SO",so);
+					
+					logger.debug("Created SO :\n"+so.toXMLString());
 					// Check the class of the output object. For one object, we 
 					// had a special handler build it, otherwise, its SemanticObjectImpl
 					// class 
@@ -159,6 +197,7 @@ extends TestCase
 			public SemanticObject create(SemanticObjectBuilder b, Individual in)
 					throws SemanticObjectBuilderException 
 			{
+				logger.info("RUN SPECIAL HANDLER FOR uri:"+in.getURI());
 				return new TestSemanticObject();
 			}
 			
@@ -171,7 +210,8 @@ extends TestCase
 	{
 		
 		TestSemanticObject() throws SemanticObjectBuilderException {
-			super(SemanticObjectBuilder.createURI("urn:no-uri-here"));
+			super(SemanticObjectBuilder.createURI("urn:some-instance-uri-here"));
+			this.setXMLNodeName("TestSemanticObject");
 		}
 	}
 

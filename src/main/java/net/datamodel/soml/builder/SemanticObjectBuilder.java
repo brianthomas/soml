@@ -39,6 +39,7 @@ public class SemanticObjectBuilder
 	
 	private static final String RDFTypeURI = RDF.getURI()+"type";
 	private static final String OWLThingURI = OWL.getURI()+"Thing";
+	private static final String OWLClassURI = OWL.getURI()+"Class";
 	private static final String OWLSameAsURI = OWL.getURI()+"sameAs";
 	
 	private Map<String,SemanticObjectHandler> handlers = new Hashtable<String,SemanticObjectHandler>(); 
@@ -48,6 +49,8 @@ public class SemanticObjectBuilder
 	
 	public SemanticObjectBuilder (OntModel model) { 
 		ontModel = model; 
+		addHandler(OWLClassURI, new NullHandler()); // dont build class definitions 
+		addHandler(OWLThingURI, new ThingHandler()); 
 	}
 	
 	/** Add a special handler for particular rdf:type.
@@ -67,8 +70,10 @@ public class SemanticObjectBuilder
 	 */
 	protected SemanticObjectHandler findHandler (String rdfTypeUri) {
 		if(handlers.containsKey(rdfTypeUri)) {
+			logger.debug("RETURN SPECIAL HANDLER for uri:"+rdfTypeUri);
 			return handlers.get(rdfTypeUri);
 		} else {
+			logger.debug("RETURN DEFAULT HANDLER");
 			return DefaultHandler;
 		}
 	}
@@ -84,7 +89,7 @@ public class SemanticObjectBuilder
 	{
 		
 		String uri = in.getURI();
-		logger.debug("createSemanticObject (uri:"+uri+")");
+		logger.debug("---> createSemanticObject (uri:"+uri+")");
 		
 		// create the SO using the desired rdf:type 
 		SemanticObject so = findHandler(findRDFType(in)).create(this,in);
@@ -110,14 +115,15 @@ public class SemanticObjectBuilder
 			Statement s  = i.nextStatement(); 
 			if (s.getPredicate().getURI().equals(RDFTypeURI)) {
 				String typeUri = s.getObject().toString();
-				logger.debug(" FOUND class rdf:type:"+typeUri);
-				logger.debug("     vs owl uri:"+OWLThingURI);
+				logger.debug(" FOUND rdf:type:"+typeUri);
 				// only consider non owl:Thing rdf:type's as we
 				// have owl:Thing as our default.
-				if (!typeUri.equals(OWLThingURI)) {
-					logger.debug(" IN non-Thing conditional ");
+				if ( typeUri.equals(OWLThingURI) 
+					|| typeUri.equals(OWLClassURI)
+				) {
+					logger.debug("SKIPPING OWL Class/THING type");
+				} else {
 					OntClass oc = ontModel.getOntClass(typeUri);
-					logger.debug(" FOUND Class match oc:"+oc);
 					if (oc != null) {
 						int num_subs = findNrofSubClasses(oc);
 						logger.debug("** class uri:"+typeUri+" has "+num_subs+" subclasses");
@@ -127,7 +133,8 @@ public class SemanticObjectBuilder
 							type = typeUri;
 							numOfSubClasses = num_subs;
 						}
-					}
+					} else
+						logger.warn(" Unable to find class uri:"+typeUri+" in model!");
 				}
 			}
 		}
@@ -139,7 +146,7 @@ public class SemanticObjectBuilder
 	private int findNrofSubClasses (OntClass oc) {
 		String classUri = oc.getURI();
 		if (!numOfSubClasses.containsKey(classUri)) {
-			ExtendedIterator i = oc.listSubClasses();
+			ExtendedIterator i = oc.listSubClasses(true);
 			numOfSubClasses.put(classUri, new Integer(i.toList().size()));
 		}
 		return numOfSubClasses.get(classUri).intValue();
@@ -188,12 +195,15 @@ public class SemanticObjectBuilder
 			logger.debug("  prop value is Individual"); 
 			SemanticObject target = builder.createSemanticObject((Individual) s.getObject().as(Individual.class));
 			if (target != null)
-				parent.addProperty(target, createURI(s.getPredicate().getURI()));
+				parent.addProperty(createURI(s.getPredicate().getURI()), target);
+			else 
+				logger.info("Skipping add property, target object is null");
 			
 		} else { 
-			logger.debug("  prop value is NOT an object");
-			// TODO: add namespace URIs/prefixes on attributes
-			parent.addAttributeField(s.getPredicate().getLocalName(), s.getObject().toString());
+			logger.debug("  prop value is NOT an object, add datatype prop");
+			String target = s.getObject().toString();
+//			parent.addAttributeField(s.getPredicate().getLocalName(), target);
+			parent.addProperty(createURI(s.getPredicate().getURI()), target);
 		}
 		
 	}
@@ -209,6 +219,7 @@ public class SemanticObjectBuilder
 		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
 		throws SemanticObjectBuilderException 
 		{
+			logger.info("DefaultHandler called for uri"+in.getURI());
 			SemanticObject so = new SemanticObjectImpl(createURI(in.getURI()));
 			// add in properties
 			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
@@ -219,6 +230,51 @@ public class SemanticObjectBuilder
 		}
 		
 	}
+	
+	/** Default handler to create vanilla SemanticObjects.
+	 * 
+	 * @author thomas
+	 *
+	 */
+	protected class NullHandler 
+	implements SemanticObjectHandler 
+	{
+		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
+		throws SemanticObjectBuilderException 
+		{
+			logger.info("Null handler called for uri:"+in.getURI());
+			return null;
+		}
+		
+	}
+	
+	/** Default handler to create vanilla SemanticObjects.
+	 * 
+	 * @author thomas
+	 *
+	 */
+	protected class ThingHandler 
+	implements SemanticObjectHandler 
+	{
+		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
+		throws SemanticObjectBuilderException 
+		{
+			
+			logger.info("ThingHandler called for uri"+in.getURI());
+			SemanticObject so = new SemanticObjectImpl(createURI(in.getURI()));
+			// add in properties
+			/*
+			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
+				Statement s  = i.nextStatement(); 
+				addProperty(builder, so, s);
+			}
+			*/
+			return so;
+			
+		}
+		
+	}
+	
 	
 	/**
 	 * @author thomas

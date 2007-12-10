@@ -49,7 +49,7 @@ extends BaseCase
 		
 		SemanticObject so = new SemanticObjectImpl (uri1);
 		SemanticObject so2 = new SemanticObjectImpl (uri2);
-		so2.addProperty(so, rel_URI); 
+		so2.addProperty(rel_URI, so); 
 		
 		// test non-pretty output 
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\"/>");

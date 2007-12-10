@@ -4,7 +4,7 @@
   <groupId>net.datamodel</groupId>
   <artifactId>soml</artifactId>
   <name>Semantic Object Model</name>
-  <version>0.72.2</version>
+  <version>0.80.0</version>
   <description>SOML (Semantic Object Model Language) Java package provides
 handy representations of (instances of) semantic objects.</description>
   <build>
@@ -119,6 +119,76 @@ handy representations of (instances of) semantic objects.</description>
       <scope>test</scope>
     </dependency>
     
+          <!-- pellet-related dependencies, we only need for testing? -->
+    <dependency>
+      <groupId>org.mindswap</groupId>
+      <artifactId>pellet</artifactId>
+      <version>1.5.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>3.4</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>jjtraveler</groupId>
+      <artifactId>aterm-java</artifactId>
+      <version>1.6</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>2.7.5</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>edu.oswego.cs.dl.util</groupId>
+      <artifactId>concurrent</artifactId>
+      <version>unknown</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>relaxngDatatype</groupId>
+      <artifactId>relaxngDatatype</artifactId>
+      <version>20060921</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>xsdlib</groupId>
+      <artifactId>xsdlib</artifactId>
+      <version>20060921</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax-api</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>stax</groupId>
+      <artifactId>stax</artifactId>
+      <version>1.1.1-dev</version>
+      <scope>test</scope>
+    </dependency>
     
   </dependencies>
 

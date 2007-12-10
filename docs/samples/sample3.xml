@@ -2,18 +2,18 @@
 <so:semanticObject 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xmlns:so="http://www.data-model.net/SemanticObject" 
-      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_55.xsd"
+      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_56.xsd"
       URI="urn:test:SemanticObject1"
 >
 
-  <!-- in the relationship1 with an object -->
-  <so:relationship URI="urn:test:rel1">
+  <!-- in the property1 with an object -->
+  <so:property URI="urn:test:rel1">
       <so:semanticObject soId="obj1" URI="urn:test:SemanticObject2"/>
-  </so:relationship>
+  </so:property>
   
-  <!-- in different relationship with a same object, using reference -->
-  <so:relationship URI="urn:test:rel2">
+  <!-- in different property with a same object, using reference -->
+  <so:property URI="urn:test:rel2">
       <so:semanticObjectRef soIdRef="obj1"/>
-  </so:relationship>
+  </so:property>
   
 </so:semanticObject>
