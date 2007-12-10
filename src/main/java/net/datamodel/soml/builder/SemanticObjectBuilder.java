@@ -161,7 +161,7 @@ public class SemanticObjectBuilder
 	private int findNrofSubClasses (OntClass oc) {
 		String classUri = oc.getURI();
 		if (!numOfSubClasses.containsKey(classUri)) {
-			ExtendedIterator i = oc.listSubClasses(true);
+			ExtendedIterator i = oc.listSubClasses();
 			numOfSubClasses.put(classUri, new Integer(i.toList().size()));
 		}
 		return numOfSubClasses.get(classUri).intValue();
