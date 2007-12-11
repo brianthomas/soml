@@ -103,7 +103,8 @@ public class SemanticObjectBuilder
 		logger.debug("---> createSemanticObject (uri:"+uri+")");
 		
 		// create the SO using the desired rdf:type 
-		SemanticObject so = findHandler(findRDFTypes(in)).create(this,in);
+		List<String> types = findRDFTypes(in);
+		SemanticObject so = findHandler(types).create(this, in, types.get(0));
 		
 		return so;
 		
@@ -169,22 +170,6 @@ public class SemanticObjectBuilder
 		return numOfSubClasses.get(classUri).intValue();
 	}
 		
-	/** Small utility method to create an URI and throw an exeception appropriately.
-	 * 
-	 * @param uriStr
-	 * @return
-	 * @throws SemanticObjectBuilderException
-	 */
-	public final static URI createURI (String uriStr) 
-	throws SemanticObjectBuilderException
-	{
-		try {
-			return new URI(uriStr);
-		} catch (URISyntaxException e) {
-			throw new SemanticObjectBuilderException(e);
-		}
-	}
-	
 	/** Small utility to add a property to a semantic object. 
 	 * 
 	 * @param parent
@@ -211,8 +196,9 @@ public class SemanticObjectBuilder
 			
 			logger.debug("  prop value is Individual"); 
 			SemanticObject target = builder.createSemanticObject((Individual) s.getObject().as(Individual.class));
+			
 			if (target != null)
-				parent.addProperty(createURI(s.getPredicate().getURI()), target);
+				parent.addProperty(SemanticObjectImpl.createURI(s.getPredicate().getURI()), target);
 			else 
 				logger.info("Skipping add property, target object is null");
 			
@@ -220,7 +206,7 @@ public class SemanticObjectBuilder
 			logger.debug("  prop value is NOT an object, add datatype prop");
 			String target = s.getObject().toString();
 //			parent.addAttributeField(s.getPredicate().getLocalName(), target);
-			parent.addProperty(createURI(s.getPredicate().getURI()), target);
+			parent.addProperty(SemanticObjectImpl.createURI(s.getPredicate().getURI()), target);
 		}
 		
 	}
@@ -234,11 +220,12 @@ public class SemanticObjectBuilder
 	implements SemanticObjectHandler 
 	{
 		
-		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
+		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
 		throws SemanticObjectBuilderException 
 		{
-			logger.info("DefaultHandler called for uri"+in.getURI());
-			SemanticObject so = new SemanticObjectImpl(createURI(in.getURI()));
+			logger.info("DefaultHandler called for instance uri:"+in.getURI()+" rdf:type:"+rdfType);
+			SemanticObject so = new SemanticObjectImpl(SemanticObjectImpl.createURI(rdfType));
+			
 			// add in properties
 			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
 				Statement s  = i.nextStatement(); 
@@ -257,10 +244,10 @@ public class SemanticObjectBuilder
 	protected class NullHandler 
 	implements SemanticObjectHandler 
 	{
-		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
+		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
 		throws SemanticObjectBuilderException 
 		{
-			logger.info("Null handler called for uri:"+in.getURI());
+			logger.info("Null handler called for instance uri:"+in.getURI());
 			return null;
 		}
 		
@@ -274,12 +261,12 @@ public class SemanticObjectBuilder
 	protected class ThingHandler 
 	implements SemanticObjectHandler 
 	{
-		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
+		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
 		throws SemanticObjectBuilderException 
 		{
 			
-			logger.info("ThingHandler called for uri"+in.getURI());
-			SemanticObject so = new SemanticObjectImpl(createURI(in.getURI()));
+			logger.info("ThingHandler called for instance uri:"+in.getURI()+" rdf:type:"+rdfType);
+			SemanticObject so = new SemanticObjectImpl(SemanticObjectImpl.createURI(rdfType));
 			// add in properties
 			/*
 			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
@@ -307,7 +294,11 @@ public class SemanticObjectBuilder
 		 * @return
 		 * @throws SemanticObjectBuilderException
 		 */ 
-		public SemanticObject create (SemanticObjectBuilder b, Individual in) throws SemanticObjectBuilderException;
+		public SemanticObject create (
+				SemanticObjectBuilder b, 
+				Individual in,
+				String rdfType) 
+		throws SemanticObjectBuilderException;
 		
 	}
 	

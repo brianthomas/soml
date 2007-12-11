@@ -217,7 +217,7 @@ extends TestCase
 		
 		class AHandler implements SemanticObjectHandler {
 
-			public SemanticObject create(SemanticObjectBuilder b, Individual in)
+			public SemanticObject create(SemanticObjectBuilder b, Individual in, String rdfType)
 					throws SemanticObjectBuilderException 
 			{
 				logger.info("RUN SPECIAL HANDLER FOR uri:"+in.getURI());
@@ -233,7 +233,7 @@ extends TestCase
 	{
 		
 		TestSemanticObject() throws SemanticObjectBuilderException {
-			super(SemanticObjectBuilder.createURI("urn:some-instance-uri-here"));
+			super(SemanticObjectImpl.createURI("urn:some-rdf-type-uri-here"));
 			this.setXMLNodeName("TestSemanticObject");
 		}
 	}
