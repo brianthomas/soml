@@ -47,7 +47,9 @@ public class SemanticObjectBuilder
 	private static final String OWLSameAsURI = OWL.getURI()+"sameAs";
 	
 	private Map<String,SemanticObjectHandler> handlers = new Hashtable<String,SemanticObjectHandler>(); 
-	private SemanticObjectHandler DefaultHandler = new DefaultHandler();
+	private final SemanticObjectHandler DefaultHandler = new DefaultHandler();
+	protected final SemanticObjectHandler NullHandler = new NullHandler();
+	
 	private OntModel ontModel = null;
 	private Map<String,Integer> numOfSubClasses = new Hashtable<String,Integer>();
 	
@@ -231,6 +233,7 @@ public class SemanticObjectBuilder
 	class DefaultHandler 
 	implements SemanticObjectHandler 
 	{
+		
 		public SemanticObject create (SemanticObjectBuilder builder, Individual in) 
 		throws SemanticObjectBuilderException 
 		{
