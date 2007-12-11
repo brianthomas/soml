@@ -118,7 +118,7 @@ public class SemanticObjectBuilder
 	 */
 	// return 'ranked' list of classes, with most preferable class
 	// at the beginning of the list
-	private List<String> findRDFTypes (Individual in) 
+	protected final List<String> findRDFTypes (Individual in) 
 	{
 		
 		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
