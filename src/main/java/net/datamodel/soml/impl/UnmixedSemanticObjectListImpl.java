@@ -12,7 +12,7 @@ import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
 
 import org.apache.log4j.Logger;
 
-/** A restricted collection of objects. All objects must have the same uri. 
+/** A restricted collection of objects. All objects must have the same rdfTypeURI. 
  * 
  * @author thomas
  *
@@ -25,26 +25,26 @@ implements UnmixedSemanticObjectList<T>
 	// fields
 	private static Logger logger = Logger.getLogger(UnmixedSemanticObjectListImpl.class);
 
-	private URI uri;
+	private URI rdfTypeURI = null;
 	
-	/** Constructor : must supply the (non-null) uri for this container.
+	/** Constructor : must supply the (non-null) rdfTypeURI for this container.
 	 * 
 	 * @param rdftype the rdf:type to limit the collection to 
-	 * @throws NullPointerException if a null uri is passed.
+	 * @throws NullPointerException if a null rdfTypeURI is passed.
 	 */
 	public UnmixedSemanticObjectListImpl (URI rdfType) { 
-		if(null == uri)
-			throw new NullPointerException("UnmixedSemanticObjectList cannot have a null value for uri.");
-		this.uri=uri;
+		if (null == rdfType)
+			throw new NullPointerException("UnmixedSemanticObjectList cannot have a null value for rdfTypeURI.");
+		this.rdfTypeURI=rdfType;
 	}
 	
 	/*
 	 *  (non-Javadoc)
 	 * @see edu.umd.astro.transform.UnmixedCollection#getURI(java.net.URI)
 	 */
-	public final URI getRDFTypeURI () { return uri; } 
+	public final URI getRDFTypeURI () { return rdfTypeURI; } 
 	
-	/** May only add objects which have same uri as the collection.
+	/** May only add objects which have same rdfTypeURI as the collection.
 	 * 
 	 */
 	@Override
@@ -53,7 +53,7 @@ implements UnmixedSemanticObjectList<T>
 			super.add(arg0, o);
 	}
 
-	/** May only add objects which have same uri as the collection.
+	/** May only add objects which have same rdfTypeURI as the collection.
 	 * 
 	 */
 	@Override
@@ -70,7 +70,7 @@ implements UnmixedSemanticObjectList<T>
 		return super.addAll(arg0, col);
 	}
 	
-	/** May only set objects which have the same uri as the collection.
+	/** May only set objects which have the same rdfTypeURI as the collection.
 	 */
 	@Override
 	public final T set(int arg0, T o) {
@@ -86,13 +86,13 @@ implements UnmixedSemanticObjectList<T>
 		return false;
 	}
 	
-	// make sure object has the same uri as the collection
+	// make sure object has the same rdfTypeURI as the collection
 	private boolean can_add (T o) {
-		logger.debug("Try to add object w/ class:"+o.getClass()+" uri:"+o.getRDFTypeURI());
-		if (uri.equals(o.getRDFTypeURI()))
+		logger.debug("Try to add object w/ class:"+o.getClass()+" rdfTypeURI:"+o.getRDFTypeURI());
+		if (rdfTypeURI.equals(o.getRDFTypeURI()))
 			return true;
-		logger.warn("Ignoring add of object:"+o+" has the wrong uri("+o.getRDFTypeURI().toASCIIString()
-				+") for UnmixedCollection uri:("+uri.toASCIIString()+")");
+		logger.warn("Ignoring add of object:"+o+" has the wrong rdfTypeURI("+o.getRDFTypeURI().toASCIIString()
+				+") for UnmixedCollection rdfTypeURI:("+rdfTypeURI.toASCIIString()+")");
 		return false;
 	}
 			

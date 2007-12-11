@@ -35,6 +35,7 @@ public class TestAPI extends BaseCase
 		SemanticObject so = new SemanticObjectImpl(uri1);
 		assertNotNull("Can build SemanticObjectImpl", so);
 		
+		logger.debug("URN1:"+uri1);
 		UnmixedSemanticObjectList unlist = new UnmixedSemanticObjectListImpl(uri1);
 		assertNotNull("Can build UnmixedSemanticObjectListImpl", unlist);
 		
