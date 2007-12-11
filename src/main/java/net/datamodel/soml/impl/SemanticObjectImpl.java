@@ -104,6 +104,7 @@ implements SemanticObject {
 			uri = new URI(struri);
 		} catch (URISyntaxException e) {
 			// pass
+			logger.error("cant create URI!:"+struri);
 		}
 		return uri;
 	}
@@ -155,7 +156,7 @@ implements SemanticObject {
 		for (Property prop : getProperties(propertyURI)) {
 			if (prop instanceof ObjectProperty) {
 				SemanticObject target = ((ObjectProperty) prop).getTarget();
-				if (target.getURI().equals(targetURI)) {
+				if (target.getRDFTypeURI().equals(targetURI)) {
 					return true;
 				}
 			}
@@ -205,7 +206,7 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#getURI()
 	 */
-	public final URI getURI() {
+	public final URI getRDFTypeURI() {
 		String value = (String) getFieldValue(uriFieldName);
 
 		try {
@@ -265,7 +266,8 @@ implements SemanticObject {
 	 * @param value of the URI to set
 	 */
 	protected final void setURI (URI value) {
-		assert value != null;
+		if (value == null)
+			throw new NullPointerException("cant set URI to null value");
 		// Take the URI and convert it to a string for storage 
 		// in object/serialization. If the URI is null, then 
 		// toASCIIString will throw nullpointer exception for us.

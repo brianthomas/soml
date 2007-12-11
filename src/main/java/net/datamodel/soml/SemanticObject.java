@@ -141,13 +141,14 @@ extends ReferenceableXMLSerializableObject
      */
     public List<Property> getProperties(URI propertyURI);
 
-    /** Get the URI which represents the semantic meaning (ontological class) 
-     * of this object.  The URI maybe the same for different instances of a 
-     * SemanticObject. (e.g. it is not guarrenteed to be unique)
+    /** Get the URI which represents the (most specific) rdf:type 
+     * of the calling object. The rdf:type of SemanticObjects is limited
+     * to one value (a corresponding model may be used to find all 
+     * the super classes, if desired).
      *  
-     * @return a URI of the SemanticObject 
+     * @return URI representing the rdf:type of the SemanticObject 
      */
-	public URI getURI();
+	public URI getRDFTypeURI();
 	
 }
 

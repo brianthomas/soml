@@ -29,6 +29,9 @@ public class TestAPI extends BaseCase
 		
 		logger.info("Check we can construct main classes.");
 		
+		SemanticObject so0 = new SemanticObjectImpl();
+		assertNotNull("Can build SemanticObjectImpl", so0);
+		
 		SemanticObject so = new SemanticObjectImpl(uri1);
 		assertNotNull("Can build SemanticObjectImpl", so);
 		
@@ -68,7 +71,7 @@ public class TestAPI extends BaseCase
 		SemanticObject so4 = new SemanticObjectImpl(uri4);
 		
 		// check URI retrieval
-		assertTrue("SO retURIs the correct URI", so.getURI().equals(uri1));
+		assertTrue("SO retURIs the correct URI", so.getRDFTypeURI().equals(uri1));
 		
 		// bi-directional between obj1 and obj2
 		assertTrue("can addRelationship obj1 to obj2", so.addProperty(rel_URI,so2));
@@ -145,7 +148,7 @@ public class TestAPI extends BaseCase
 		so.removeAllProperties(rel_URI);
 		// no objects left now
 		for (Property r : so.getProperties()) {
-			logger.debug(" **** SO Property uri:"+r.getURI().toASCIIString()+" target:"+((ObjectProperty)r).getTarget().getURI().toASCIIString());
+			logger.debug(" **** SO Property uri:"+r.getURI().toASCIIString()+" target:"+((ObjectProperty)r).getTarget().getRDFTypeURI().toASCIIString());
 		}
 		assertEquals("Correct number of remaining relationships", 1, so.getProperties().size());
 		
@@ -210,7 +213,7 @@ public class TestAPI extends BaseCase
 		assertTrue("Can NOT addAll non-kosher objects to list", !soList1.addAll(soList3));
 		
 		// check getURI
-		assertTrue("List1 retURI the correct URI", soList1.getURI().equals(uri1));
+		assertTrue("List1 retURI the correct URI", soList1.getRDFTypeURI().equals(uri1));
 		
 		// check contains
 		assertTrue("check contains method", soList1.contains(so2));

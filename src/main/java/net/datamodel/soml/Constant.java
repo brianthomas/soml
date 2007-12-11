@@ -20,6 +20,6 @@ public class Constant {
 	 */
 	public static final String SOML_URI_ATTRIBUTE_NAME = "URI";
 
-	public static final String OWLThingURI = OWL.getURI()+"#Thing";
+	public static final String OWLThingURI = OWL.getURI()+"Thing";
 	
 }

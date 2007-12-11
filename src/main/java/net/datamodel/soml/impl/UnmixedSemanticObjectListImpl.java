@@ -29,10 +29,10 @@ implements UnmixedSemanticObjectList<T>
 	
 	/** Constructor : must supply the (non-null) uri for this container.
 	 * 
-	 * @param uri
+	 * @param rdftype the rdf:type to limit the collection to 
 	 * @throws NullPointerException if a null uri is passed.
 	 */
-	public UnmixedSemanticObjectListImpl (URI uri) { 
+	public UnmixedSemanticObjectListImpl (URI rdfType) { 
 		if(null == uri)
 			throw new NullPointerException("UnmixedSemanticObjectList cannot have a null value for uri.");
 		this.uri=uri;
@@ -42,7 +42,7 @@ implements UnmixedSemanticObjectList<T>
 	 *  (non-Javadoc)
 	 * @see edu.umd.astro.transform.UnmixedCollection#getURI(java.net.URI)
 	 */
-	public final URI getURI () { return uri; } 
+	public final URI getRDFTypeURI () { return uri; } 
 	
 	/** May only add objects which have same uri as the collection.
 	 * 
@@ -88,10 +88,10 @@ implements UnmixedSemanticObjectList<T>
 	
 	// make sure object has the same uri as the collection
 	private boolean can_add (T o) {
-		logger.debug("Try to add object w/ class:"+o.getClass()+" uri:"+o.getURI());
-		if (uri.equals(o.getURI()))
+		logger.debug("Try to add object w/ class:"+o.getClass()+" uri:"+o.getRDFTypeURI());
+		if (uri.equals(o.getRDFTypeURI()))
 			return true;
-		logger.warn("Ignoring add of object:"+o+" has the wrong uri("+o.getURI().toASCIIString()
+		logger.warn("Ignoring add of object:"+o+" has the wrong uri("+o.getRDFTypeURI().toASCIIString()
 				+") for UnmixedCollection uri:("+uri.toASCIIString()+")");
 		return false;
 	}
