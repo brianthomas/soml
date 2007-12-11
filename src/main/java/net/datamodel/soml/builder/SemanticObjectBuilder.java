@@ -48,14 +48,14 @@ public class SemanticObjectBuilder
 	
 	private Map<String,SemanticObjectHandler> handlers = new Hashtable<String,SemanticObjectHandler>(); 
 	private final SemanticObjectHandler DefaultHandler = new DefaultHandler();
-	protected final SemanticObjectHandler NullHandler = new NullHandler();
+	private final SemanticObjectHandler NullHandler = new NullHandler();
 	
 	private OntModel ontModel = null;
 	private Map<String,Integer> numOfSubClasses = new Hashtable<String,Integer>();
 	
 	public SemanticObjectBuilder (OntModel model) { 
 		ontModel = model; 
-		addHandler(OWLClassURI, new NullHandler()); // dont build class definitions 
+//		addHandler(OWLClassURI, getNullHandler()); // dont build class definitions 
 		addHandler(OWLThingURI, new ThingHandler()); 
 	}
 	
@@ -69,6 +69,18 @@ public class SemanticObjectBuilder
 		handlers.put(rdfTypeUri,handler);
 	}
 	
+	/** Get the Handler which is the default.
+	 * 
+	 * @return SemanticObjectHandler which is the DefaultHandler 
+	 */
+	protected SemanticObjectHandler getDefaultHandler() { return DefaultHandler; }
+	
+	/** Get the Handler which does nothing.
+	 * 
+	 * @return SemanticObjectHandler which is the NullHandler 
+	 */
+	protected SemanticObjectHandler getNullHandler() { return NullHandler; }
+	
 	/** Find the handler associated with the indicated uri.
 	 * 
 	 * @param uri
@@ -76,7 +88,6 @@ public class SemanticObjectBuilder
 	 */
 	protected SemanticObjectHandler findHandler (List<String> rdfTypeUris) {
 		
-		SemanticObjectHandler h = null;
 		for (String rdfTypeUri : rdfTypeUris)
 		{
 			if(handlers.containsKey(rdfTypeUri)) {
@@ -118,7 +129,7 @@ public class SemanticObjectBuilder
 	 */
 	// return 'ranked' list of classes, with most preferable class
 	// at the beginning of the list
-	protected final List<String> findRDFTypes (Individual in) 
+	protected List<String> findRDFTypes (Individual in) 
 	{
 		
 		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
@@ -161,7 +172,13 @@ public class SemanticObjectBuilder
 		return ret;
 	}
 	
-	private int findNrofSubClasses (OntClass oc) {
+	/** Find the number of subclasses for the indicated OntClass. 
+	 * Caches values to speed up determination.
+	 *  
+	 * @param oc
+	 * @return
+	 */
+	protected int findNrofSubClasses (OntClass oc) {
 		String classUri = oc.getURI();
 		if (!numOfSubClasses.containsKey(classUri)) {
 			ExtendedIterator i = oc.listSubClasses();
@@ -258,7 +275,7 @@ public class SemanticObjectBuilder
 	 * @author thomas
 	 *
 	 */
-	protected class ThingHandler 
+	class ThingHandler 
 	implements SemanticObjectHandler 
 	{
 		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
