@@ -100,10 +100,10 @@ extends ReferenceableXMLSerializableObject
      
     /** Remove all properties which match the passed URI.
      * 
-     * @param uri of the properties to remove 
+     * @param propertyUri of the properties to remove 
      * @return true if the property was removed. 
      */
-    public boolean removeAllProperties (URI uri);
+    public boolean removeAllProperties (URI propertyUri);
     
     /** Remove (clear) all properties in the calling object 
      * regardless of property URI. Does not affect target object
@@ -115,18 +115,18 @@ extends ReferenceableXMLSerializableObject
      * identified target SemanticObject.
      * 
      * @param propertyUri
-     * @param target
+     * @param value the SemanticObject which is the value of the property
      * @return true if the property was removed
      */
-    public boolean removeObjectProperty (URI propertyUri, SemanticObject target);
+    public boolean removeObjectProperty (URI propertyUri, SemanticObject value);
     
-    /** Retrieve any semantic objects which are are properties of 
-     * the parent SemanticObject with the given property URI. 
+    /** Retrieve any semantic objects which have the rdf:type indicated
+     * and are values of properties of the calling SemanticObject.
      * 
-     * @param propertyURI the URI which represents the property describing the objects to search for 
-     * @return List of SemanticObjects which are in the given property to the caller.
+     * @param rdfTypeURI the rdf:type URI of the child SemanticObjects to search for 
+     * @return List of SemanticObjects which have the rdf:type
      */
-    public List<SemanticObject> getSemanticObjects (URI propertyURI);
+    public List<SemanticObject> getSemanticObjectsByType (URI rdfTypeURI);
     
     /** Get the list of properties which the calling SemanticObject 'owns'.
      * 

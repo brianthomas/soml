@@ -1,5 +1,7 @@
 package net.datamodel.soml;
 
+import com.hp.hpl.jena.vocabulary.OWL;
+
 public class Constant {
 	
 	private Constant () {}
@@ -18,4 +20,6 @@ public class Constant {
 	 */
 	public static final String SOML_URI_ATTRIBUTE_NAME = "URI";
 
+	public static final String OWLThingURI = OWL.getURI()+"#Thing";
+	
 }

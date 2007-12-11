@@ -106,8 +106,8 @@ public class TestAPI extends BaseCase
 		assertEquals("Property target is expected one", so2, ((ObjectProperty) rel1).getTarget());
 		
 		// check that the 1 object is the one we expect
-		List<SemanticObject> check1 = so.getSemanticObjects(rel_URI);
-		List<SemanticObject> check2 = so2.getSemanticObjects(rel_URI2);
+		List<SemanticObject> check1 = so.getSemanticObjectsByType(rel_URI);
+		List<SemanticObject> check2 = so2.getSemanticObjectsByType(rel_URI2);
 		this.assertEquals("Object 1: number of objs in relationship:"+rel_URI.toASCIIString()+" is correct", 2, check1.size()); 
 		this.assertEquals("Object 2: number of objs in relationship:"+rel_URI2.toASCIIString()+" is correct", 1, check2.size()); 
 		

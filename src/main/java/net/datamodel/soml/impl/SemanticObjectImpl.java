@@ -33,6 +33,7 @@
 package net.datamodel.soml.impl;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Vector;
 
@@ -48,7 +49,7 @@ import org.apache.log4j.Logger;
 
 /** A SemanticObject identifies its origin (and semantic nature) by its 
  * URI (Unique Resource Id).
- * A SemanticObject also may be in a (semantically-typed) relationship 
+ * A SemanticObject also may be in a (semantically-typed) property 
  * with other SemanticObjects. 
  */
 public class SemanticObjectImpl 
@@ -59,24 +60,22 @@ implements SemanticObject {
 
 	// Fields
 	//
-	private static final String relationshipFieldName = "relationship";
+	private static final String propertyFieldName = "property";
 	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
-
+	
 	// Constructors
 	//
 
-	/** Construct with a given URI.
-	 * @throws NullPointerException if the passed URI value is null.
+	/** Construct with a default URI of "owl:Thing"
 	 */
-	public SemanticObjectImpl (URI uri) { 
-		this();
-		setURI(uri);
+	public SemanticObjectImpl () { 
+		this(createURI(Constant.OWLThingURI));
 	}
 
-	/** Construct with a default URI of "URI:unknown".
-	 * Not meant for public consumption..
+	/** Construct with a given URI.
+	 * 
 	 */
-	protected SemanticObjectImpl () { 
+	public SemanticObjectImpl (URI uri) { 
 
 		// configure the referencing fields/info 
 		idRefFieldName = "soRefId"; 
@@ -89,10 +88,26 @@ implements SemanticObject {
 		// order matters! these are in *reverse* order of their
 		// occurence in the schema/DTD
 		addField(uriFieldName, "URI:unknown", XMLFieldType.ATTRIBUTE);
-		addField(relationshipFieldName, new RelationshipList(), XMLFieldType.CHILD);
+		addField(propertyFieldName, new propertyList(), XMLFieldType.CHILD);
 
+		setURI(uri);
 	}
 
+	/** A no-hassle utility for creating URIs from string representations. 
+	 * 
+	 * @param struri
+	 * @return
+	 */
+	public static final URI createURI(String struri) {
+		URI uri = null;
+		try {
+			uri = new URI(struri);
+		} catch (URISyntaxException e) {
+			// pass
+		}
+		return uri;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#addProperty(java.net.URI, net.datamodel.soml.SemanticObject)
@@ -106,7 +121,7 @@ implements SemanticObject {
 			throw new NullPointerException("addProperty: passed null value object.");
 		}
 
-		// now we add the relationship and return success 
+		// now we add the property and return success 
 		return getProperties().add(new ObjectPropertyImpl(propertyURI, value));
 
 	}
@@ -162,7 +177,7 @@ implements SemanticObject {
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#clearAllRelationships()
+	 * @see net.datamodel.soml.SemanticObject#clearAllpropertys()
 	 */
 	public final void removeAllProperties() {
 		getProperties().clear();
@@ -170,7 +185,7 @@ implements SemanticObject {
 
 	/*
 	 *  (non-Javadoc)
-	 * @see net.datamodel.qml.SemanticObject#removeRELATIONSHIP(java.net.URI)
+	 * @see net.datamodel.qml.SemanticObject#removeproperty(java.net.URI)
 	 */
 	public final boolean removeAllProperties (URI URI) {
 		boolean success = true;
@@ -182,7 +197,7 @@ implements SemanticObject {
 					success = false;
 			}
 		} else 
-			success = false; // there are no relationships!! 
+			success = false; // there are no propertys!! 
 		return success;
 	}
 
@@ -206,7 +221,7 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#getRelatedSemanticObjects(net.datamodel.soml.URI)
 	 */
-	public final List<SemanticObject> getSemanticObjects (URI propertyURI) {
+	public final List<SemanticObject> getSemanticObjectsByType (URI propertyURI) {
 
 		List<SemanticObject> found = new Vector<SemanticObject>();
 		for (Property rel: getProperties()) {
@@ -222,7 +237,7 @@ implements SemanticObject {
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getRelationships(net.datamodel.soml.URI)
+	 * @see net.datamodel.soml.SemanticObject#getpropertys(net.datamodel.soml.URI)
 	 */
 	public final List<Property> getProperties (URI URI) 
 	{
@@ -236,10 +251,10 @@ implements SemanticObject {
 
 	/*
 	 *  (non-Javadoc)
-	 * @see net.datamodel.soml.SemanticObject#getRelationships()
+	 * @see net.datamodel.soml.SemanticObject#getpropertys()
 	 */
 	public final List<Property> getProperties() {
-		return (List<Property>) getFieldValue(relationshipFieldName);
+		return (List<Property>) getFieldValue(propertyFieldName);
 	}
 
 	// Operations
@@ -250,21 +265,22 @@ implements SemanticObject {
 	 * @param value of the URI to set
 	 */
 	protected final void setURI (URI value) {
+		assert value != null;
 		// Take the URI and convert it to a string for storage 
 		// in object/serialization. If the URI is null, then 
 		// toASCIIString will throw nullpointer exception for us.
 		setFieldValue(uriFieldName, value.toASCIIString());
 	}
 
-	/** Quick internal class to hold all relationships between our object 
+	/** Quick internal class to hold all propertys between our object 
 	 * and other SO's. 
 	 */
-	class RelationshipList<Relationship> 
+	class propertyList<property> 
 	extends AbstractXMLSerializableObjectList
 	{ 
-		// simply change the node name to "relationship"
+		// simply change the node name to "property"
 		// and set no serialization when its empty 
-		RelationshipList() { 
+		propertyList() { 
 			super(""); // should *not* have a node name 
 			this.setSerializeWhenEmpty(false);
 		}
