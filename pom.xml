@@ -4,7 +4,7 @@
   <groupId>net.datamodel</groupId>
   <artifactId>soml</artifactId>
   <name>Semantic Object Model</name>
-  <version>0.81.1</version>
+  <version>0.81.2</version>
   <description>SOML (Semantic Object Model Language) Java package provides
 handy representations of (instances of) semantic objects.</description>
   <build>
