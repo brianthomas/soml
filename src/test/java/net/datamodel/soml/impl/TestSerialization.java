@@ -13,6 +13,7 @@ import net.datamodel.soml.UtilityForTests;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLElement;
 import net.datamodel.soml.dom.xerces2.SOMLDocumentImpl;
+
 import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.dom.Specification;
 
@@ -65,8 +66,9 @@ extends BaseCase
 		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
 		checkDocumentRepresentation(so);
 		
-		// TODO
+		logger.warn("missing pretty-print serialization test for so2");
 		/*
+		// TODO
 		String indent = spec.getPrettyOutputIndentation();
 		String newLine = System.getProperty("line.separator");
 		checkXMLOutput(so2,
@@ -94,17 +96,16 @@ extends BaseCase
 	// test Inter-referential propertys
 	//
 	// TODO
-	/*
 	public void test4() {
 		
-		logger.info("test serialization of Inter-referential propertys"); 
+		logger.info("test serialization of Inter-referential properties"); 
 		
 		// first create some test objects...
 		SemanticObject so1 = new SemanticObjectImpl(uri1);
 		SemanticObject so2 = new SemanticObjectImpl(uri2);
 		
-		so1.addProperty(so2, rel_URI);
-		so2.addProperty(so1, rel_URI2);
+		so1.addProperty(rel_URI, so2);
+		so2.addProperty(rel_URI2, so1);
 		
 		// pretty output is more rigourous test
 		Specification.getInstance().setPrettyOutput(true);
@@ -134,14 +135,15 @@ extends BaseCase
 		
 		
 		checkXMLOutput(so1,expectedOutput1);
-		checkDocumentRepresentation(so1);
-		
 		checkXMLOutput(so2,expectedOutput2);
-		checkDocumentRepresentation(so2);
+		
+		// FIXME: get stackoverflow error on this
+		logger.warn("Fix doc representation tests for inter-referential test");
+//		checkDocumentRepresentation(so1);
+//		checkDocumentRepresentation(so2);
 
 		Specification.getInstance().setPrettyOutput(false);
 	}
-	*/
 	
 	private static void checkDocumentRepresentation (SemanticObject so) {
 		
