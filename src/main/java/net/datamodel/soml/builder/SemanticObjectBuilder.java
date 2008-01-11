@@ -3,8 +3,6 @@
  */
 package net.datamodel.soml.builder;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -55,8 +54,8 @@ public class SemanticObjectBuilder
 	
 	public SemanticObjectBuilder (OntModel model) { 
 		ontModel = model; 
-//		addHandler(OWLClassURI, getNullHandler()); // dont build class definitions 
-		addHandler(OWLThingURI, new ThingHandler()); 
+		// use the default handler for all owl:Thing stuff
+		addHandler(OWLThingURI, getDefaultHandler()); 
 	}
 	
 	/** Add a special handler for particular rdf:type.
@@ -91,12 +90,12 @@ public class SemanticObjectBuilder
 		for (String rdfTypeUri : rdfTypeUris)
 		{
 			if(handlers.containsKey(rdfTypeUri)) {
-				logger.debug("RETURN SPECIAL HANDLER for uri:"+rdfTypeUri);
+				logger.debug("RETURN HANDLER for uri:"+rdfTypeUri);
 				return handlers.get(rdfTypeUri);
 			} 
 		}
 		// no match!?!? then return default handler
-		logger.debug("RETURN DEFAULT HANDLER");
+		logger.debug("Cant find declared handler, RETURNing a DEFAULT HANDLER ");
 		return DefaultHandler;
 	}
 	
@@ -202,28 +201,45 @@ public class SemanticObjectBuilder
 	{
 		String propUri = s.getPredicate().getURI();
 		
+		logger.debug("  PROPERTY:"+propUri+" RESOURCE:"+s.getObject().isResource());
+			
 		// we skip adding owl:sameAs properties
 		if (propUri.equals(OWLSameAsURI))
 			return;
 		
-		logger.debug("addProperty ( pred:"+propUri+" obj:"+s.getObject()+")");
-		
+		// Special case: setting rdf:type properties for SO 
+		if (propUri.equals(RDFTypeURI)) {
+			if (s.getObject().isResource()) {
+				Resource r = (Resource) s.getObject().as(Resource.class);
+				parent.addProperty(SemanticObjectImpl.createURI(RDFTypeURI), r.getURI());
+//				parent.addAttributeField("rdf:type", r.getURI());
+			} else {
+				logger.warn(" Can't do anything with non-resource rdf:type in serialization? dropping information on floor..");
+			}
+			return;
+		}
+			
+		// other types of properties treated here
 		if (s.getObject().canAs(Individual.class))
 		{
 			
-			logger.debug("  prop value is Individual"); 
+			Individual in = builder.ontModel.getIndividual(s.getObject().toString());
+			logger.debug(" ############## lloiking for individual w/ uri:"+s.getObject()+" result:"+in);
+			if (in != null)
+			{
+				logger.debug(" ******** prop value is Individual : "+in.getURI());
+			}
+			
 			SemanticObject target = builder.createSemanticObject((Individual) s.getObject().as(Individual.class));
 			
 			if (target != null)
-				parent.addProperty(SemanticObjectImpl.createURI(s.getPredicate().getURI()), target);
+				parent.addProperty(SemanticObjectImpl.createURI(propUri), target);
 			else 
 				logger.info("Skipping add property, target object is null");
 			
 		} else { 
 			logger.debug("  prop value is NOT an object, add datatype prop");
-			String target = s.getObject().toString();
-//			parent.addAttributeField(s.getPredicate().getLocalName(), target);
-			parent.addProperty(SemanticObjectImpl.createURI(s.getPredicate().getURI()), target);
+			parent.addProperty(SemanticObjectImpl.createURI(propUri), s.getObject().toString());
 		}
 		
 	}
@@ -269,34 +285,6 @@ public class SemanticObjectBuilder
 		}
 		
 	}
-	
-	/** Default handler to create vanilla SemanticObjects.
-	 * 
-	 * @author thomas
-	 *
-	 */
-	class ThingHandler 
-	implements SemanticObjectHandler 
-	{
-		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
-		throws SemanticObjectBuilderException 
-		{
-			
-			logger.info("ThingHandler called for instance uri:"+in.getURI()+" rdf:type:"+rdfType);
-			SemanticObject so = new SemanticObjectImpl(SemanticObjectImpl.createURI(rdfType));
-			// add in properties
-			/*
-			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
-				Statement s  = i.nextStatement(); 
-				addProperty(builder, so, s);
-			}
-			*/
-			return so;
-			
-		}
-		
-	}
-	
 	
 	/**
 	 * @author thomas

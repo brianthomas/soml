@@ -1,5 +1,7 @@
 = Extend Reader/WRITER from XSSP for IO
   this includes writing the needed SAX element handlers for IO.
   
+  * Data/Object property parsing handlers for SOML missing.
+
 = pick over the support interfaces (SOMLDocument/SOMLElement) to be sure
 we dont include methods we dont need .

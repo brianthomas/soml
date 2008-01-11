@@ -14,10 +14,12 @@
     <owl:sameAs rdf:resource="http://test.org/testOps.owl#thing4"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://test.org/testOps.owl#quantity1">
-    <j.1:hasValue rdf:resource="http://test.org/testOps.owl#value1"/>
-    <j.1:name>Time Passed</j.1:name>
     <j.1:hasUnits rdf:resource="http://test.org/testOps.owl#unit1"/>
     <j.1:description>the amount of time passed</j.1:description>
+<!--
+    <j.1:hasValue rdf:resource="http://test.org/testOps.owl#value1"/>
+    <j.1:name>Time Passed</j.1:name>
+-->
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
     <rdf:type rdf:resource="http://test.org/testThings.owl#FloatQ"/>
     <owl:sameAs rdf:resource="http://test.org/testOps.owl#quantity1"/>

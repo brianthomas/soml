@@ -36,7 +36,7 @@ extends TestCase
 
 	protected static String[] testModelFile = { 
 		BASE_TEST_RESOURCE_DIR + "/testBuilder1.rdf",
-		BASE_TEST_RESOURCE_DIR + "/testBuilder2.rdf"
+//		BASE_TEST_RESOURCE_DIR + "/testBuilder2.rdf"
 	}; 
 	
 	// This rdf:type has a special handler we will check for
@@ -163,6 +163,7 @@ extends TestCase
 		
 	}
 	
+	/*
 	public void test2() {
 		
 		logger.info("Test Extended builder"); 
@@ -197,6 +198,7 @@ extends TestCase
 		}
 		
 	}
+	*/
 	
 	/** test handler. to see if the extension mech is working.
 	 * 
