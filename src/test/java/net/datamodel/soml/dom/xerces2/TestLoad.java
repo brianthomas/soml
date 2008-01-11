@@ -6,6 +6,7 @@ package net.datamodel.soml.dom.xerces2;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -26,6 +27,41 @@ public class TestLoad extends BaseParseCase
 	
 	private static final Logger logger = Logger.getLogger(TestLoad.class);
 	
+	private static final String schemaDirectory = "docs/schema";
+	private static final String samplesDirectory = "docs/samples";
+	
+	private static String [] samplefiles = null;
+	private static boolean didInit = false;
+	
+	@Override
+	protected void setUp() throws Exception {
+		// TODO Auto-generated method stub
+		super.setUp();
+		
+		if (!didInit) 
+		{
+			
+			logger.debug("find sample and schema files");
+			samplefiles = new File(samplesDirectory).list(new OnlyXML());
+			String [] sampleschemafiles = new File(samplesDirectory).list(new OnlySchema());
+			String [] baseschemafiles = new File(schemaDirectory).list(new OnlySchema());
+			
+			logger.debug("copy over sample and schema files to test directory");
+			try {
+				UtilityForTests.copyFiles(samplefiles, samplesDirectory, testDirectory); 
+				UtilityForTests.copyFiles(sampleschemafiles, samplesDirectory, testDirectory); 
+				UtilityForTests.copyFiles(baseschemafiles, schemaDirectory, testDirectory); 
+			} catch (Exception e) {
+				logger.error("Cant set up tests : "+ e.getMessage());
+				e.printStackTrace();
+			}
+			
+			didInit = true; 
+		}
+
+	}
+
+
 	// Attempt to simply load all of the test samples in the samples directory
 	public void testLoadSamples () throws Exception {
 		
@@ -156,5 +192,18 @@ public class TestLoad extends BaseParseCase
 
 	}
 	
+	class OnlyXML implements FilenameFilter {
+		public boolean accept (File dir, String s) {
+			if (s.endsWith(".xml")) { return true; }
+			return false;
+		}
+	}
+	
+	class OnlySchema implements FilenameFilter {
+		public boolean accept (File dir, String s) {
+			if (s.endsWith(".xsd")) { return true; }
+			return false;
+		}
+	}
 	
 }
