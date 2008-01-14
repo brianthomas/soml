@@ -109,7 +109,7 @@ handy representations of (instances of) semantic objects.</description>
     <dependency>
       <groupId>net.datamodel</groupId>
       <artifactId>xssp</artifactId>
-      <version>0.98.1</version>
+      <version>0.98.2</version>
     </dependency>
     
     <dependency>
