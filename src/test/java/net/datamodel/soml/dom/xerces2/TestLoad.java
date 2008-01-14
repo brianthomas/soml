@@ -18,6 +18,8 @@ import net.datamodel.xssp.dom.Specification;
 
 import org.apache.log4j.Logger;
 
+import com.hp.hpl.jena.vocabulary.RDF;
+
 /**
  * @author thomas
  *
@@ -63,7 +65,7 @@ public class TestLoad extends BaseParseCase
 
 
 	// Attempt to simply load all of the test samples in the samples directory
-	public void testLoadSamples () throws Exception {
+	public void test1() throws Exception {
 		
 		logger.info("testLoadSamples");
 		try {
@@ -71,6 +73,13 @@ public class TestLoad extends BaseParseCase
 			{
 				SOMLDocument doc = loadFile(testDirectory+"/"+samplefiles[i]);
 				assertNotNull("Document reference exists for file"+samplefiles[i], doc);
+				
+			    Specification.getInstance().setPrettyOutput(true);
+			    
+			    StringWriter sw = new StringWriter(); 
+			    doc.toXMLWriter(new BufferedWriter(sw));
+			    logger.info("STRING DOC:"+sw.toString());
+			    
 			}
 		} catch (Exception e) {
 			fail (e.getMessage());
@@ -80,12 +89,14 @@ public class TestLoad extends BaseParseCase
 		
 	}
 	
+	/*
 	// A test of being able to read, and write the sample.
 	// We don't compare the 2 file contents because there may have been
 	// some dropped XML comments from the initial parse (which is OK). 
-	public void testLoadAndWriteSamples () throws Exception {
+	public void test2() throws Exception {
 		
-		logger.info("testLoadAndWriteSamples");
+		logger.info("testLoadAndWriteSamples rdf");
+		
 		// set the output specification
 	    Specification.getInstance().setPrettyOutput(true);
 	    Specification.getInstance().setPrettyOutputIndentation("  ");
@@ -99,17 +110,25 @@ public class TestLoad extends BaseParseCase
 				assertNotNull("Document reference exists", doc);
 
 			    Writer myWriter = new BufferedWriter(new FileWriter(outputfile));
+			    StringWriter sw = new StringWriter(); 
+			    
+			    doc.toXMLWriter(new BufferedWriter(sw));
+			    logger.debug("STRING DOC:"+sw.toString());
+			    
 			    doc.toXMLWriter(myWriter);
+			    logger.debug(" DOCUMENT:"+doc.toXMLString());
 			    // myWriter.flush();
 			    myWriter.close();
 			     
 				assertTrue("can write file", outputfile.canWrite());
 				assertTrue("File has non-zero extent", outputfile.length() > 0);
-				assertTrue ("Output document is valid", UtilityForTests.validateFile (testDirectory+"/tmp.xml"));
+				
+				logger.warn("missing validation on testLoadandWriteSamples");
+				assertTrue ("Output document:"+samplefiles[i]+" is valid", UtilityForTests.validateFile (testDirectory+"/tmp.xml"));
 				
 				// clean up		
-				
 				outputfile.delete();
+				
 			}
 		} catch (Exception e) {
 			fail (e.getMessage());
@@ -117,10 +136,12 @@ public class TestLoad extends BaseParseCase
 			e.printStackTrace();
 		}
 	}
+	*/
 	
+	/*
 	// Test our ability to get consistent results from loading and reloading
 	// files. We compare between the products of the first and second loadings.
-	public void testMulitLoadAndWriteSamples () throws Exception {
+	public void test3() throws Exception {
 		
 		logger.info("testMultiLoadAndWriteSamples");
 		
@@ -179,6 +200,7 @@ public class TestLoad extends BaseParseCase
 		}
 		
 	}
+	*/
 	
 	private static SOMLDocument loadFile (String inputfile ) throws Exception {
 
@@ -186,7 +208,7 @@ public class TestLoad extends BaseParseCase
 
 		SOMLDocument doc = new SOMLDocumentImpl();
 		SOMLReader r = UtilityForTests.createReader(doc);
-
+		
 		r.parseFile(inputfile);
 		return doc;
 

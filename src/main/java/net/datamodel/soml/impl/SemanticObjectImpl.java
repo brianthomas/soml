@@ -243,9 +243,11 @@ implements SemanticObject {
 	public final List<Property> getProperties (URI URI) 
 	{
 		List<Property> found = new Vector<Property>();
-		for (Property rel : getProperties()) {
-			if (rel.getURI().equals(URI))
-				found.add(rel);
+		for (Property prop: getProperties()) {
+			logger.debug(" property:"+prop);
+			if (prop.getURI().equals(URI)) {
+				found.add(prop);
+			}
 		}
 		return found; 
 	}

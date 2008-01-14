@@ -104,6 +104,7 @@ public class TestAPI extends BaseCase
 		assertTrue("SO4 has the correct number of relationships",so4.getProperties().size() == 0);
 		
 		List<Property> relList = so.getProperties(rel_URI); 
+		assertNotNull("prop list is null",relList);
 		Property rel1 = relList.get(0);
 		assertEquals("Property URI is expected one", rel_URI, rel1.getURI());
 		assertTrue("Property is an object property", rel1 instanceof ObjectProperty); 

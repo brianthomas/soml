@@ -5,6 +5,7 @@ package net.datamodel.soml;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -148,7 +149,11 @@ public class UtilityForTests
 	public final static boolean validateFile (String filename)
 	throws Exception 
 	{
-		return validateSrc(new InputSource(filename), SaxParserName);
+		try {
+			return validateSrc(new InputSource(filename), SaxParserName);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage()+"\n contents:"+filename);
+		}
 	}
 
 	/** All purpose validator method, should work with any SAX level 2 

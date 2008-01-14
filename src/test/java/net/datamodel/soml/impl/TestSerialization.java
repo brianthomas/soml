@@ -50,20 +50,21 @@ extends BaseCase
 		
 		SemanticObject so = new SemanticObjectImpl (uri1);
 		SemanticObject so2 = new SemanticObjectImpl (uri2);
+		logger.debug(" REL_URI is:"+rel_URI);
 		so2.addProperty(rel_URI, so); 
 		
 		// test non-pretty output 
-		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\"/>");
-		checkXMLOutput(so2,"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id0\">"+
-				"<property URI=\"urn:test:rel1\">"+
-				"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>"+
-				"</property></semanticObject>");
+		checkXMLOutput(so,"<semanticObject URI=\"urn:testSemanticObject1\" soId=\"id0\"/>");
+		checkXMLOutput(so2,"<semanticObject URI=\"urn:testSemanticObject2\" soId=\"id0\">"+
+				"<test_rel1>"+
+				"<semanticObject URI=\"urn:testSemanticObject1\" soId=\"id1\"/>"+
+				"</test_rel1></semanticObject>");
 		checkDocumentRepresentation(so);
 		
 		// test pretty output 
 		spec.setPrettyOutput(true);
 		
-		checkXMLOutput(so,"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id1\"/>");
+		checkXMLOutput(so,"<semanticObject URI=\"urn:testSemanticObject1\" soId=\"id1\"/>");
 		checkDocumentRepresentation(so);
 		
 		logger.warn("missing pretty-print serialization test for so2");
@@ -93,7 +94,7 @@ extends BaseCase
 	}
 	*/
 	
-	// test Inter-referential propertys
+	// test Inter-referential properties
 	//
 	// TODO
 	public void test4() {
@@ -112,27 +113,26 @@ extends BaseCase
 		String indent = Specification.getInstance().getPrettyOutputIndentation();
 		String newLine = System.getProperty("line.separator");
 		String expectedOutput1 = 
-			"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\">"+newLine+ 
-			indent+"<property URI=\"urn:test:rel1\">"+newLine+ 
-			indent+indent+"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id1\">"+newLine+ 
-			indent+indent+indent+"<property URI=\"urn:test:rel2\">"+newLine+ 
+			"<semanticObject URI=\"urn:testSemanticObject1\" soId=\"id0\">"+newLine+ 
+			indent+"<test_rel1>"+newLine+ 
+			indent+indent+"<semanticObject URI=\"urn:testSemanticObject2\" soId=\"id1\">"+newLine+ 
+			indent+indent+indent+"<test_rel2>"+newLine+ 
 			indent+indent+indent+indent+"<semanticObjectRef soRefId=\"id0\"/>"+newLine+ 
-			indent+indent+indent+"</property>"+newLine+
+			indent+indent+indent+"</test_rel2>"+newLine+
 			indent+indent+"</semanticObject>"+newLine+
-			indent+"</property>"+newLine+
+			indent+"</test_rel1>"+newLine+
 			"</semanticObject>";
 		
 		String expectedOutput2 = 
-			"<semanticObject URI=\"urn:test:SemanticObject2\" soId=\"id1\">"+newLine+ 
-			indent+"<property URI=\"urn:test:rel2\">"+newLine+ 
-			indent+indent+"<semanticObject URI=\"urn:test:SemanticObject1\" soId=\"id0\">"+newLine+ 
-			indent+indent+indent+"<property URI=\"urn:test:rel1\">"+newLine+ 
+			"<semanticObject URI=\"urn:testSemanticObject2\" soId=\"id1\">"+newLine+ 
+			indent+"<test_rel2>"+newLine+ 
+			indent+indent+"<semanticObject URI=\"urn:testSemanticObject1\" soId=\"id0\">"+newLine+ 
+			indent+indent+indent+"<test_rel1>"+newLine+ 
 			indent+indent+indent+indent+"<semanticObjectRef soRefId=\"id1\"/>"+newLine+ 
-			indent+indent+indent+"</property>"+newLine+
+			indent+indent+indent+"</test_rel1>"+newLine+
 			indent+indent+"</semanticObject>"+newLine+
-			indent+"</property>"+newLine+
+			indent+"</test_rel2>"+newLine+
 			"</semanticObject>";
-		
 		
 		checkXMLOutput(so1,expectedOutput1);
 		checkXMLOutput(so2,expectedOutput2);

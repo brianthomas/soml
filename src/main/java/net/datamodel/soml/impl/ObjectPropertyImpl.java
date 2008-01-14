@@ -25,9 +25,10 @@ implements ObjectProperty
 	
 	private static final Logger logger = Logger.getLogger(ObjectPropertyImpl.class);
 	
-	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
+//	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
    	private static final String targetFieldName = "target";
     	
+   	private URI uri = null;
 	
    	/** A constructor for properties. Intentionally package
    	 * (non-public) access only. 
@@ -36,9 +37,14 @@ implements ObjectProperty
    	 * @param target the 'target SemanticObject'
    	 */
    	ObjectPropertyImpl (URI propertyURI, SemanticObject target) { 
-   		super("property");
+   		super(propertyURI.getFragment() != null ? propertyURI.getFragment() : propertyURI.getSchemeSpecificPart());
+ 		
+   		setNamespaceURI(propertyURI.getPath());
+   		
+   		uri = propertyURI;
+   		
    		this.setSerializeWhenEmpty(false);
-   		addField(uriFieldName, propertyURI, XMLFieldType.ATTRIBUTE);
+//   		addField(uriFieldName, propertyURI, XMLFieldType.ATTRIBUTE);
    		addField(targetFieldName, target, XMLFieldType.CHILD);
    		logger.debug("Create new Property:"+propertyURI.toASCIIString()+" to target: "+target);
    	}
@@ -55,6 +61,9 @@ implements ObjectProperty
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.Property#getURI()
 	 */
-	public final URI getURI() { return (URI) getFieldValue(uriFieldName); }
+	public final URI getURI() { 
+		return uri;
+//		return (URI) getFieldValue(uriFieldName); 
+	}
 	
 }

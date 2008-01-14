@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+   A test schema to show how to extend base SOML schema to
+   user-generated schema.
+
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        elementFormDefault="qualified"
+
+-->
+   
+<xsd:schema 
+        targetNamespace="http://test.org/ont/test" 
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+        xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject"
+        xmlns="http://test.org/ont/test" 
+>
+	<xsd:import namespace="http://archive.astro.umd.edu/ont/SemanticObject" 
+	              schemaLocation="SOML_57.xsd"/>
+	              
+	<xsd:complexType name="Property1Type">
+		<xsd:complexContent>
+			<xsd:extension base="so:ObjectPropertyType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+           
+	<xsd:element name="prop1" type="Property1Type" substitutionGroup="so:PropertyGroup"/>
+	<xsd:element name="obj" type="so:SemanticObjectType" substitutionGroup="so:SemanticObjectGroup"/>
+	<xsd:element name="testroot" type="so:SemanticObjectType" substitutionGroup="so:SemanticObjectGroup"/>
+
+</xsd:schema>

@@ -1,0 +1,13 @@
+<?xml version="1.0" standalone="no" ?>
+<!-- example of pure SemanticObject schema.. not much here.. it
+     needs to be extended in another schema by the user to be useful 
+     (see later examples; or you need to forget about trying validation) 
+  -->
+<semanticObject 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns="http://archive.astro.umd.edu/ont/SemanticObject" 
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xsi:schemaLocation="http://archive.astro.umd.edu/ont/SemanticObject SOML_57.xsd"
+>
+	<rdf:type>urn:testSemanticObject1</rdf:type>
+</semanticObject>

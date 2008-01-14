@@ -35,13 +35,13 @@ public class BaseCase extends TestCase {
 //		if (!didInit) {
 		// initialize URIs for tests
 //		try {
-			uri1 = new URI("urn:test:SemanticObject1");
-			uri2 = new URI("urn:test:SemanticObject2");
-			uri3 = new URI("urn:test:SemanticObject3");
-			uri4 = new URI("urn:test:SemanticObject4");
-			rel_URI = new URI("urn:test:rel1");
-			rel_URI2 = new URI("urn:test:rel2");
-			rel_URI3 = new URI("urn:test:rel3");
+			uri1 = new URI("urn:testSemanticObject1");
+			uri2 = new URI("urn:testSemanticObject2");
+			uri3 = new URI("urn:testSemanticObject3");
+			uri4 = new URI("urn:testSemanticObject4");
+			rel_URI = new URI("urn:test_rel1");
+			rel_URI2 = new URI("urn:test_rel2");
+			rel_URI3 = new URI("urn:test_rel3");
 //		} catch (Exception e) {
 //			fail ("Test Setup Error:"+e.getMessage());
 //			throw e;

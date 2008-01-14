@@ -23,21 +23,32 @@ implements DataTypeProperty
 	
 	private static final Logger logger = Logger.getLogger(DataTypePropertyImpl.class);
 	
-	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
+//	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
 	private static final String dtUriFieldName = "dtURI";
    	private static final String valueFieldName = "value";
+   	
+   	private URI uri = null;
 	
    	/** Create a new Datatype property. 
    	 * 
    	 * @param propertyURI
    	 */
-	public DataTypePropertyImpl (URI propertyURI, URI datatypeURI, String value) {
- 		super("dtproperty");
+	public DataTypePropertyImpl (
+			URI propertyURI, 
+			URI datatypeURI, 
+			String value) 
+	{
+ 		super(propertyURI.getFragment());
  		
+   		setNamespaceURI(propertyURI.getPath());
+   		
+   		uri = propertyURI;
+   		
   		this.setSerializeWhenEmpty(false);
-   		addField(uriFieldName, propertyURI, XMLFieldType.ATTRIBUTE);
+ // 		addField(uriFieldName, propertyURI, XMLFieldType.ATTRIBUTE);
    		addField(dtUriFieldName, datatypeURI, XMLFieldType.ATTRIBUTE);
-   		addField(valueFieldName, value, XMLFieldType.ATTRIBUTE);
+   		addField(valueFieldName, value, XMLFieldType.PCDATA);
+   		
    		
    		logger.debug("Create new DataTypeProperty:"+propertyURI.toASCIIString()+" w/ value: "+value);
 	}
@@ -69,7 +80,8 @@ implements DataTypeProperty
 	 * @see net.datamodel.soml.Property#getURI()
 	 */
 	public URI getURI() {
-		return (URI) getFieldValue(uriFieldName);
+		return uri;
+//		return (URI) getFieldValue(uriFieldName);
 	}
 
 }

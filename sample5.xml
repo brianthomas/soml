@@ -1,12 +1,11 @@
 <?xml version="1.0" standalone="no" ?>
 <so:semanticObject 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns:a="http://test.org/onto/Test" 
       xmlns:so="http://www.data-model.net/SemanticObject" 
       xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_56.xsd"
       URI="urn:test:SemanticObject1"
 >
-
   <!-- simple, datatype, property of the object -->
-  <so:dtproperty URI="urn:test:rel1" value="Some string here"/>
-  
+  <a:prop1>Some string here</a:prop1>
 </so:semanticObject>

@@ -2,9 +2,9 @@
 <!-- 
 
    SOML (Semantic Object Modeling Language) XML schema. 
-   Version 0.56 
+   Version 0.57 
 
-   Copyright (c) 2005-2007 Brian Thomas. All rights reserved.
+   Copyright (c) 2005-2008 Brian Thomas. All rights reserved.
 
    LICENSE
 
@@ -23,9 +23,10 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 -->
-<xsd:schema targetNamespace="http://www.data-model.net/SemanticObject" 
+<xsd:schema targetNamespace="http://archive.astro.umd.edu/ont/SemanticObject" 
         xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-        xmlns="http://www.data-model.net/SemanticObject" 
+        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns="http://archive.astro.umd.edu/ont/SemanticObject" 
         elementFormDefault="qualified"
 >
 
@@ -34,38 +35,48 @@
         SOML.xsd -- Semantic Object Modeling Language schema.
     </xsd:documentation>
   </xsd:annotation>
-
+  
   <!-- abstract SO type -->
   <xsd:complexType name="AbstractSOType"/>
 
-  <!-- one-way properties between the source and target SO's -->
-  <xsd:complexType name="propertyType">
-         <xsd:sequence>
-             <xsd:element ref="SemanticObjectGroup" minOccurs="1" maxOccurs="1"/>
-         </xsd:sequence>
-         <xsd:attribute name="URI" type="xsd:anyURI"/>
+  <xsd:complexType name="PropertyType"/>
+
+  <xsd:complexType name="ObjectPropertyType">
+	<xsd:annotation>
+		<xsd:documentation>Object property (objects which have child nodes)</xsd:documentation>
+	</xsd:annotation>
+	<xsd:complexContent>
+   	  	<xsd:extension base="PropertyType">	
+			<xsd:sequence>
+				<xsd:element ref="SemanticObjectGroup" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
+   	  	</xsd:extension>
+	</xsd:complexContent>
   </xsd:complexType>
   
-  <!-- to hold DataTypeProperties -->
-  <xsd:complexType name="simplePropertyType">
-     <xsd:attribute name="URI" type="xsd:anyURI"/>
-     <xsd:attribute name="datatypeURI" type="xsd:anyURI"/>
-     <xsd:attribute name="value" type="xsd:string"/>
+  <xsd:complexType name="DataPropertyType">
+	<xsd:annotation>
+		<xsd:documentation>Object property (objects which have child nodes)</xsd:documentation>
+	</xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="PropertyType"/>	
+	</xsd:complexContent>
   </xsd:complexType>
-
+  
+  <xsd:complexType name="rdfPropertyType" mixed="true"/>
+  
   <!-- Main Class : SemanticObject -->
-   <xsd:complexType name="SemanticObjectType">
-        <xsd:complexContent>
-   	  <xsd:extension base="AbstractSOType">	
-              <xsd:choice minOccurs="0" maxOccurs="unbounded">
-                  <xsd:element name="property" type="propertyType"/>
-                  <xsd:element name="dtproperty" type="simplePropertyType"/>
-              </xsd:choice>
-              <xsd:attribute name="soId" type="xsd:ID" use="optional"/>
-              <xsd:attribute name="URI" type="xsd:anyURI"/>
-              <xsd:anyAttribute namespace="##any"/> <!-- allow other namespaces to add attribs to SO's -->
-   	  </xsd:extension>
-        </xsd:complexContent>
+  <xsd:complexType name="SemanticObjectType">
+	<xsd:complexContent>
+		<xsd:extension base="AbstractSOType">	
+			<xsd:choice>
+				<xsd:element ref="PropertyGroup" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="rdftype" type="rdfPropertyType" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:choice>
+			<xsd:attribute name="soId" type="xsd:ID" use="optional"/>
+			<xsd:anyAttribute namespace="##any"/> <!-- allow other namespaces to add attribs to SO's -->
+		</xsd:extension>
+	</xsd:complexContent>
    </xsd:complexType>
 
    <!-- this type of quantity just references other types, allows some 
@@ -80,6 +91,7 @@
 
   <!-- group declarations -->
   <xsd:element name="SemanticObjectGroup" type="AbstractSOType" abstract="true"/>
+  <xsd:element name="PropertyGroup" type="PropertyType" abstract="true"/>
 
   <!-- elements -->
   <xsd:element name="semanticObject" type="SemanticObjectType" substitutionGroup="SemanticObjectGroup"/>

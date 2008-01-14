@@ -1,19 +1,20 @@
 <?xml version="1.0" standalone="no" ?>
 <so:semanticObject 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns:a="http://test.org/onto/test" 
       xmlns:so="http://www.data-model.net/SemanticObject" 
       xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_56.xsd"
       URI="urn:test:SemanticObject1"
 >
 
   <!-- in the property1 with an object -->
-  <so:property URI="urn:test:rel1">
-      <so:semanticObject soId="obj1" URI="urn:test:SemanticObject2"/>
-  </so:property>
+  <a:prop1>
+      <so:semanticObject soId="obj1" URI="urn:testSemanticObject2"/>
+  </a:prop1>
   
   <!-- in different property with a same object, using reference -->
-  <so:property URI="urn:test:rel2">
+  <a:prop2>
       <so:semanticObjectRef soIdRef="obj1"/>
-  </so:property>
+  </a:prop2>
   
 </so:semanticObject>
