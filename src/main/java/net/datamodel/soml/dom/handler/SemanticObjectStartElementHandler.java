@@ -1,10 +1,13 @@
 package net.datamodel.soml.dom.handler;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
+import net.datamodel.soml.Constant;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLDocumentHandler;
 import net.datamodel.soml.dom.SOMLElement;
+import net.datamodel.soml.dom.SOMLDocumentHandler.ObjectPropInfo;
 import net.datamodel.soml.impl.SemanticObjectImpl;
 import net.datamodel.xssp.dom.StartElementHandler;
 import net.datamodel.xssp.dom.XSSPDocumentHandler;
@@ -31,13 +34,29 @@ implements StartElementHandler
 		// let it bomb if the cast doesnt go right
 		SOMLDocumentHandler shandler = (SOMLDocumentHandler) handler;
 		
-		SemanticObjectImpl so = new SemanticObjectImpl();
+		SemanticObjectImpl so = null;
+		StringBuffer soUriStr = new StringBuffer(namespaceURI);
+		soUriStr.append("#");
+		soUriStr.append(localName);
+		if (!Constant.SemanticObjectURI.equals(soUriStr.toString())) {
+			try {
+				URI soUri = new URI(soUriStr.toString());
+				so = new SemanticObjectImpl(soUri);
+			} catch (URISyntaxException e) {
+				logger.warn("Cant set URI:"+soUriStr.toString()
+					+" for SemanticObject, using none. Errors may result.");
+			}
+		}
+		
+		// failsafe
+		if (so == null)
+			so = new SemanticObjectImpl();
 		so.setAttributeFields(attrs); // set XML attributes from passed list
 		
 		// check if we are target of a property
-		URI uri = shandler.getCurrentObjectProperty();
-		if (uri != null) {
-			shandler.getCurrentSemanticObject().addProperty(uri, so); 
+		ObjectPropInfo oinfo = shandler.getCurrentObjectProperty();
+		if (oinfo != null) {
+			shandler.getCurrentSemanticObject().addProperty(oinfo.getURI(), so); 
 		}
 		
 		// Add as a SOMLElement to our document, if no doc root exists,

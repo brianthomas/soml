@@ -39,7 +39,11 @@ implements ObjectProperty
    	ObjectPropertyImpl (URI propertyURI, SemanticObject target) { 
    		super(propertyURI.getFragment() != null ? propertyURI.getFragment() : propertyURI.getSchemeSpecificPart());
  		
-   		setNamespaceURI(propertyURI.getPath());
+   		String namespaceURI = propertyURI.toASCIIString().replace(getXMLTagName(), ""); 
+   		
+   		logger.debug("Objectproperty sets namespaceURI to:"+namespaceURI);
+   		logger.debug(" XMLTagname:"+getXMLTagName());
+   		setNamespaceURI(namespaceURI);
    		
    		uri = propertyURI;
    		

@@ -23,7 +23,7 @@ public class ObjectPropertyStartElementHandler implements StartElementHandler {
 		SOMLDocumentHandler shandler = (SOMLDocumentHandler) handler;
 		
 		try {
-			shandler.recordObjectProperty(new URI(name));
+			shandler.recordObjectProperty(namespaceURI, localName);
 		} catch (URISyntaxException e) {
 			throw new SAXException (e.getMessage());
 		}

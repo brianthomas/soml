@@ -32,20 +32,31 @@
 
 package net.datamodel.soml.impl;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.ObjectProperty;
 import net.datamodel.soml.Property;
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.xssp.ReferenceableXMLSerializableObject;
 import net.datamodel.xssp.XMLFieldType;
+import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.impl.AbstractReferenceableXMLSerializableObject;
+import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
 import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
 
 import org.apache.log4j.Logger;
+
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /** A SemanticObject identifies its origin (and semantic nature) by its 
  * URI (Unique Resource Id).
@@ -75,22 +86,22 @@ implements SemanticObject {
 	/** Construct with a given URI.
 	 * 
 	 */
-	public SemanticObjectImpl (URI uri) { 
+	public SemanticObjectImpl (URI rdfTypeUri) { 
 
 		// configure the referencing fields/info 
 		idRefFieldName = "soRefId"; 
 		idFieldName = "soId"; 
 		xmlReferenceNodeName = "semanticObjectRef";
 
-		setXMLNodeName("semanticObject");
+		setXMLNodeName(Constant.SemanticObjectNodeName);
 
 		// now initialize XML fields
 		// order matters! these are in *reverse* order of their
 		// occurence in the schema/DTD
-		addField(uriFieldName, "URI:unknown", XMLFieldType.ATTRIBUTE);
 		addField(propertyFieldName, new propertyList(), XMLFieldType.CHILD);
+		addField(uriFieldName, new Vector<RDFTypeURI>(), XMLFieldType.CHILD);
 
-		setURI(uri);
+		addRDFTypeURI(rdfTypeUri);
 	}
 
 	/** A no-hassle utility for creating URIs from string representations. 
@@ -131,7 +142,7 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#addProperty(java.net.URI, java.lang.String)
 	 */
-	public boolean addProperty(URI propertyURI, String value) {
+	public final boolean addProperty(URI propertyURI, String value) {
 		// add an xsd:string value
 		return getProperties().add(new DataTypePropertyImpl(propertyURI, value));
 	}
@@ -140,7 +151,7 @@ implements SemanticObject {
 	 * (non-Javadoc)
 	 * @see net.datamodel.soml.SemanticObject#addProperty(java.net.URI, java.net.URI, java.lang.String)
 	 */
-	public boolean addProperty(URI propertyURI, URI dtURI, String value) {
+	public final boolean addProperty(URI propertyURI, URI dtURI, String value) {
 		return getProperties().add(new DataTypePropertyImpl(propertyURI, dtURI, value));
 	}
 	
@@ -156,7 +167,7 @@ implements SemanticObject {
 		for (Property prop : getProperties(propertyURI)) {
 			if (prop instanceof ObjectProperty) {
 				SemanticObject target = ((ObjectProperty) prop).getTarget();
-				if (target.getRDFTypeURI().equals(targetURI)) {
+				if (target.getRDFTypeURIs().equals(targetURI)) {
 					return true;
 				}
 			}
@@ -206,15 +217,11 @@ implements SemanticObject {
 	 *  (non-Javadoc)
 	 * @see net.datamodel.qml.SemanticObject#getURI()
 	 */
-	public final URI getRDFTypeURI() {
-		String value = (String) getFieldValue(uriFieldName);
-
-		try {
-			return new URI (value);
-		} catch (Exception e) {
-			logger.error("Invalid URI for object returned.:"+e.getMessage());
-			return (URI) null; // shouldnt happen as we only let valid URIs in..
-		}
+	public final List<URI> getRDFTypeURIs() {
+		List<URI> uris = new Vector<URI>();
+		for (RDFTypeURI type : this.getRDFTypes()) 
+			uris.add(type.toURI());
+		return uris;
 	}
 
 
@@ -263,19 +270,30 @@ implements SemanticObject {
 	// Operations
 	//
 
-	/** Set the URI, representing the semantic meaning, of this object.
+	/** Add a URI, representing the semantic meaning (RDF type), 
+	 * of this object.
 	 * 
 	 * @param value of the URI to set
 	 */
-	protected final void setURI (URI value) {
+	public final boolean addRDFTypeURI (URI value) {
 		if (value == null)
-			throw new NullPointerException("cant set URI to null value");
-		// Take the URI and convert it to a string for storage 
-		// in object/serialization. If the URI is null, then 
-		// toASCIIString will throw nullpointer exception for us.
-		setFieldValue(uriFieldName, value.toASCIIString());
+			throw new NullPointerException("cant add null URI rdf type");
+		return getRDFTypes().add(new RDFTypeURI(value));
+	}
+	
+	protected List<RDFTypeURI> getRDFTypes () {
+		return (List<RDFTypeURI>) getFieldValue(uriFieldName);
 	}
 
+	/** Remove an rdf type from the object.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	protected boolean removeRDFTypeURI (RDFTypeURI value) {
+		return getRDFTypes().remove(value);
+	}
+	
 	/** Quick internal class to hold all propertys between our object 
 	 * and other SO's. 
 	 */
@@ -295,6 +313,24 @@ implements SemanticObject {
 		}
 
 	}
+	
+	class RDFTypeURI 
+	extends AbstractXMLSerializableObject
+	{
 
+		private URI myURI = null;
+		
+		public RDFTypeURI(URI uri)  {
+			myURI = uri;
+			setNamespaceURI(RDF.getURI());
+			setXMLNodeName("type");
+			addAttributeField("resource", myURI.toASCIIString());
+			this.setSerializeWhenEmpty(false);
+		}
+		
+		public final URI toURI() { return myURI; }
+		
+	}
+	
 }
 

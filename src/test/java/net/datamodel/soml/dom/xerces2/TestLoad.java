@@ -73,15 +73,16 @@ public class TestLoad extends BaseParseCase
 			{
 				SOMLDocument doc = loadFile(testDirectory+"/"+samplefiles[i]);
 				assertNotNull("Document reference exists for file"+samplefiles[i], doc);
-				
 			    Specification.getInstance().setPrettyOutput(true);
 			    
 			    StringWriter sw = new StringWriter(); 
-			    doc.toXMLWriter(new BufferedWriter(sw));
+			    doc.toXMLWriter(sw);
 			    logger.info("STRING DOC:"+sw.toString());
+			    sw.close();
 			    
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail (e.getMessage());
 			logger.error(e.getMessage());
 			e.printStackTrace();

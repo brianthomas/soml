@@ -28,6 +28,7 @@
 package net.datamodel.soml.dom;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import net.datamodel.soml.dom.handler.NullCharDataHandler;
 import net.datamodel.soml.dom.handler.NullEndElementHandler;
 import net.datamodel.soml.dom.handler.NullStartElementHandler;
 import net.datamodel.soml.dom.handler.ObjectPropertyStartElementHandler;
+import net.datamodel.soml.dom.handler.RDFTypeStartElementHandler;
 import net.datamodel.soml.dom.handler.SemanticObjectEndElementHandler;
 import net.datamodel.soml.dom.handler.SemanticObjectStartElementHandler;
 import net.datamodel.xssp.dom.CharDataHandler;
@@ -63,7 +65,7 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 	
 	/** */
 	private List<SemanticObject> CurrentSemanticObjectList = new Vector<SemanticObject>(); 
-	private List<URI> CurrentObjectProperty = new Vector<URI>(); 
+	private List<ObjectPropInfo> CurrentObjectProperty = new Vector<ObjectPropInfo>(); 
 	
 	public SOMLDocumentHandler (SOMLDocument doc) { 
 		this (doc, (Map<String,String>) null);
@@ -73,9 +75,6 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		super(doc, options); 
 	
 		// init start handlers
-		
-		logger.error(" SO start elm handler exists:"+(findStartHandler("SemanticObjectType", Constant.SOML_NAMESPACE_URI)!=null)); 
-		
 		Map<String,StartElementHandler> startHandlers = new Hashtable<String,StartElementHandler>();
 		startHandlers.put("SemanticObjectType", new SemanticObjectStartElementHandler()); 
 		startHandlers.put("ObjectPropertyType", new ObjectPropertyStartElementHandler()); 
@@ -87,30 +86,23 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		Map<String,EndElementHandler> endHandlers = new Hashtable<String,EndElementHandler>();
 		endHandlers.put("SemanticObjectType", new SemanticObjectEndElementHandler()); 
 		endHandlers.put("ObjectPropertyType", new NullEndElementHandler()); 
-		endHandlers.put("rdfPropertyType", new NullEndElementHandler()); 
 		addEndElementHandlers(endHandlers, Constant.SOML_NAMESPACE_URI); 
 		
 		Map<String,CharDataHandler> cDataHandlers = new Hashtable<String,CharDataHandler>();
 		cDataHandlers.put("SemanticObjectType", new NullCharDataHandler());
 		cDataHandlers.put("ObjectPropertyType", new NullCharDataHandler());
-		cDataHandlers.put("rdfPropertyType", new NullCharDataHandler());
 		addCharDataHandlers(cDataHandlers, Constant.SOML_NAMESPACE_URI);
 		
-		/*
 		Map<String,StartElementHandler> rdfstartHandlers = new Hashtable<String,StartElementHandler>();
-		rdfstartHandlers.put("rdfPropertyType", new NullStartElementHandler()); 
+		rdfstartHandlers.put("type", new RDFTypeStartElementHandler()); 
 		addStartElementHandlers(rdfstartHandlers, RDF.getURI()); 
-		*/
 		
-		logger.info(" SO element Hinfo exists:"+(findHandlerInfoFromElementName(Constant.SOML_NAMESPACE_URI, "semanticObject")!=null));
+		Map<String,EndElementHandler> rdfEndHandlers = new Hashtable<String,EndElementHandler>();
+		rdfEndHandlers.put("type", new NullEndElementHandler()); 
+		addEndElementHandlers(rdfEndHandlers, RDF.getURI()); 
+		
 		addElementToComplexTypeAssociation("semanticObject", Constant.SOML_NAMESPACE_URI, "SemanticObjectType", Constant.SOML_NAMESPACE_URI);
-		logger.info(" SO element Hinfo exists:"+(findHandlerInfoFromElementName(Constant.SOML_NAMESPACE_URI, "semanticObject")!=null));
-		logger.info(" SO start elm handler exists:"+(findStartHandler("SemanticObjectType", Constant.SOML_NAMESPACE_URI)!=null)); 
-		addElementToComplexTypeAssociation("rdftype", Constant.SOML_NAMESPACE_URI, "rdfPropertyType", Constant.SOML_NAMESPACE_URI);
-		
-		for (String uri : ElementTypeAssoc.keySet()) {
-			logger.error(" ELEMENTTYPEASSOC contains uri:"+uri);
-		}
+		addElementToComplexTypeAssociation("type", RDF.getURI(), "type", RDF.getURI());
 		
 	}
 	
@@ -144,7 +136,7 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 	 * 
 	 * @return
 	 */
-	public final URI getCurrentObjectProperty() {
+	public final ObjectPropInfo getCurrentObjectProperty() {
 		if (CurrentObjectProperty.size() > 0)
 			return CurrentObjectProperty.get(this.CurrentObjectProperty.size()-1);
 		return null;
@@ -152,8 +144,10 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 	
 	/**
 	 */
-	public final void recordObjectProperty(URI uri) {
-		CurrentObjectProperty.add(uri);
+	public final void recordObjectProperty(String namespaceURI, String ln) 
+	throws URISyntaxException 
+	{
+		CurrentObjectProperty.add(new ObjectPropInfo(namespaceURI, ln));
 	}
 	
 	/**
@@ -164,5 +158,17 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		CurrentObjectProperty.remove(CurrentObjectProperty.size()-1);
 	}
 
+	public class ObjectPropInfo {
+		private String namespaceURI;
+		private String localName; 
+		private URI uri = null;
+		public ObjectPropInfo(String n, String l) 
+		throws URISyntaxException {
+			namespaceURI = n; localName = l;
+			uri = new URI(n+l);
+		}
+		public final URI getURI() { return uri; }
+		public final String getNamespaceURI() { return namespaceURI; }
+	}
 } // End of SOMLDocumentHandler class 
 

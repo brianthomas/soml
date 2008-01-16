@@ -1,27 +1,24 @@
 <?xml version="1.0" standalone="no" ?>
 <a:testroot
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-      xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject" 
+      xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#" 
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-      xmlns:a="http://test.org/ont/test" 
+      xmlns:a="http://test.org/ont/test#" 
       xsi:schemaLocation="http://test.org/ont/test test.xsd"
 >
   <!-- in the relationship1 with an object -->
-  <!--
   <a:prop1>
       <a:obj>
-		  <so:rdftype>urn:testSemanticObject2</so:rdftype>
+		  <rdf:type resource="urn:testSemanticObject2"/>
       </a:obj>
   </a:prop1>
-  -->
   
   <!-- in the same relationship with a different object -->
   <a:prop1>
       <so:semanticObject>
-		  <so:rdftype>urn:testSemanticObject3</so:rdftype>
+		  <rdf:type resource="urn:testSemanticObject3"/>
       </so:semanticObject>
   </a:prop1>
   
-  <so:rdftype>urn:testSemanticObject1</so:rdftype>
-  
+  <rdf:type resource="urn:testSemanticObject1"/>
 </a:testroot>

@@ -148,7 +148,14 @@ extends ReferenceableXMLSerializableObject
      *  
      * @return URI representing the rdf:type of the SemanticObject 
      */
-	public URI getRDFTypeURI();
+	public List<URI> getRDFTypeURIs();
+	
+	/** Add an rdf:type uri to this SemanticObject.
+	 * 
+	 * @param type
+     * @return boolean value of whether the rdf:type was added or not
+	 */
+	public boolean addRDFTypeURI(URI type);
 	
 }
 

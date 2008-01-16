@@ -9,8 +9,12 @@ public class Constant {
 	/** The namespace URI of this package.
 	 */ 
 	public static final String SOML_NAMESPACE_URI = 
-	        "http://archive.astro.umd.edu/ont/SemanticObject";
+	        "http://archive.astro.umd.edu/ont/SemanticObject#";
 
+	public static final String SemanticObjectNodeName = "semanticObject";
+	
+	public static final String SemanticObjectURI = SOML_NAMESPACE_URI+SemanticObjectNodeName;
+	
 	/** The name of the relevant version of the schema file for this package.
 	 */ 
 	public static final String SOML_SCHEMA_NAME = "SOML_57.xsd";

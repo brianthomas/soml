@@ -72,7 +72,7 @@ public class TestAPI extends BaseCase
 		SemanticObject so4 = new SemanticObjectImpl(uri4);
 		
 		// check URI retrieval
-		assertTrue("SO retURIs the correct URI", so.getRDFTypeURI().equals(uri1));
+		assertTrue("SO retURIs the correct URI", so.getRDFTypeURIs().contains(uri1));
 		
 		// bi-directional between obj1 and obj2
 		assertTrue("can addRelationship obj1 to obj2", so.addProperty(rel_URI,so2));
@@ -149,9 +149,10 @@ public class TestAPI extends BaseCase
 		
 		so.removeAllProperties(rel_URI);
 		// no objects left now
-		for (Property r : so.getProperties()) {
-			logger.debug(" **** SO Property uri:"+r.getURI().toASCIIString()+" target:"+((ObjectProperty)r).getTarget().getRDFTypeURI().toASCIIString());
+/* 		for (Property r : so.getProperties()) {
+			logger.debug(" **** SO Property uri:"+r.getURI().toASCIIString()+" target:"+((ObjectProperty)r).getTarget().getRDFTypeURIs().toASCIIString());
 		}
+*/
 		assertEquals("Correct number of remaining relationships", 1, so.getProperties().size());
 		
 		so.removeAllProperties();

@@ -12,7 +12,10 @@ import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
 
 import org.apache.log4j.Logger;
 
-/** A restricted collection of objects. All objects must have the same rdfTypeURI. 
+/** A (simple) restricted collection of objects. All objects must 
+ * have the same rdfTypeURI as the collection (inference is <b>not</b> 
+ * checked to see if the class and the collection might have a subclass 
+ * in common). 
  * 
  * @author thomas
  *
@@ -87,11 +90,12 @@ implements UnmixedSemanticObjectList<T>
 	}
 	
 	// make sure object has the same rdfTypeURI as the collection
+	// TODO?: To be really kosher, we should do some inference to check if subclass of..
 	private boolean can_add (T o) {
-		logger.debug("Try to add object w/ class:"+o.getClass()+" rdfTypeURI:"+o.getRDFTypeURI());
-		if (rdfTypeURI.equals(o.getRDFTypeURI()))
+		logger.debug("Try to add object w/ class:"+o.getClass()+" rdfTypeURI:"+o.getRDFTypeURIs());
+		if (o.getRDFTypeURIs().contains(rdfTypeURI))
 			return true;
-		logger.warn("Ignoring add of object:"+o+" has the wrong rdfTypeURI("+o.getRDFTypeURI().toASCIIString()
+		logger.warn("Ignoring add of object:"+o+" has the wrong rdfTypeURI(not one of:"+o.getRDFTypeURIs()
 				+") for UnmixedCollection rdfTypeURI:("+rdfTypeURI.toASCIIString()+")");
 		return false;
 	}
