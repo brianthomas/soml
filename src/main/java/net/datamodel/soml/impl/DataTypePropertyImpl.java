@@ -7,6 +7,7 @@ import java.net.URI;
 
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.DataTypeProperty;
+import net.datamodel.soml.Utility;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
 
@@ -40,7 +41,7 @@ implements DataTypeProperty
 	{
  		super(propertyURI.getFragment());
  		
-   		setNamespaceURI(propertyURI.getPath());
+   		setNamespaceURI(Utility.getNamespaceURI(propertyURI));
    		
    		uri = propertyURI;
    		

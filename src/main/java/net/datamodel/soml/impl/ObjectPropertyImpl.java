@@ -3,9 +3,9 @@ package net.datamodel.soml.impl;
 
 import java.net.URI;
 
-import net.datamodel.soml.Constant;
 import net.datamodel.soml.ObjectProperty;
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.soml.Utility;
 import net.datamodel.xssp.XMLFieldType;
 import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
 
@@ -37,13 +37,16 @@ implements ObjectProperty
    	 * @param target the 'target SemanticObject'
    	 */
    	ObjectPropertyImpl (URI propertyURI, SemanticObject target) { 
-   		super(propertyURI.getFragment() != null ? propertyURI.getFragment() : propertyURI.getSchemeSpecificPart());
+   		super ("objectProperty"); 
  		
-   		String namespaceURI = propertyURI.toASCIIString().replace(getXMLTagName(), ""); 
+   		String namespaceURI = Utility.getNamespaceURI(propertyURI);
+   		setNamespaceURI(namespaceURI);
+   		
+   		String xmlNodeName = propertyURI.toASCIIString().replaceFirst(namespaceURI, "");
+   		setXMLNodeName(xmlNodeName);
    		
    		logger.debug("Objectproperty sets namespaceURI to:"+namespaceURI);
-   		logger.debug(" XMLTagname:"+getXMLTagName());
-   		setNamespaceURI(namespaceURI);
+   		logger.debug(" XMLTagname:"+xmlNodeName);
    		
    		uri = propertyURI;
    		
