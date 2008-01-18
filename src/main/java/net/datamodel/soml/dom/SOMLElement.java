@@ -36,7 +36,8 @@ import net.datamodel.xssp.dom.XSSPElement;
  * SOMLElement is a DOM element interface for elements which hold Quantities within.
  */
 
-public interface SOMLElement extends XSSPElement
+public interface SOMLElement 
+extends XSSPElement
 {
 	
 	/** Return the target SO of which this element represents.
