@@ -105,8 +105,10 @@ implements SemanticObject {
 		idFieldName = "soId"; 
 		xmlReferenceNodeName = Constant.SemanticObjectRefIDNodeName;
 
-		logger.debug("Create new SemanticObjectImpl node:"+xmlNodeName+" ns_uri:"+rdfTypeUri.toASCIIString());
+		String nsUri = getNamespaceURI(rdfTypeUri);
+		logger.debug("Create new SemanticObjectImpl node:"+xmlNodeName+" ns_uri:"+nsUri);
 		setXMLNodeName(xmlNodeName);
+		setNamespaceURI(nsUri);
 
 		// now initialize XML fields
 		// order matters! these are in *reverse* order of their
@@ -115,6 +117,22 @@ implements SemanticObject {
 		addField(rdfTypesFieldName, new Vector<RDFTypeURI>(), XMLFieldType.CHILD);
 
 		addRDFTypeURI(rdfTypeUri);
+	}
+	
+	/** Find the namespace Uri portion of a URI.
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	public static final String getNamespaceURI (URI uri) {
+		StringBuffer nsUri = new StringBuffer();
+		nsUri.append(uri.getScheme());
+		nsUri.append(":");
+		nsUri.append(uri.getSchemeSpecificPart());
+		if (!uri.getFragment().equals(""))
+			nsUri.append("#");
+		
+		return nsUri.toString();
 	}
 	
 	/** A no-hassle utility for creating URIs from string representations. 

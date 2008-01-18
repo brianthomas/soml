@@ -34,29 +34,15 @@ implements StartElementHandler
 		// let it bomb if the cast doesnt go right
 		SOMLDocumentHandler shandler = (SOMLDocumentHandler) handler;
 		
-		SemanticObjectImpl so = null;
-		
 		// build the URI string
 		StringBuffer soUriStr = new StringBuffer(namespaceURI);
 		soUriStr.append(localName);
 		
-		if (!Constant.SemanticObjectURI.equals(soUriStr.toString())) {
-			try {
-				URI soUri = new URI(soUriStr.toString());
-				so = new SemanticObjectImpl(soUri,localName);
-			} catch (URISyntaxException e) {
-				logger.warn("Cant set URI:"+soUriStr.toString()
-					+" for SemanticObject, using none. Errors may result.");
-			}
-		}
+		SemanticObjectImpl so = 
+			new SemanticObjectImpl(SemanticObjectImpl.createURI(soUriStr.toString()), localName);
 		
-		// failsafe
-		if (so == null)
-			so = new SemanticObjectImpl(SemanticObjectImpl.createURI(Constant.OWLThingURI), localName);
-		so.setAttributeFields(attrs); // set XML attributes from passed list
-		
-		// hmm. missing
-		// so.setNamespaceURI(namespaceURI);
+		// set XML attributes from passed list
+		so.setAttributeFields(attrs); 
 		
 		// check if we are target of a property
 		// and if so, add this in
