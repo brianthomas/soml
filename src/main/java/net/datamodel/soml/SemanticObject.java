@@ -157,5 +157,14 @@ extends ReferenceableXMLSerializableObject
 	 */
 	public boolean addRDFTypeURI(URI type);
 	
+	/** Determine if the SemanticObject has the indicated rdf:type.
+	 * <i>Will not necessarily do inference to determine, and only exact
+	 * matching of the URI is maintained</i>.
+	 *  
+	 * @param type
+	 * @return
+	 */
+	public boolean hasRDFType(URI type);
+	
 }
 

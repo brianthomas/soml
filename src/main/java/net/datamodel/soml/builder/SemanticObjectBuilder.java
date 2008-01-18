@@ -211,7 +211,11 @@ public class SemanticObjectBuilder
 		if (propUri.equals(RDFTypeURI)) {
 			if (s.getObject().isResource()) {
 				Resource r = (Resource) s.getObject().as(Resource.class);
-				parent.addProperty(SemanticObjectImpl.createURI(RDFTypeURI), r.getURI());
+				if (!r.getURI().equals(OWLThingURI)) {
+					// add type only if NOT owl:Thing, which is a duplicate
+					parent.addRDFTypeURI(SemanticObjectImpl.createURI(r.getURI()));
+				}
+//				parent.addProperty(SemanticObjectImpl.createURI(RDFTypeURI), r.getURI());
 //				parent.addAttributeField("rdf:type", r.getURI());
 			} else {
 				logger.warn(" Can't do anything with non-resource rdf:type in serialization? dropping information on floor..");

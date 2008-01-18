@@ -278,11 +278,28 @@ implements SemanticObject {
 	public final boolean addRDFTypeURI (URI value) {
 		if (value == null)
 			throw new NullPointerException("cant add null URI rdf type");
+		if (this.hasRDFType(value)) {
+			logger.warn("Cant addRDFTypeURI  uri:"+value.toASCIIString()+" is already contained in object");
+			// already have that value, avoid duplicates
+			return false;
+		}
 		return getRDFTypes().add(new RDFTypeURI(value));
 	}
 	
 	protected List<RDFTypeURI> getRDFTypes () {
 		return (List<RDFTypeURI>) getFieldValue(uriFieldName);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see net.datamodel.soml.SemanticObject#hasRDFType(java.net.URI)
+	 */
+	public boolean hasRDFType (URI type) {
+		for(RDFTypeURI rdftype : getRDFTypes()) {
+			if (rdftype.toURI().equals(type))
+				return true;
+		}
+		return false;
 	}
 
 	/** Remove an rdf type from the object.
@@ -325,12 +342,13 @@ implements SemanticObject {
 			setNamespaceURI(RDF.getURI());
 			setXMLNodeName("type");
 			addAttributeField("resource", myURI.toASCIIString());
-			this.setSerializeWhenEmpty(false);
+			setSerializeWhenEmpty(false);
 		}
 		
 		public final URI toURI() { return myURI; }
 		
 	}
+
 	
 }
 
