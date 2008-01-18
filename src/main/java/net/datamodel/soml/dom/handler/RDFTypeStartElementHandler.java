@@ -37,7 +37,8 @@ public class RDFTypeStartElementHandler implements StartElementHandler {
 		String strType = attrs.getValue("resource");
 		try {
 			URI type = new URI(strType);
-		shandler.getCurrentSemanticObject().addRDFTypeURI(type);
+			logger.debug(" current SO:"+shandler.getCurrentSemanticObject());
+			shandler.getCurrentSemanticObject().addRDFTypeURI(type);
 		} catch (URISyntaxException e) {
 			logger.error(" Cant set rdf:type for SO. URI:"+strType+" is bad??");
 		}

@@ -9,12 +9,12 @@
 -->
    
 <xsd:schema 
-        targetNamespace="http://test.org/ont/test" 
+        targetNamespace="http://test.org/ont/test#" 
         xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-        xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject"
-        xmlns="http://test.org/ont/test" 
+        xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#"
+        xmlns="http://test.org/ont/test#" 
 >
-	<xsd:import namespace="http://archive.astro.umd.edu/ont/SemanticObject" 
+	<xsd:import namespace="http://archive.astro.umd.edu/ont/SemanticObject#" 
 	              schemaLocation="SOML_57.xsd"/>
 	              
 	<xsd:complexType name="Property1Type">
