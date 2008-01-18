@@ -33,7 +33,7 @@ public class Utility {
 		nsUri.append(uri.getScheme());
 		nsUri.append(":");
 		nsUri.append(uri.getSchemeSpecificPart());
-		if (!uri.getFragment().equals(""))
+		if (uri.getFragment() != null && !uri.getFragment().equals(""))
 			nsUri.append("#");
 		
 		logger.debug("getNamespaceURI returns:"+nsUri.toString());
