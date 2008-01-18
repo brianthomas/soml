@@ -32,24 +32,16 @@
 
 package net.datamodel.soml.impl;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import net.datamodel.soml.Constant;
 import net.datamodel.soml.ObjectProperty;
 import net.datamodel.soml.Property;
 import net.datamodel.soml.SemanticObject;
-import net.datamodel.xssp.ReferenceableXMLSerializableObject;
+import net.datamodel.soml.Utility;
 import net.datamodel.xssp.XMLFieldType;
-import net.datamodel.xssp.XMLSerializableObject;
 import net.datamodel.xssp.impl.AbstractReferenceableXMLSerializableObject;
 import net.datamodel.xssp.impl.AbstractXMLSerializableObject;
 import net.datamodel.xssp.impl.AbstractXMLSerializableObjectList;
@@ -67,7 +59,7 @@ public class SemanticObjectImpl
 extends AbstractReferenceableXMLSerializableObject 
 implements SemanticObject {
 
-	private static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
+	public static final Logger logger = Logger.getLogger(SemanticObjectImpl.class);
 
 	// Fields
 	//
@@ -81,7 +73,7 @@ implements SemanticObject {
 	 * of "owl:Thing"
 	 */
 	public SemanticObjectImpl () { 
-		this(createURI(Constant.OWLThingURI));
+		this(Utility.createURI(Constant.SemanticObjectURI));
 	}
 
 	/** Construct vanilla SemanticObject with a given rdf:type URI.
@@ -105,7 +97,9 @@ implements SemanticObject {
 		idFieldName = "soId"; 
 		xmlReferenceNodeName = Constant.SemanticObjectRefIDNodeName;
 
-		String nsUri = getNamespaceURI(rdfTypeUri);
+		logger.debug(" SO gets rdf:type "+rdfTypeUri);
+		
+		String nsUri = Utility.getNamespaceURI(rdfTypeUri);
 		logger.debug("Create new SemanticObjectImpl node:"+xmlNodeName+" ns_uri:"+nsUri);
 		setXMLNodeName(xmlNodeName);
 		setNamespaceURI(nsUri);
@@ -117,38 +111,6 @@ implements SemanticObject {
 		addField(rdfTypesFieldName, new Vector<RDFTypeURI>(), XMLFieldType.CHILD);
 
 		addRDFTypeURI(rdfTypeUri);
-	}
-	
-	/** Find the namespace Uri portion of a URI.
-	 * 
-	 * @param uri
-	 * @return
-	 */
-	public static final String getNamespaceURI (URI uri) {
-		StringBuffer nsUri = new StringBuffer();
-		nsUri.append(uri.getScheme());
-		nsUri.append(":");
-		nsUri.append(uri.getSchemeSpecificPart());
-		if (!uri.getFragment().equals(""))
-			nsUri.append("#");
-		
-		return nsUri.toString();
-	}
-	
-	/** A no-hassle utility for creating URIs from string representations. 
-	 * 
-	 * @param struri
-	 * @return
-	 */
-	public static final URI createURI(String struri) {
-		URI uri = null;
-		try {
-			uri = new URI(struri);
-		} catch (URISyntaxException e) {
-			// pass
-			logger.error("cant create URI!:"+struri);
-		}
-		return uri;
 	}
 	
 	/*
@@ -298,9 +260,6 @@ implements SemanticObject {
 		return (List<Property>) getFieldValue(propertyFieldName);
 	}
 
-	// Operations
-	//
-
 	/** Add a URI, representing the semantic meaning (RDF type), 
 	 * of this object.
 	 * 
@@ -314,6 +273,7 @@ implements SemanticObject {
 			// already have that value, avoid duplicates
 			return false;
 		}
+		logger.debug(" addRDFTypeURI "+value.toASCIIString());
 		return getRDFTypes().add(new RDFTypeURI(value));
 	}
 	
@@ -377,7 +337,7 @@ implements SemanticObject {
 		}
 		
 		public final URI toURI() { return myURI; }
-		
+
 	}
 
 	
