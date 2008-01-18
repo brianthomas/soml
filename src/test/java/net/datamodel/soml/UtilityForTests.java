@@ -88,7 +88,7 @@ public class UtilityForTests
 //		doc.setPrefixNamespaceMapping("so", Constant.SOML_NAMESPACE_URI);
 
 		// create a new element, which will be the document root
-		SOMLElement elem = doc.createSOMLElementNS (Constant.SOML_NAMESPACE_URI, so);
+		SOMLElement elem = doc.createSOMLElement(so);
 
 		// TODO: try it this way as well
 //		so.setNamespaceURI(Constant.SOML_NAMESPACE_URI); // needed? doesnt it default to this? Check! 

@@ -53,19 +53,6 @@ public interface SOMLDocument extends XSSPDocument
     * @return the XML ELement node which represents the SemanticObject
     */
    public SOMLElement createSOMLElement(SemanticObject so) throws DOMException;
-   
-   /** Create an element node which is linked to the given target
-    * semantic object. The namespace of the element node created 
-    * is set to the passed value, and the target so has its namespace 
-    * switched to that value.
-    * 
-    * @param namespaceURI
-    * @param so
-    * @throws DOMException
-    * @return the XML ELement node which represents the SemanticObject
-    */
-   public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so) 
-   throws DOMException;
   
    /** Return references to all semantic objects held within this document.
     * 

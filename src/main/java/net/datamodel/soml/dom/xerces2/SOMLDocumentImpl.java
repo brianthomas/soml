@@ -70,22 +70,6 @@ implements SOMLDocument
 		return soElem;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.datamodel.soml.support.SOMLDocument#createSOMLElementNS(java.lang.String, net.datamodel.soml.SemanticObject)
-	 */
-	public SOMLElement createSOMLElementNS(String namespaceURI, SemanticObject so)
-	throws DOMException
-	{
-		try {
-			so.setNamespaceURI(namespaceURI);
-			return new SOMLElementImpl(so, this);
-		} catch (IOException e) {
-			// dunno if this is the right error code.. but what the hell
-			throw new DOMException(DOMException.INVALID_STATE_ERR, e.getMessage());
-		}
-	}
-
 	@Override
 	public String getNamespaceURI() { return Constant.SOML_NAMESPACE_URI; }
 
