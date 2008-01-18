@@ -108,7 +108,7 @@ implements SemanticObject {
 		// order matters! these are in *reverse* order of their
 		// occurence in the schema/DTD
 		addField(propertyFieldName, new propertyList(), XMLFieldType.CHILD);
-		addField(rdfTypesFieldName, new Vector<RDFTypeURI>(), XMLFieldType.CHILD);
+		addField(rdfTypesFieldName, new RDFTypeList(), XMLFieldType.CHILD);
 
 		addRDFTypeURI(rdfTypeUri);
 	}
@@ -305,12 +305,29 @@ implements SemanticObject {
 	/** Quick internal class to hold all propertys between our object 
 	 * and other SO's. 
 	 */
-	class propertyList<property> 
+	class propertyList<Property> 
 	extends AbstractXMLSerializableObjectList
 	{ 
 		// simply change the node name to "property"
 		// and set no serialization when its empty 
 		propertyList() { 
+			super(""); // should *not* have a node name 
+			this.setSerializeWhenEmpty(false);
+		}
+
+		@Override
+		public String toString() {
+			return this.getClass()+"@"+this.hashCode();
+		}
+
+	}
+	
+	class RDFTypeList<RDFTypeURI> 
+	extends AbstractXMLSerializableObjectList
+	{ 
+		// simply change the node name to "property"
+		// and set no serialization when its empty 
+		RDFTypeList() { 
 			super(""); // should *not* have a node name 
 			this.setSerializeWhenEmpty(false);
 		}
