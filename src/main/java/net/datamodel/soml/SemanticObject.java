@@ -165,6 +165,7 @@ extends ReferenceableXMLSerializableObject
 	 * @return
 	 */
 	public boolean hasRDFType(URI type);
+
 	
 }
 
