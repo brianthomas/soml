@@ -23,7 +23,7 @@ implements DataTypeProperty
 	
 	private static final Logger logger = Logger.getLogger(DataTypePropertyImpl.class);
 	
-//	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
+//	private static final String uriFieldName = Constant.SOML_RDFTYPE_FIELD_NAME;
 	private static final String dtUriFieldName = "dtURI";
    	private static final String valueFieldName = "value";
    	

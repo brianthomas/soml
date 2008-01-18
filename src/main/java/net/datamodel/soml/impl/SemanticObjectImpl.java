@@ -72,38 +72,51 @@ implements SemanticObject {
 	// Fields
 	//
 	private static final String propertyFieldName = "property";
-	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
+	private static final String rdfTypesFieldName = Constant.SOML_RDFTYPE_FIELD_NAME;
 	
 	// Constructors
 	//
 
-	/** Construct with a default URI of "owl:Thing"
+	/** Construct vanilla SemanticObject with a default rdf:type URI 
+	 * of "owl:Thing"
 	 */
 	public SemanticObjectImpl () { 
 		this(createURI(Constant.OWLThingURI));
 	}
 
-	/** Construct with a given URI.
+	/** Construct vanilla SemanticObject with a given rdf:type URI.
 	 * 
 	 */
 	public SemanticObjectImpl (URI rdfTypeUri) { 
+		this(rdfTypeUri, Constant.SemanticObjectNodeName);
+	}
+
+	/** Construct SemanticObject with a given rdf:type URI, and
+	 * dedicated xmlNodeName.   
+	 * 
+	 * @param rdfTypeUri
+	 * @param xmlNodeName
+	 */
+	public SemanticObjectImpl (URI rdfTypeUri, String xmlNodeName) 
+	{ 
 
 		// configure the referencing fields/info 
 		idRefFieldName = "soRefId"; 
 		idFieldName = "soId"; 
-		xmlReferenceNodeName = "semanticObjectRef";
+		xmlReferenceNodeName = Constant.SemanticObjectRefIDNodeName;
 
-		setXMLNodeName(Constant.SemanticObjectNodeName);
+		logger.debug("Create new SemanticObjectImpl node:"+xmlNodeName+" ns_uri:"+rdfTypeUri.toASCIIString());
+		setXMLNodeName(xmlNodeName);
 
 		// now initialize XML fields
 		// order matters! these are in *reverse* order of their
 		// occurence in the schema/DTD
 		addField(propertyFieldName, new propertyList(), XMLFieldType.CHILD);
-		addField(uriFieldName, new Vector<RDFTypeURI>(), XMLFieldType.CHILD);
+		addField(rdfTypesFieldName, new Vector<RDFTypeURI>(), XMLFieldType.CHILD);
 
 		addRDFTypeURI(rdfTypeUri);
 	}
-
+	
 	/** A no-hassle utility for creating URIs from string representations. 
 	 * 
 	 * @param struri
@@ -287,7 +300,7 @@ implements SemanticObject {
 	}
 	
 	protected List<RDFTypeURI> getRDFTypes () {
-		return (List<RDFTypeURI>) getFieldValue(uriFieldName);
+		return (List<RDFTypeURI>) getFieldValue(rdfTypesFieldName);
 	}
 	
 	/*

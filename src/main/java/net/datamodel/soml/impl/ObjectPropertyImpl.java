@@ -25,7 +25,7 @@ implements ObjectProperty
 	
 	private static final Logger logger = Logger.getLogger(ObjectPropertyImpl.class);
 	
-//	private static final String uriFieldName = Constant.SOML_URI_ATTRIBUTE_NAME;
+//	private static final String uriFieldName = Constant.SOML_RDFTYPE_FIELD_NAME;
    	private static final String targetFieldName = "target";
     	
    	private URI uri = null;

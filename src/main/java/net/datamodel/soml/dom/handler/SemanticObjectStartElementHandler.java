@@ -35,13 +35,15 @@ implements StartElementHandler
 		SOMLDocumentHandler shandler = (SOMLDocumentHandler) handler;
 		
 		SemanticObjectImpl so = null;
+		
+		// build the URI string
 		StringBuffer soUriStr = new StringBuffer(namespaceURI);
-		soUriStr.append("#");
 		soUriStr.append(localName);
+		
 		if (!Constant.SemanticObjectURI.equals(soUriStr.toString())) {
 			try {
 				URI soUri = new URI(soUriStr.toString());
-				so = new SemanticObjectImpl(soUri);
+				so = new SemanticObjectImpl(soUri,localName);
 			} catch (URISyntaxException e) {
 				logger.warn("Cant set URI:"+soUriStr.toString()
 					+" for SemanticObject, using none. Errors may result.");
@@ -50,27 +52,36 @@ implements StartElementHandler
 		
 		// failsafe
 		if (so == null)
-			so = new SemanticObjectImpl();
+			so = new SemanticObjectImpl(SemanticObjectImpl.createURI(Constant.OWLThingURI), localName);
 		so.setAttributeFields(attrs); // set XML attributes from passed list
 		
+		// hmm. missing
+		// so.setNamespaceURI(namespaceURI);
+		
 		// check if we are target of a property
+		// and if so, add this in
 		ObjectPropInfo oinfo = shandler.getCurrentObjectProperty();
 		if (oinfo != null) {
 			shandler.getCurrentSemanticObject().addProperty(oinfo.getURI(), so); 
 		}
 		
-		// Add as a SOMLElement to our document, if no doc root exists,
-		// otherwise, it will wait to be added as an object property later
-		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElementNS(namespaceURI, so);
-		
+		// Add as a SOMLElement to our document in 2 cases:
+		// 1. if no doc root exists it becomes the doc root
+		// or 
+		// 2. if the current node is not a SOMLElement, then add
+		//
         Node current = handler.getCurrentNode();
         if(current != null) {
-        	if (!(current instanceof SOMLElement))
+        	if (!(current instanceof SOMLElement)) {
+        		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElementNS(namespaceURI, so);
         		current.appendChild(elem);
+        	}
         } else { 
+       		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElementNS(namespaceURI, so);
             handler.getDocument().setDocumentElement(elem);
         }
 		
+        // note the current, working SemanticObject
 		shandler.recordSemanticObject(so);
 		
 		return so;

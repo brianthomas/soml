@@ -12,6 +12,7 @@ public class Constant {
 	        "http://archive.astro.umd.edu/ont/SemanticObject#";
 
 	public static final String SemanticObjectNodeName = "semanticObject";
+	public static final String SemanticObjectRefIDNodeName = "semanticObjectRef";
 	
 	public static final String SemanticObjectURI = SOML_NAMESPACE_URI+SemanticObjectNodeName;
 	
@@ -23,7 +24,7 @@ public class Constant {
 	 * serialization of instances of SemanticObject, Property and
 	 * UnmixedSemanticObjectList classes.
 	 */
-	public static final String SOML_URI_ATTRIBUTE_NAME = "URI";
+	public static final String SOML_RDFTYPE_FIELD_NAME = "rdfTypeFieldName";
 
 	public static final String OWLThingURI = OWL.getURI()+"Thing";
 	
