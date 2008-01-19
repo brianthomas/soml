@@ -79,7 +79,6 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		startHandlers.put("SemanticObjectType", new SemanticObjectStartElementHandler()); 
 		startHandlers.put("ObjectPropertyType", new ObjectPropertyStartElementHandler()); 
 		startHandlers.put("DataPropertyType", new DataPropertyStartElementHandler()); 
-		startHandlers.put("rdfPropertyType", new NullStartElementHandler()); 
 		addStartElementHandlers(startHandlers, Constant.SOML_NAMESPACE_URI); 
 	
 		// init end element handlers
@@ -94,15 +93,16 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		addCharDataHandlers(cDataHandlers, Constant.SOML_NAMESPACE_URI);
 		
 		Map<String,StartElementHandler> rdfstartHandlers = new Hashtable<String,StartElementHandler>();
-		rdfstartHandlers.put("type", new RDFTypeStartElementHandler()); 
+		rdfstartHandlers.put("rdfPropertyType", new RDFTypeStartElementHandler()); 
+//		rdfstartHandlers.put("type", new RDFTypeStartElementHandler()); 
 		addStartElementHandlers(rdfstartHandlers, RDF.getURI()); 
 		
 		Map<String,EndElementHandler> rdfEndHandlers = new Hashtable<String,EndElementHandler>();
-		rdfEndHandlers.put("type", new NullEndElementHandler()); 
+		rdfEndHandlers.put("rdfPropertyType", new NullEndElementHandler()); 
 		addEndElementHandlers(rdfEndHandlers, RDF.getURI()); 
 		
 		addElementToComplexTypeAssociation("semanticObject", Constant.SOML_NAMESPACE_URI, "SemanticObjectType", Constant.SOML_NAMESPACE_URI);
-		addElementToComplexTypeAssociation("type", RDF.getURI(), "type", RDF.getURI());
+		addElementToComplexTypeAssociation("type", RDF.getURI(), "rdfPropertyType", RDF.getURI());
 		
 	}
 	

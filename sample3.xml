@@ -1,15 +1,17 @@
 <?xml version="1.0" standalone="no" ?>
 <so:semanticObject 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-      xmlns:a="http://test.org/onto/test" 
-      xmlns:so="http://www.data-model.net/SemanticObject" 
-      xsi:schemaLocation="http://www.data-model.net/SemanticObject SOML_56.xsd"
-      URI="urn:test:SemanticObject1"
+      xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#" 
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:a="http://test.org/ont/test#" 
+      xsi:schemaLocation="http://test.org/ont/test test.xsd"
 >
 
   <!-- in the property1 with an object -->
   <a:prop1>
-      <so:semanticObject soId="obj1" URI="urn:testSemanticObject2"/>
+      <so:semanticObject soId="obj1">
+      	<rdf:type resource="urn:testSemanticObject2"/>
+      </so:semanticObject>
   </a:prop1>
   
   <!-- in different property with a same object, using reference -->
@@ -17,4 +19,5 @@
       <so:semanticObjectRef soIdRef="obj1"/>
   </a:prop2>
   
+  <rdf:type resource="urn:testSemanticObject1"/>
 </so:semanticObject>

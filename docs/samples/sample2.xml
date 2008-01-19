@@ -4,7 +4,7 @@
       xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#" 
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
       xmlns:a="http://test.org/ont/test#" 
-      xsi:schemaLocation="http://test.org/ont/test test.xsd"
+      xsi:schemaLocation="http://test.org/ont/test# test.xsd"
 >
   <!-- in the relationship1 with an object -->
   <a:prop1>

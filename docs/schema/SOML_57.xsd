@@ -36,6 +36,9 @@
     </xsd:documentation>
   </xsd:annotation>
   
+  <xsd:import namespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+              schemaLocation="RDFminimal.xsd"/>
+
   <!-- abstract SO type -->
   <xsd:complexType name="AbstractSOType"/>
 
@@ -63,16 +66,14 @@
 	</xsd:complexContent>
   </xsd:complexType>
   
-  <xsd:complexType name="rdfPropertyType" mixed="true"/>
-  
   <!-- Main Class : SemanticObject -->
   <xsd:complexType name="SemanticObjectType">
 	<xsd:complexContent>
 		<xsd:extension base="AbstractSOType">	
-			<xsd:choice>
+			<xsd:sequence>
 				<xsd:element ref="PropertyGroup" minOccurs="0" maxOccurs="unbounded"/>
-				<xsd:element name="rdftype" type="rdfPropertyType" minOccurs="1" maxOccurs="unbounded"/>
-			</xsd:choice>
+				<xsd:element ref="rdf:type" minOccurs="1" maxOccurs="unbounded"/>
+			</xsd:sequence>
 			<xsd:attribute name="soId" type="xsd:ID" use="optional"/>
 			<xsd:anyAttribute namespace="##any"/> <!-- allow other namespaces to add attribs to SO's -->
 		</xsd:extension>

@@ -90,7 +90,6 @@ public class TestLoad extends BaseParseCase
 		
 	}
 	
-	/*
 	// A test of being able to read, and write the sample.
 	// We don't compare the 2 file contents because there may have been
 	// some dropped XML comments from the initial parse (which is OK). 
@@ -137,7 +136,6 @@ public class TestLoad extends BaseParseCase
 			e.printStackTrace();
 		}
 	}
-	*/
 	
 	/*
 	// Test our ability to get consistent results from loading and reloading

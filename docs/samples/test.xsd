@@ -24,6 +24,7 @@
 	</xsd:complexType>
            
 	<xsd:element name="prop1" type="Property1Type" substitutionGroup="so:PropertyGroup"/>
+	<xsd:element name="prop2" type="Property1Type" substitutionGroup="so:PropertyGroup"/>
 	<xsd:element name="obj" type="so:SemanticObjectType" substitutionGroup="so:SemanticObjectGroup"/>
 	<xsd:element name="testroot" type="so:SemanticObjectType" substitutionGroup="so:SemanticObjectGroup"/>
 

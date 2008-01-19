@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no" ?>
+<semanticObject 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns="http://archive.astro.umd.edu/ont/SemanticObject#" 
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:a="http://test.org/ont/test#" 
+      xsi:schemaLocation="http://test.org/ont/test test.xsd"
+>
+	<a:prop1>
+		<semanticObject>
+			<rdf:type resource="urn:testSemanticObject2"/>
+		</semanticObject>
+	</a:prop1>
+	<rdf:type resource="urn:testSemanticObject1"/>
+</semanticObject>

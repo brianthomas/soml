@@ -5,9 +5,9 @@
   -->
 <semanticObject 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-      xmlns="http://archive.astro.umd.edu/ont/SemanticObject" 
+      xmlns="http://archive.astro.umd.edu/ont/SemanticObject#" 
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-      xsi:schemaLocation="http://archive.astro.umd.edu/ont/SemanticObject SOML_57.xsd"
+      xsi:schemaLocation="http://archive.astro.umd.edu/ont/SemanticObject# SOML_57.xsd"
 >
-	<rdf:type>urn:testSemanticObject1</rdf:type>
+	<rdf:type resource="urn:testSemanticObject1"/>
 </semanticObject>
