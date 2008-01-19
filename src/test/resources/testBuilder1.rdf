@@ -6,7 +6,7 @@
     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
     xmlns:owl="http://www.w3.org/2002/07/owl#"
     xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
-    xmlns:j.1="http://viper.astro.umd.edu/ont/Quantity.owl#" > 
+    xmlns:j.1="http://astro.astro.umd.edu/ont/Quantity.owl#" > 
   <rdf:Description rdf:about="http://test.org/testOps.owl#thing4">
     <j.1:hasQuantity rdf:resource="http://test.org/testOps.owl#quantity1"/>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
