@@ -167,7 +167,6 @@ extends TestCase
 		
 	}
 	
-	/*
 	public void test2() {
 		
 		logger.info("Test Extended builder"); 
@@ -202,7 +201,6 @@ extends TestCase
 		}
 		
 	}
-	*/
 	
 	/** test handler. to see if the extension mech is working.
 	 * 
