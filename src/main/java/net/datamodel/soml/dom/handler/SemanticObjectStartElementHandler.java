@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import net.datamodel.soml.Constant;
+import net.datamodel.soml.Utility;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLDocumentHandler;
 import net.datamodel.soml.dom.SOMLElement;
@@ -39,7 +40,7 @@ implements StartElementHandler
 		soUriStr.append(localName);
 		
 		SemanticObjectImpl so = 
-			new SemanticObjectImpl(SemanticObjectImpl.createURI(soUriStr.toString()), localName);
+			new SemanticObjectImpl(Utility.createURI(soUriStr.toString()), localName);
 		
 		// set XML attributes from passed list
 		so.setAttributeFields(attrs); 
@@ -59,11 +60,11 @@ implements StartElementHandler
         Node current = handler.getCurrentNode();
         if(current != null) {
         	if (!(current instanceof SOMLElement)) {
-        		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElementNS(namespaceURI, so);
+        		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElement(so);
         		current.appendChild(elem);
         	}
         } else { 
-       		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElementNS(namespaceURI, so);
+       		Element elem = ((SOMLDocument) handler.getDocument()).createSOMLElement(so);
             handler.getDocument().setDocumentElement(elem);
         }
 		
