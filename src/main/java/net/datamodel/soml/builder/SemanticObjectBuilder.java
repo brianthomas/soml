@@ -10,7 +10,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.soml.Utility;
 import net.datamodel.soml.impl.SemanticObjectImpl;
 
 import org.apache.log4j.Logger;
@@ -162,11 +164,11 @@ public class SemanticObjectBuilder
 			}
 		}
 		
-		// hmm. 'values()' returns a COllection, which is not guarrenteed to
-		// be in any order (??). So use this hack to build a list
 		List<String> ret = new Vector<String>();
-		for (Integer key : types.keySet())
+		for (Integer key : types.keySet()) {
+			logger.debug(" *****  TYPE : "+types.get(key));
 			ret.add(types.get(key));
+		}
 			
 		return ret;
 	}
@@ -201,8 +203,8 @@ public class SemanticObjectBuilder
 	{
 		String propUri = s.getPredicate().getURI();
 		
-		logger.debug("  PROPERTY:"+propUri+" RESOURCE:"+s.getObject().isResource());
-			
+		logger.info("  PROPERTY:"+propUri+" RESOURCE:"+s.getObject().isResource());
+		
 		// we skip adding owl:sameAs properties
 		if (propUri.equals(OWLSameAsURI))
 			return;
@@ -213,7 +215,7 @@ public class SemanticObjectBuilder
 				Resource r = (Resource) s.getObject().as(Resource.class);
 				if (!r.getURI().equals(OWLThingURI)) {
 					// add type only if NOT owl:Thing, which is a duplicate
-					parent.addRDFTypeURI(SemanticObjectImpl.createURI(r.getURI()));
+					parent.addRDFTypeURI(Utility.createURI(r.getURI()));
 				}
 //				parent.addProperty(SemanticObjectImpl.createURI(RDFTypeURI), r.getURI());
 //				parent.addAttributeField("rdf:type", r.getURI());
@@ -228,22 +230,19 @@ public class SemanticObjectBuilder
 		{
 			
 			Individual in = builder.ontModel.getIndividual(s.getObject().toString());
-			logger.debug(" ############## lloiking for individual w/ uri:"+s.getObject()+" result:"+in);
-			if (in != null)
-			{
-				logger.debug(" ******** prop value is Individual : "+in.getURI());
-			}
+			logger.debug(" #### looking for individual w/ uri:"+s.getObject()+" result:"+in);
+//			if (in != null) { logger.debug("   prop value is Individual : "+in.getURI()); }
 			
 			SemanticObject target = builder.createSemanticObject((Individual) s.getObject().as(Individual.class));
-			
 			if (target != null)
-				parent.addProperty(SemanticObjectImpl.createURI(propUri), target);
+				parent.addProperty(Utility.createURI(propUri), target);
 			else 
-				logger.info("Skipping add property, target object is null");
+				// is this really an issue? log at warn level for now
+				logger.warn("Skipping addProperty for prop:"+propUri+", target object is null");
 			
 		} else { 
 			logger.debug("  prop value is NOT an object, add datatype prop");
-			parent.addProperty(SemanticObjectImpl.createURI(propUri), s.getObject().toString());
+			parent.addProperty(Utility.createURI(propUri), s.getObject().toString());
 		}
 		
 	}
@@ -260,8 +259,10 @@ public class SemanticObjectBuilder
 		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
 		throws SemanticObjectBuilderException 
 		{
-			logger.info("DefaultHandler called for instance uri:"+in.getURI()+" rdf:type:"+rdfType);
-			SemanticObject so = new SemanticObjectImpl(SemanticObjectImpl.createURI(rdfType));
+			logger.info("DefaultHandler called for instance uri:"+in.getURI()+" rdftypeuri:"+rdfType);
+			
+			SemanticObject so = new SemanticObjectImpl();
+			so.addRDFTypeURI(Utility.createURI(rdfType));
 			
 			// add in properties
 			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
