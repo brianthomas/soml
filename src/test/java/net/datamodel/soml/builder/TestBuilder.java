@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 import net.datamodel.soml.SemanticObject;
+import net.datamodel.soml.Utility;
 import net.datamodel.soml.impl.SemanticObjectImpl;
 import net.datamodel.xssp.dom.Specification;
 
@@ -141,7 +142,9 @@ extends TestCase
 		Specification.getInstance().setPrettyOutput(true);
 		
 		// iterate over models, testing heach individual in model data
+		int md_num = 1;
 		for (OntModel testModel : testModels) {
+			logger.debug(" TESTING MODEL:"+md_num++);
 			for (Iterator i = testModel.listIndividuals(); i.hasNext(); ) {
 				Individual in = (Individual) i.next();
 				try {
@@ -149,7 +152,8 @@ extends TestCase
 					SemanticObject so = builder.createSemanticObject(in); 
 					assertNotNull("Can create SO",so);
 					
-					logger.debug("Created SO :\n"+so.toXMLString());
+					logger.debug("Created Individual from model SO w/ uri:"+so.getNamespaceURI());
+					logger.debug("Created Individual from model SO :\n"+so.toXMLString());
 					// Check the class of the output object. For one object, we 
 					// had a special handler build it, otherwise, its SemanticObjectImpl
 					// class 
@@ -235,7 +239,7 @@ extends TestCase
 	{
 		
 		TestSemanticObject() throws SemanticObjectBuilderException {
-			super(SemanticObjectImpl.createURI("urn:some-rdf-type-uri-here"));
+			super(Utility.createURI("urn:some-rdf-type-uri-here"));
 			this.setXMLNodeName("TestSemanticObject");
 		}
 	}
