@@ -93,7 +93,7 @@ implements SemanticObject {
 	{ 
 
 		// configure the referencing fields/info 
-		idRefFieldName = "soRefId"; 
+		idRefFieldName = "soIdRef"; 
 		idFieldName = "soId"; 
 		xmlReferenceNodeName = Constant.SemanticObjectRefIDNodeName;
 
