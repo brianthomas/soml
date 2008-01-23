@@ -110,7 +110,9 @@ implements SemanticObject {
 		addField(propertyFieldName, new propertyList(), XMLFieldType.CHILD);
 		addField(rdfTypesFieldName, new RDFTypeList(), XMLFieldType.CHILD);
 
-		addRDFTypeURI(rdfTypeUri);
+		if (rdfTypeUri != null)
+			addRDFTypeURI(rdfTypeUri);
+		
 	}
 	
 	/*
