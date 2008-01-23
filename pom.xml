@@ -78,6 +78,12 @@ handy representations of (instances of) semantic objects.</description>
     
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>2.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
       <artifactId>iri</artifactId>
       <version>0.5</version>
     </dependency>
@@ -112,14 +118,12 @@ handy representations of (instances of) semantic objects.</description>
       <version>0.98.3</version>
     </dependency>
     
-    <!--
     <dependency>
       <groupId>edu.umd.astro</groupId>
       <artifactId>sdr</artifactId>
       <version>0.96.0</version>
       <scope>test</scope>
     </dependency>
-    -->
     
     <!-- pellet-related dependencies, we only need for testing? -->
     <dependency>
