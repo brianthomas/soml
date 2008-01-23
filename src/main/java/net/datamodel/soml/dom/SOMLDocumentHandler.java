@@ -39,10 +39,10 @@ import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.dom.handler.DataPropertyStartElementHandler;
 import net.datamodel.soml.dom.handler.NullCharDataHandler;
 import net.datamodel.soml.dom.handler.NullEndElementHandler;
-import net.datamodel.soml.dom.handler.NullStartElementHandler;
 import net.datamodel.soml.dom.handler.ObjectPropertyStartElementHandler;
 import net.datamodel.soml.dom.handler.RDFTypeStartElementHandler;
 import net.datamodel.soml.dom.handler.SemanticObjectEndElementHandler;
+import net.datamodel.soml.dom.handler.SemanticObjectRefStartElementHandler;
 import net.datamodel.soml.dom.handler.SemanticObjectStartElementHandler;
 import net.datamodel.xssp.dom.CharDataHandler;
 import net.datamodel.xssp.dom.EndElementHandler;
@@ -65,6 +65,7 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 	
 	/** */
 	private List<SemanticObject> CurrentSemanticObjectList = new Vector<SemanticObject>(); 
+	private Map<String,SemanticObject> KnownSemanticObjects = new Hashtable<String,SemanticObject>();
 	private List<ObjectPropInfo> CurrentObjectProperty = new Vector<ObjectPropInfo>(); 
 	
 	public SOMLDocumentHandler (SOMLDocument doc) { 
@@ -79,12 +80,14 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		startHandlers.put("SemanticObjectType", new SemanticObjectStartElementHandler()); 
 		startHandlers.put("ObjectPropertyType", new ObjectPropertyStartElementHandler()); 
 		startHandlers.put("DataPropertyType", new DataPropertyStartElementHandler()); 
+		startHandlers.put("refSOType", new SemanticObjectRefStartElementHandler()); 
 		addStartElementHandlers(startHandlers, Constant.SOML_NAMESPACE_URI); 
 	
 		// init end element handlers
 		Map<String,EndElementHandler> endHandlers = new Hashtable<String,EndElementHandler>();
 		endHandlers.put("SemanticObjectType", new SemanticObjectEndElementHandler()); 
 		endHandlers.put("ObjectPropertyType", new NullEndElementHandler()); 
+		endHandlers.put("refSOType", new NullEndElementHandler()); 
 		addEndElementHandlers(endHandlers, Constant.SOML_NAMESPACE_URI); 
 		
 		Map<String,CharDataHandler> cDataHandlers = new Hashtable<String,CharDataHandler>();
@@ -102,6 +105,7 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		addEndElementHandlers(rdfEndHandlers, RDF.getURI()); 
 		
 		addElementToComplexTypeAssociation("semanticObject", Constant.SOML_NAMESPACE_URI, "SemanticObjectType", Constant.SOML_NAMESPACE_URI);
+		addElementToComplexTypeAssociation("semanticObjectRef", Constant.SOML_NAMESPACE_URI, "refSOType", Constant.SOML_NAMESPACE_URI);
 		addElementToComplexTypeAssociation("type", RDF.getURI(), "rdfPropertyType", RDF.getURI());
 		
 	}
@@ -122,6 +126,8 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 	 */
 	public final void recordSemanticObject (SemanticObject so) {
 		CurrentSemanticObjectList.add(so);
+		logger.debug("recording SO with id:"+so.getId());
+		KnownSemanticObjects.put(so.getId(), so);
 	}
 	
 	/**
@@ -158,6 +164,16 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		CurrentObjectProperty.remove(CurrentObjectProperty.size()-1);
 	}
 
+	/** Find a SemanticObject by id. If the object being requested has not
+	 * yet been parsed, this method will return null.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public final SemanticObject findSemanticObjectById (String id) {
+		return KnownSemanticObjects.get(id);
+	}
+	
 	public class ObjectPropInfo {
 		private String namespaceURI;
 		private String localName; 
@@ -170,5 +186,6 @@ public class SOMLDocumentHandler extends XSSPDocumentHandler
 		public final URI getURI() { return uri; }
 		public final String getNamespaceURI() { return namespaceURI; }
 	}
+	
 } // End of SOMLDocumentHandler class 
 
