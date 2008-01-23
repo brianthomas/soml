@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RDSF minimal schema. -->
+<xsd:schema 
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.w3.org/2000/01/rdf-schema#"
+        xmlns="http://www.w3.org/2000/01/rdf-schema#"
+        elementFormDefault="qualified"
+>
+
+  <xsd:annotation>
+    <xsd:documentation>
+        RDFS.xsd -- A very minimal schema to support other ones.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:complexType name="rdfLabelType" mixed="true"/>
+  <xsd:element name="label" type="rdfLabelType"/>
+
+</xsd:schema>
+

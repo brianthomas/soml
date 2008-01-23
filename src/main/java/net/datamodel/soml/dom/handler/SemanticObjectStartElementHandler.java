@@ -8,7 +8,7 @@ import net.datamodel.soml.Utility;
 import net.datamodel.soml.dom.SOMLDocument;
 import net.datamodel.soml.dom.SOMLDocumentHandler;
 import net.datamodel.soml.dom.SOMLElement;
-import net.datamodel.soml.dom.SOMLDocumentHandler.ObjectPropInfo;
+import net.datamodel.soml.dom.SOMLDocumentHandler.PropInfo;
 import net.datamodel.soml.impl.SemanticObjectImpl;
 import net.datamodel.xssp.dom.StartElementHandler;
 import net.datamodel.xssp.dom.XSSPDocumentHandler;
@@ -47,7 +47,7 @@ implements StartElementHandler
 		
 		// check if we are target of a property
 		// and if so, add this in
-		ObjectPropInfo oinfo = shandler.getCurrentObjectProperty();
+		PropInfo oinfo = shandler.getCurrentObjectProperty();
 		if (oinfo != null) {
 			shandler.getCurrentSemanticObject().addProperty(oinfo.getURI(), so); 
 		}

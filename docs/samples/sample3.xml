@@ -1,10 +1,11 @@
 <?xml version="1.0" standalone="no" ?>
-<so:semanticObject 
+<a:testroot
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#" 
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
       xmlns:a="http://test.org/ont/test#" 
-      xsi:schemaLocation="http://test.org/ont/test test.xsd"
+      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+      xsi:schemaLocation="http://test.org/ont/test# test.xsd"
 >
 
   <!-- in the property1 with an object -->
@@ -15,9 +16,9 @@
   </a:prop1>
   
   <!-- in different property with a same object, using reference -->
-  <a:prop2>
+  <a:prop12>
       <so:semanticObjectRef soIdRef="obj1"/>
-  </a:prop2>
+  </a:prop12>
   
   <rdf:type resource="urn:testSemanticObject1"/>
-</so:semanticObject>
+</a:testroot>

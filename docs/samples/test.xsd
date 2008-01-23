@@ -12,20 +12,51 @@
         targetNamespace="http://test.org/ont/test#" 
         xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
         xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#"
+        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
         xmlns="http://test.org/ont/test#" 
 >
 	<xsd:import namespace="http://archive.astro.umd.edu/ont/SemanticObject#" 
 	              schemaLocation="SOML_57.xsd"/>
 	              
-	<xsd:complexType name="Property1Type">
+	<xsd:import namespace="http://www.w3.org/2000/01/rdf-schema#" 
+	              schemaLocation="RDFSminimal.xsd"/>
+	              
+	<!-- user creates a property type of their own -->
+	<xsd:complexType name="MyPropertyType">
 		<xsd:complexContent>
-			<xsd:extension base="so:ObjectPropertyType"/>
+			<xsd:extension base="so:ObjectPropertyType">
+				<xsd:sequence>
+					<xsd:element ref="rdfs:label" minOccurs="1"/>
+				</xsd:sequence>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="MyObjectType">
+		<xsd:complexContent>
+			<xsd:extension base="so:SemanticObjectType">
+				<xsd:sequence>
+					<xsd:element ref="rdfs:label" minOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
            
-	<xsd:element name="prop1" type="Property1Type" substitutionGroup="so:PropertyGroup"/>
-	<xsd:element name="prop2" type="Property1Type" substitutionGroup="so:PropertyGroup"/>
+     <!-- some properties -->
+	<xsd:element name="prop1" type="so:ObjectPropertyType" substitutionGroup="so:PropertyGroup"/>
+	
+	<xsd:element name="dtprop" type="so:DataTypePropertyType" substitutionGroup="so:PropertyGroup"/>
+	
+	<xsd:element name="prop12" type="so:ObjectPropertyType" substitutionGroup="so:PropertyGroup"/>
+	<xsd:element name="prop13" type="so:ObjectPropertyType" substitutionGroup="so:PropertyGroup"/>
+	<xsd:element name="prop2" type="MyPropertyType" substitutionGroup="so:PropertyGroup"/>
+	<xsd:element name="prop23" type="so:ObjectPropertyType" substitutionGroup="so:PropertyGroup"/>
+	<xsd:element name="prop32" type="so:ObjectPropertyType" substitutionGroup="so:PropertyGroup"/>
+	
 	<xsd:element name="obj" type="so:SemanticObjectType" substitutionGroup="so:SemanticObjectGroup"/>
 	<xsd:element name="testroot" type="so:SemanticObjectType" substitutionGroup="so:SemanticObjectGroup"/>
+	
+	<xsd:element name="testroot2" type="MyObjectType" substitutionGroup="so:SemanticObjectGroup"/>
 
 </xsd:schema>

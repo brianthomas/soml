@@ -42,7 +42,7 @@
   <!-- abstract SO type -->
   <xsd:complexType name="AbstractSOType"/>
 
-  <xsd:complexType name="PropertyType" mixed="false"/>
+  <xsd:complexType name="PropertyType"/>
 
   <xsd:complexType name="ObjectPropertyType" mixed="false">
 	<xsd:annotation>
@@ -57,7 +57,7 @@
 	</xsd:complexContent>
   </xsd:complexType>
   
-  <xsd:complexType name="DataTypePropertyType" >
+  <xsd:complexType name="DataTypePropertyType" mixed="true">
 	<xsd:annotation>
 		<xsd:documentation>A DataType property (a node wich has a litteral value in its PCDATA)</xsd:documentation>
 	</xsd:annotation>

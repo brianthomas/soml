@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no" ?>
+<!-- cross ref'ing example between 2 SO's -->
+<a:testroot
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xmlns:so="http://archive.astro.umd.edu/ont/SemanticObject#" 
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:a="http://test.org/ont/test#" 
+      xsi:schemaLocation="http://test.org/ont/test# test.xsd"
+>
+
+	<!-- in property2 with obj3 -->
+	<a:prop13>
+		<so:semanticObject soId="obj3">
+			<!-- obj3 has property to object 2 -->
+			<a:prop32>
+				<so:semanticObjectRef soIdRef="obj2"/>
+			</a:prop32>
+			<rdf:type resource="urn:testSemanticObject2"/>
+		</so:semanticObject>
+	</a:prop13>
+	
+	<!-- in the property1 with an obj2 -->
+	<a:prop12>
+		<so:semanticObject soId="obj2">
+			<!-- obj2 has property to object 3 -->
+			<a:prop23>
+				<so:semanticObjectRef soIdRef="obj3"/>
+			</a:prop23>
+			<rdf:type resource="urn:test:SemanticObject2"/>
+		</so:semanticObject>
+	</a:prop12>
+	
+	<rdf:type resource="urn:testSemanticObject1"/>
+
+</a:testroot>
