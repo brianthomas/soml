@@ -39,8 +39,13 @@ implements StartElementHandler
 		StringBuffer soUriStr = new StringBuffer(namespaceURI);
 		soUriStr.append(localName);
 		
-		SemanticObjectImpl so = 
-			new SemanticObjectImpl(Utility.createURI(soUriStr.toString()), localName);
+		SemanticObjectImpl so = null;
+			
+		// Dont build SO with SOML_NAMESPACE_URI, its redundant
+		if (namespaceURI.equals(Constant.SOML_NAMESPACE_URI) && localName.equals(Constant.SemanticObjectURI)) {
+			so = new SemanticObjectImpl();
+		} else 
+			so = new SemanticObjectImpl(Utility.createURI(soUriStr.toString()), localName);
 		
 		// set XML attributes from passed list
 		so.setAttributeFields(attrs); 

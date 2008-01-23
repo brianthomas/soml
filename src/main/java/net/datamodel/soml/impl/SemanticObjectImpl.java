@@ -73,7 +73,7 @@ implements SemanticObject {
 	 * of "owl:Thing"
 	 */
 	public SemanticObjectImpl () { 
-		this(Utility.createURI(Constant.SemanticObjectURI));
+		this(Utility.createURI(Constant.OWLThingURI));
 	}
 
 	/** Construct vanilla SemanticObject with a given rdf:type URI.
