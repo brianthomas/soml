@@ -122,8 +122,6 @@ public class TestLoad extends BaseParseCase
 			     
 				assertTrue("can write file", outputfile.canWrite());
 				assertTrue("File has non-zero extent", outputfile.length() > 0);
-				
-				logger.warn("missing validation on testLoadandWriteSamples");
 				assertTrue ("Output document:"+samplefiles[i]+" is valid", UtilityForTests.validateFile (testDirectory+"/tmp.xml"));
 				
 				// clean up		
@@ -137,7 +135,6 @@ public class TestLoad extends BaseParseCase
 		}
 	}
 	
-	/*
 	// Test our ability to get consistent results from loading and reloading
 	// files. We compare between the products of the first and second loadings.
 	public void test3() throws Exception {
@@ -199,7 +196,6 @@ public class TestLoad extends BaseParseCase
 		}
 		
 	}
-	*/
 	
 	private static SOMLDocument loadFile (String inputfile ) throws Exception {
 
