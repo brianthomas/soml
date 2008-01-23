@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   SOML (Semantic Object Modeling Language) XML schema.
+   Version 0.57
+
+   Copyright (c) 2005-2008 Brian Thomas. All rights reserved.
+
+   LICENSE
+
+   This file is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   This file is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
+-->
+<xsd:schema 
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        elementFormDefault="qualified"
+>
+
+  <xsd:annotation>
+    <xsd:documentation>
+        RDF.xsd -- A very minimal schema to support other ones.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <!-- Main Class : SemanticObject -->
+  <xsd:complexType name="rdfPropertyType">
+	<xsd:attribute name="resource" type="xsd:anyURI" use="required"/>
+  </xsd:complexType>
+ 
+  <xsd:element name="type" type="rdfPropertyType"/>
+
+</xsd:schema>
+
