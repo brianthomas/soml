@@ -2,11 +2,8 @@
 = Make the serializations of instances/objects 
   match RDF as closely as possible (this will break loading
   handlers from schema in XSSP package) 
-
-= Extend Reader/WRITER from XSSP for IO
-  this includes writing the needed SAX element handlers for IO.
-  
-  * Data/Object property parsing handlers for SOML missing.
+  Presently only rdf:type is part of the package. Think about
+  rdfs:label as well..
 
 = Pick over the support interfaces (SOMLDocument/SOMLElement) to be sure
 we dont include methods we dont need .
