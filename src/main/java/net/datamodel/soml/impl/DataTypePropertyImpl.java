@@ -39,9 +39,13 @@ implements DataTypeProperty
 			URI datatypeURI, 
 			String value) 
 	{
- 		super(propertyURI.getFragment());
+ 		super("datatypeProperty");
  		
-   		setNamespaceURI(Utility.getNamespaceURI(propertyURI));
+ 		String namespaceURI = Utility.getNamespaceURI(propertyURI);
+   		setNamespaceURI(namespaceURI);
+   		
+   		String xmlNodeName = propertyURI.toASCIIString().replaceFirst(namespaceURI, "");
+   		setXMLNodeName(xmlNodeName);
    		
    		uri = propertyURI;
    		
