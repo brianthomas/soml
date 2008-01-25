@@ -162,7 +162,7 @@ implements SemanticObject {
 		for (Property prop : getProperties(propertyURI)) {
 			if (prop instanceof ObjectProperty) {
 				SemanticObject target = ((ObjectProperty) prop).getTarget();
-				if (target.getRDFTypeURIs().equals(targetURI)) {
+				if (target.hasRDFType(targetURI)) {
 					return true;
 				}
 			}
