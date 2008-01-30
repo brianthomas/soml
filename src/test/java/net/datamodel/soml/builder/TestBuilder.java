@@ -1,11 +1,7 @@
 package net.datamodel.soml.builder;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 
 import junit.framework.TestCase;
 import net.datamodel.soml.SemanticObject;
@@ -19,8 +15,6 @@ import org.mindswap.pellet.jena.PelletReasonerFactory;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.util.FileManager;
 
 public class TestBuilder 
@@ -61,8 +55,8 @@ extends TestCase
 			
 			String Q_URI = "http://archive.astro.umd.edu/ont/Quantity.owl";
 			try {
-				OntModel model = createOntModel(BaseOntModelUri);
-				model.add(FileManager.get().loadModel(Q_URI,null, "RDF/XML"));
+				OntModel model = edu.umd.astro.jenahelper.Utility.createOntModel(BaseOntModelUri,modelSpec,"RDF/XML");
+//				model.add(FileManager.get().loadModel(Q_URI, null, "RDF/XML"));
 				
 				builder = new SemanticObjectBuilder(model);
 				extended_builder = new TestBuilder().new ExtendedBuilder(model);
@@ -78,7 +72,7 @@ extends TestCase
 			try {
 				for (int i = 0; i < testModelFile.length; i++) {
 					logger.debug(" Create model:"+testModelFile[i]);
-					testModels[i] = createOntModel(new File(testModelFile[i]));
+					testModels[i] = edu.umd.astro.jenahelper.Utility.createOntModel(new File(testModelFile[i]), modelSpec, "RDF/XML");
 					logger.debug(" finished Create model:"+testModelFile[i]);
 				}
 			} catch (Exception e) {
@@ -90,49 +84,6 @@ extends TestCase
 			isSetup = true;
 		}
 		
-	}
-
-	/** Build an OntModel for the passed query string.
-	 * 
-	 * @param queryStr
-	 * 
-	 * @return OntModel which represents the query 
-	 */
-	private static OntModel createOntModel (String ontoUri) {
-
-		logger.debug("CreateOntModel uri:"+ontoUri);
-		OntModel queryModel = ModelFactory.createOntologyModel(modelSpec);
-		FileManager fm = FileManager.get();
-		logger.debug("  file manager:"+fm);
-		
-		queryModel.add(fm.loadModel(ontoUri,null, "RDF/XML"));
-		// get imports...todo: recurse?? 
-		for (Model m: getImports(queryModel)) {
-			queryModel.add(m);
-		}
-		return queryModel;
-	}
-	
-	private static List<Model> getImports (OntModel model) {
-		List<Model> ml = new Vector<Model>();
-		for (Object uri : model.listImportedOntologyURIs()) {
-			Model m =  FileManager.get().loadModel(uri.toString(),null, "RDF/XML");
-			ml.add(m);
-			if (m instanceof OntModel)
-				ml.addAll(getImports((OntModel)m));
-		}
-		return ml;
-	}
-	
-	private static OntModel createOntModel (File ontoFile) 
-	throws FileNotFoundException 
-	{
-		logger.debug("CreateOntMOdel w/ file");
-		OntModel ontModel = ModelFactory.createOntologyModel(modelSpec);
-		logger.debug(" TRY TO READ ONTOFILE:"+ontoFile);
-		ontModel.read(new FileInputStream(ontoFile), null);
-		logger.debug(" return MODEL:"+ontModel);
-		return ontModel;
 	}
 
 	public void test1() {
