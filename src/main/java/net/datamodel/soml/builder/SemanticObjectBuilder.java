@@ -133,36 +133,30 @@ public class SemanticObjectBuilder
 	{
 		
 		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
-		types.put(new Integer(1000000000),OWLThingURI);
+		types.put(new Integer(1000000000), OWLThingURI);
 		
 		logger.debug(" findRDFTypes for uri:"+in.getURI());
 		
-		// look for rdf:type properties...then rank them
-		// according to how many superclasses each has
-		for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
-			Statement s  = i.nextStatement(); 
-			if (s.getPredicate().getURI().equals(RDFTypeURI)) {
-				String typeUri = s.getObject().toString();
-				logger.debug(" FOUND rdf:type: ["+typeUri+"]");
-				// only consider non owl:Thing rdf:type's as we
-				// have owl:Thing as our default.
-				if ( typeUri.equals(OWLThingURI) 
-					|| typeUri.equals(OWLClassURI)
+		// go thru the types
+		for (ExtendedIterator i = in.listRDFTypes(false); i.hasNext(); ) {
+			Resource r = (Resource) i.next();
+			if ( r.getURI().equals(OWLThingURI) 
+					|| r.getURI().equals(OWLClassURI)
 				) {
 					logger.debug("SKIPPING OWL Class/THING type");
 				} else {
-					OntClass oc = ontModel.getOntClass(typeUri);
+					OntClass oc = ontModel.getOntClass(r.getURI());
 					if (oc != null) {
 						int num_subs = findNrofSubClasses(oc);
-						logger.debug("** class uri:"+typeUri+" has "+num_subs+" subclasses");
+						logger.debug("** class uri:"+r.getURI()+" has "+num_subs+" subclasses");
 						Integer key = new Integer(num_subs);
 						// TODO : fix collisions...can occur from multiple inheritance
 						if (!types.containsKey(key))
-							types.put(key, typeUri); 
-					} else
-						logger.warn(" Unable to find class uri:"+typeUri+" in model!");
+							types.put(key, r.getURI()); 
+					} else {
+						logger.warn(" Unable to find class uri:"+r.getURI()+" in model!");
+					}
 				}
-			}
 		}
 		
 		List<String> ret = new Vector<String>();
@@ -204,11 +198,11 @@ public class SemanticObjectBuilder
 	{
 		String propUri = s.getPredicate().getURI();
 		
-		logger.info("  PROPERTY:"+propUri+" RESOURCE:"+s.getObject().isResource());
-		
 		// we skip adding owl:sameAs properties
 		if (propUri.equals(OWLSameAsURI))
 			return;
+		
+		logger.info("  addProperty:"+propUri+" isResource:"+s.getObject().isResource());
 		
 		// Special case: setting rdf:type properties for SO 
 		if (propUri.equals(RDFTypeURI)) {
@@ -218,8 +212,7 @@ public class SemanticObjectBuilder
 					// add type only if NOT owl:Thing, which is a duplicate
 					parent.addRDFTypeURI(Utility.createURI(r.getURI()));
 				}
-//				parent.addProperty(SemanticObjectImpl.createURI(RDFTypeURI), r.getURI());
-//				parent.addAttributeField("rdf:type", r.getURI());
+				
 			} else {
 				logger.warn(" Can't do anything with non-resource rdf:type in serialization? dropping information on floor..");
 			}

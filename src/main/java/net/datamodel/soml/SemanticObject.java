@@ -128,6 +128,15 @@ extends ReferenceableXMLSerializableObject
      */
     public List<SemanticObject> getSemanticObjectsByType (URI rdfTypeURI);
     
+    /** Determine if the object has a property-target combination with
+	 * the indicated URIs.
+	 * 
+	 * @param propertyURI
+	 * @param targetURI
+	 * @return
+	 */
+	public boolean hasProperty (URI propertyURI, URI targetURI);
+	
     /** Get the list of properties which the calling SemanticObject 'owns'.
      * 
      * @return List of all properties which the calling SO owns.
