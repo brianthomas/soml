@@ -125,6 +125,13 @@ handy representations of (instances of) semantic objects.</description>
       <scope>test</scope>
     </dependency>
     
+    <dependency>
+      <groupId>edu.umd.astro</groupId>
+      <artifactId>jeanhelper</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
+    
     <!-- pellet-related dependencies, we only need for testing? -->
     <dependency>
       <groupId>org.mindswap</groupId>
