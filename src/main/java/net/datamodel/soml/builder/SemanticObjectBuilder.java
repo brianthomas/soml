@@ -10,7 +10,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import net.datamodel.soml.Constant;
 import net.datamodel.soml.SemanticObject;
 import net.datamodel.soml.Utility;
 import net.datamodel.soml.impl.SemanticObjectImpl;
