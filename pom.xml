@@ -127,7 +127,7 @@ handy representations of (instances of) semantic objects.</description>
     
     <dependency>
       <groupId>edu.umd.astro</groupId>
-      <artifactId>jeanhelper</artifactId>
+      <artifactId>jenahelper</artifactId>
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
