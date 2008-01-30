@@ -136,13 +136,15 @@ public class SemanticObjectBuilder
 		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
 		types.put(new Integer(1000000000),OWLThingURI);
 		
+		logger.debug(" findRDFTypes for uri:"+in.getURI());
+		
 		// look for rdf:type properties...then rank them
 		// according to how many superclasses each has
 		for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
 			Statement s  = i.nextStatement(); 
 			if (s.getPredicate().getURI().equals(RDFTypeURI)) {
 				String typeUri = s.getObject().toString();
-				logger.debug(" FOUND rdf:type:"+typeUri);
+				logger.debug(" FOUND rdf:type: ["+typeUri+"]");
 				// only consider non owl:Thing rdf:type's as we
 				// have owl:Thing as our default.
 				if ( typeUri.equals(OWLThingURI) 

@@ -15,7 +15,6 @@ import org.mindswap.pellet.jena.PelletReasonerFactory;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.util.FileManager;
 
 public class TestBuilder 
 extends TestCase 
