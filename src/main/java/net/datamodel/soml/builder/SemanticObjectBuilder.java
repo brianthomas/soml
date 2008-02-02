@@ -45,6 +45,7 @@ public class SemanticObjectBuilder
 	private static final String OWLThingURI = OWL.getURI()+"Thing";
 	private static final String OWLClassURI = OWL.getURI()+"Class";
 	private static final String OWLSameAsURI = OWL.getURI()+"sameAs";
+	private static final String OWLDifferentFromURI = OWL.getURI()+"differentFrom";
 	
 	private Map<String,SemanticObjectHandler> handlers = new Hashtable<String,SemanticObjectHandler>(); 
 	private final SemanticObjectHandler DefaultHandler = new DefaultHandler();
@@ -199,7 +200,7 @@ public class SemanticObjectBuilder
 		String propUri = s.getPredicate().getURI();
 		
 		// we skip adding owl:sameAs properties
-		if (propUri.equals(OWLSameAsURI))
+		if (propUri.equals(OWLSameAsURI) || propUri.equals(OWLDifferentFromURI))
 			return;
 		
 		logger.info("  addProperty:"+propUri+" isResource:"+s.getObject().isResource());
