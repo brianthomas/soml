@@ -55,7 +55,7 @@ extends BaseCase
 		so2.addProperty(rel_URI, so); 
 		
 		// test non-pretty output 
-		checkXMLOutput(so,"<a:semanticObject soId=\"id0\"><b:type resource=\"urn:test#SemanticObject1\"/></a:semanticObject>");
+		checkXMLOutput(so,"<a:semanticObject xmlns:b=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:a=\"urn:test#\" soId=\"id0\"><b:type resource=\"urn:test#SemanticObject1\"/></a:semanticObject>");
 		/*
 		checkXMLOutput(so2,"<semanticObject soId=\"id0\">"+
 				"<c:test_rel1>"+
