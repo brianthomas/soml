@@ -28,6 +28,7 @@ public class Utility {
 	 * @return
 	 */
 	public static final String getNamespaceURI (URI uri) {
+		
 		logger.debug("getNamespaceURI parses uri:"+uri.toASCIIString());
 		StringBuffer nsUri = new StringBuffer();
 		nsUri.append(uri.getScheme());

@@ -41,10 +41,13 @@ implements DataTypeProperty
 	{
  		super("datatypeProperty");
  		
+   		logger.debug(" datatype gets uri:"+propertyURI);
+   		
  		String namespaceURI = Utility.getNamespaceURI(propertyURI);
    		setNamespaceURI(namespaceURI);
    		
    		String xmlNodeName = propertyURI.toASCIIString().replaceFirst(namespaceURI, "");
+   		logger.debug(" datatype sets node to:"+xmlNodeName);
    		setXMLNodeName(xmlNodeName);
    		
    		uri = propertyURI;

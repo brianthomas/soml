@@ -16,9 +16,12 @@ import net.datamodel.soml.impl.SemanticObjectImpl;
 
 import org.apache.log4j.Logger;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
@@ -235,9 +238,22 @@ public class SemanticObjectBuilder
 				// is this really an issue? log at warn level for now
 				logger.warn("Skipping addProperty for prop:"+propUri+", target object is null");
 			
+		} else if (s.getObject().canAs(Literal.class)) {
+			logger.debug("  prop value is Literal, add datatype prop");
+			Literal l = (Literal) s.getObject().as(Literal.class);
+			
+			RDFDatatype dtype = l.getDatatype();
+			
+			if (dtype == null || dtype.equals(XSDDatatype.XSDstring))
+				parent.addProperty(Utility.createURI(propUri), l.getString());
+			else
+				parent.addProperty(Utility.createURI(propUri), l.toString());
+			
 		} else { 
-			logger.debug("  prop value is NOT an object, add datatype prop");
-			parent.addProperty(Utility.createURI(propUri), s.getObject().toString());
+			if(s.getObject().isLiteral())
+			{
+				parent.addProperty(Utility.createURI(propUri), s.getObject().toString());
+			}
 		}
 		
 	}
