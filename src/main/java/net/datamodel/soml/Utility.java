@@ -54,7 +54,7 @@ public class Utility {
 			uri = new URI(struri);
 		} catch (URISyntaxException e) {
 			// pass
-			SemanticObjectImpl.logger.error("cant create URI!:"+struri);
+			logger.info("cant create URI! (blank node?):"+struri);
 		}
 		return uri;
 	}
