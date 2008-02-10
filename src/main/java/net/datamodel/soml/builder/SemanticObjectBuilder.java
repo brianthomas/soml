@@ -40,29 +40,29 @@ import com.hp.hpl.jena.vocabulary.RDF;
  */
 public class SemanticObjectBuilder 
 {
-	
+
 	// our trusty logger
 	private static final Logger logger = Logger.getLogger(SemanticObjectBuilder.class);
-	
+
 	private static final String RDFTypeURI = RDF.getURI()+"type";
 	private static final String OWLThingURI = OWL.getURI()+"Thing";
 	private static final String OWLClassURI = OWL.getURI()+"Class";
 	private static final String OWLSameAsURI = OWL.getURI()+"sameAs";
 	private static final String OWLDifferentFromURI = OWL.getURI()+"differentFrom";
-	
+
 	private Map<String,SemanticObjectHandler> handlers = new Hashtable<String,SemanticObjectHandler>(); 
 	private final SemanticObjectHandler DefaultHandler = new DefaultHandler();
 	private final SemanticObjectHandler NullHandler = new NullHandler();
-	
+
 	private OntModel ontModel = null;
 	private Map<String,Integer> numOfSubClasses = new Hashtable<String,Integer>();
-	
+
 	public SemanticObjectBuilder (OntModel model) { 
 		ontModel = model; 
 		// use the default handler for all owl:Thing stuff
 		addHandler(OWLThingURI, getDefaultHandler()); 
 	}
-	
+
 	/** Add a special handler for particular rdf:type.
 	 * 
 	 * @param uri
@@ -72,26 +72,26 @@ public class SemanticObjectBuilder
 		logger.debug("addHandler rdf:type="+rdfTypeUri+" handler:"+handler); 
 		handlers.put(rdfTypeUri,handler);
 	}
-	
+
 	/** Get the Handler which is the default.
 	 * 
 	 * @return SemanticObjectHandler which is the DefaultHandler 
 	 */
 	protected SemanticObjectHandler getDefaultHandler() { return DefaultHandler; }
-	
+
 	/** Get the Handler which does nothing.
 	 * 
 	 * @return SemanticObjectHandler which is the NullHandler 
 	 */
 	protected SemanticObjectHandler getNullHandler() { return NullHandler; }
-	
+
 	/** Find the handler associated with the indicated uri.
 	 * 
 	 * @param uri
 	 * @return
 	 */
 	protected SemanticObjectHandler findHandler (List<String> rdfTypeUris) {
-		
+
 		for (String rdfTypeUri : rdfTypeUris)
 		{
 			if(handlers.containsKey(rdfTypeUri)) {
@@ -103,7 +103,7 @@ public class SemanticObjectBuilder
 		logger.debug("Cant find declared handler, RETURNing a DEFAULT HANDLER ");
 		return DefaultHandler;
 	}
-	
+
 	/** Create a SemanticObject from a {@link com.hp.hpl.jena.ontology.Individual}.
 	 * 
 	 * @param in
@@ -113,16 +113,16 @@ public class SemanticObjectBuilder
 	public final SemanticObject createSemanticObject (Individual in) 
 	throws SemanticObjectBuilderException
 	{
-		
+
 		String uri = in.getURI();
 		logger.debug("---> createSemanticObject (uri:"+uri+")");
-		
+
 		// create the SO using the desired rdf:type 
 		List<String> types = findRDFTypes(in);
 		SemanticObject so = findHandler(types).create(this, in, types.get(0));
-		
+
 		return so;
-		
+
 	}
 
 	/** Look for the most specific rdf:type (e.g. the one which
@@ -135,18 +135,21 @@ public class SemanticObjectBuilder
 	// at the beginning of the list
 	protected List<String> findRDFTypes (Individual in) 
 	{
-		
+
 		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
 		types.put(new Integer(1000000000), OWLThingURI);
-		
+
 		logger.debug(" findRDFTypes for uri:"+in.getURI());
-		
+
 		// go thru the types
 		for (ExtendedIterator i = in.listRDFTypes(false); i.hasNext(); ) {
 			Resource r = (Resource) i.next();
-			if ( r.getURI().equals(OWLThingURI) 
-					|| r.getURI().equals(OWLClassURI)
-				) {
+			if ( r.getURI() != null)
+			{
+				if	( r.getURI().equals(OWLThingURI) 
+						|| r.getURI().equals(OWLClassURI)
+				)
+				{
 					logger.debug("SKIPPING OWL Class/THING type");
 				} else {
 					OntClass oc = ontModel.getOntClass(r.getURI());
@@ -161,17 +164,18 @@ public class SemanticObjectBuilder
 						logger.warn(" Unable to find class uri:"+r.getURI()+" in model!");
 					}
 				}
+			}
 		}
-		
+
 		List<String> ret = new Vector<String>();
 		for (Integer key : types.keySet()) {
 			logger.debug(" *****  TYPE : "+types.get(key));
 			ret.add(types.get(key));
 		}
-			
+
 		return ret;
 	}
-	
+
 	/** Find the number of subclasses for the indicated OntClass. 
 	 * Caches values to speed up determination.
 	 *  
@@ -186,7 +190,7 @@ public class SemanticObjectBuilder
 		}
 		return numOfSubClasses.get(classUri).intValue();
 	}
-		
+
 	/** Small utility to add a property to a semantic object. 
 	 * 
 	 * @param parent
@@ -201,63 +205,63 @@ public class SemanticObjectBuilder
 	throws SemanticObjectBuilderException
 	{
 		String propUri = s.getPredicate().getURI();
-		
+
 		// we skip adding owl:sameAs properties
 		if (propUri.equals(OWLSameAsURI) || propUri.equals(OWLDifferentFromURI))
 			return;
-		
+
 		logger.info("  addProperty:"+propUri+" isResource:"+s.getObject().isResource());
-		
+
 		// Special case: setting rdf:type properties for SO 
 		if (propUri.equals(RDFTypeURI)) {
 			if (s.getObject().isResource()) {
 				Resource r = (Resource) s.getObject().as(Resource.class);
-				if (!r.getURI().equals(OWLThingURI)) {
+				if (r.getURI()!= null && !r.getURI().equals(OWLThingURI)) {
 					// add type only if NOT owl:Thing, which is a duplicate
 					parent.addRDFTypeURI(Utility.createURI(r.getURI()));
 				}
-				
+
 			} else {
 				logger.warn(" Can't do anything with non-resource rdf:type in serialization? dropping information on floor..");
 			}
 			return;
 		}
-			
+
 		// other types of properties treated here
 		if (s.getObject().canAs(Individual.class))
 		{
-			
+
 			Individual in = builder.ontModel.getIndividual(s.getObject().toString());
 			logger.debug(" #### looking for individual w/ uri:"+s.getObject()+" result:"+in);
 //			if (in != null) { logger.debug("   prop value is Individual : "+in.getURI()); }
-			
+
 			SemanticObject target = builder.createSemanticObject((Individual) s.getObject().as(Individual.class));
 			if (target != null)
 				parent.addProperty(Utility.createURI(propUri), target);
 			else 
 				// is this really an issue? log at warn level for now
 				logger.warn("Skipping addProperty for prop:"+propUri+", target object is null");
-			
+
 		} else if (s.getObject().canAs(Literal.class)) {
 			logger.debug("  prop value is Literal, add datatype prop");
 			Literal l = (Literal) s.getObject().as(Literal.class);
-			
+
 			RDFDatatype dtype = l.getDatatype();
-			
+
 			if (dtype == null || dtype.equals(XSDDatatype.XSDstring))
 				parent.addProperty(Utility.createURI(propUri), l.getString());
 			else
 				parent.addProperty(Utility.createURI(propUri), l.toString());
-			
+
 		} else { 
 			if(s.getObject().isLiteral())
 			{
 				parent.addProperty(Utility.createURI(propUri), s.getObject().toString());
 			}
 		}
-		
+
 	}
-	
+
 	/** Default handler to create vanilla SemanticObjects.
 	 * 
 	 * @author thomas
@@ -266,15 +270,15 @@ public class SemanticObjectBuilder
 	class DefaultHandler 
 	implements SemanticObjectHandler 
 	{
-		
+
 		public SemanticObject create (SemanticObjectBuilder builder, Individual in, String rdfType) 
 		throws SemanticObjectBuilderException 
 		{
 			logger.info("DefaultHandler called for instance uri:"+in.getURI()+" rdftypeuri:"+rdfType);
-			
+
 			SemanticObject so = new SemanticObjectImpl();
 			so.addRDFTypeURI(Utility.createURI(rdfType));
-			
+
 			// add in properties
 			for(StmtIterator i = in.listProperties(); i.hasNext(); ) {
 				Statement s  = i.nextStatement(); 
@@ -282,9 +286,9 @@ public class SemanticObjectBuilder
 			}
 			return so;
 		}
-		
+
 	}
-	
+
 	/** Default handler to create vanilla SemanticObjects.
 	 * 
 	 * @author thomas
@@ -299,9 +303,9 @@ public class SemanticObjectBuilder
 			logger.info("Null handler called for instance uri:"+in.getURI());
 			return null;
 		}
-		
+
 	}
-	
+
 	/**
 	 * @author thomas
 	 *
@@ -320,9 +324,9 @@ public class SemanticObjectBuilder
 				Individual in,
 				String rdfType) 
 		throws SemanticObjectBuilderException;
-		
+
 	}
-	
-	
+
+
 }
 

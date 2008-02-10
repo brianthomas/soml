@@ -121,7 +121,7 @@ handy representations of (instances of) semantic objects.</description>
     <dependency>
       <groupId>edu.umd.astro</groupId>
       <artifactId>sdr</artifactId>
-      <version>0.97.0</version>
+      <version>0.98.0</version>
       <scope>test</scope>
     </dependency>
     
