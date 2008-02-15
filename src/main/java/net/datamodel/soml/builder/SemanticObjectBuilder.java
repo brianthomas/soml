@@ -186,7 +186,7 @@ public class SemanticObjectBuilder
 	protected int findNrofSuperClasses (OntClass oc) {
 		String classUri = oc.getURI();
 		if (!numOfSuperClasses.containsKey(classUri)) {
-			ExtendedIterator i = oc.listSuperClasses(true);
+			ExtendedIterator i = oc.listSuperClasses();
 			numOfSuperClasses.put(classUri, new Integer(i.toList().size()));
 		}
 		return numOfSuperClasses.get(classUri).intValue();
