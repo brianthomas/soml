@@ -3,6 +3,7 @@
  */
 package net.datamodel.soml.builder;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class SemanticObjectBuilder
 	private final SemanticObjectHandler NullHandler = new NullHandler();
 
 	private OntModel ontModel = null;
-	private Map<String,Integer> numOfSubClasses = new Hashtable<String,Integer>();
+	private Map<String,Integer> numOfSuperClasses = new Hashtable<String,Integer>();
 
 	public SemanticObjectBuilder (OntModel model) { 
 		ontModel = model; 
@@ -136,8 +137,8 @@ public class SemanticObjectBuilder
 	protected List<String> findRDFTypes (Individual in) 
 	{
 
-		SortedMap<Integer,String> types = new TreeMap<Integer,String>();
-		types.put(new Integer(1000000000), OWLThingURI);
+		SortedMap<Integer,String> types = new TreeMap<Integer,String>(Collections.reverseOrder());
+		types.put(new Integer(0), OWLThingURI);
 
 		logger.debug(" findRDFTypes for uri:"+in.getURI());
 
@@ -154,9 +155,9 @@ public class SemanticObjectBuilder
 				} else {
 					OntClass oc = ontModel.getOntClass(r.getURI());
 					if (oc != null) {
-						int num_subs = findNrofSubClasses(oc);
-						logger.debug("** class uri:"+r.getURI()+" has "+num_subs+" subclasses");
-						Integer key = new Integer(num_subs);
+						int num_supers = findNrofSuperClasses(oc);
+						logger.debug("** class uri:"+r.getURI()+" has "+num_supers+" super classes");
+						Integer key = new Integer(num_supers);
 						// TODO : fix collisions...can occur from multiple inheritance
 						if (!types.containsKey(key))
 							types.put(key, r.getURI()); 
@@ -182,13 +183,13 @@ public class SemanticObjectBuilder
 	 * @param oc
 	 * @return
 	 */
-	protected int findNrofSubClasses (OntClass oc) {
+	protected int findNrofSuperClasses (OntClass oc) {
 		String classUri = oc.getURI();
-		if (!numOfSubClasses.containsKey(classUri)) {
-			ExtendedIterator i = oc.listSubClasses();
-			numOfSubClasses.put(classUri, new Integer(i.toList().size()));
+		if (!numOfSuperClasses.containsKey(classUri)) {
+			ExtendedIterator i = oc.listSuperClasses(true);
+			numOfSuperClasses.put(classUri, new Integer(i.toList().size()));
 		}
-		return numOfSubClasses.get(classUri).intValue();
+		return numOfSuperClasses.get(classUri).intValue();
 	}
 
 	/** Small utility to add a property to a semantic object. 
